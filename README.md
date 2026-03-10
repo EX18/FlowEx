@@ -1,4 +1,5 @@
 # ⚡ FlowEX — Productividad sin fricción
+https://ex18.github.io/FlowEx/
 
 > Gestor de tareas, hábitos y calendario todo en uno con IA integrada. PWA instalable en celular.
 
