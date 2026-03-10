@@ -82,55 +82,6 @@ Los datos persisten entre sesiones y se pueden exportar/importar como JSON.
 
 ---
 
-## 🗂 Estructura del proyecto
-
-```
-flowex/
-├── index.html        ← App completa (SPA)
-├── manifest.json     ← PWA manifest
-├── sw.js             ← Service Worker (offline)
-├── icons/            ← Íconos para iOS/Android
-│   ├── icon-72.png
-│   ├── icon-96.png
-│   ├── icon-128.png
-│   ├── icon-144.png
-│   ├── icon-152.png
-│   ├── icon-192.png
-│   ├── icon-384.png
-│   └── icon-512.png
-└── README.md
-```
-
----
-
-## 🎨 Stack técnico
-
-- **Vanilla JS** — Sin dependencias ni frameworks
-- **CSS Variables** — Sistema de temas dinámico
-- **localStorage** — Persistencia de datos
-- **Service Worker** — Soporte offline y caché
-- **Web App Manifest** — Instalación como PWA
-- **Anthropic Claude API** — Asistente IA (opcional)
-
----
-
-## 🌐 Deploy en GitHub Pages
-
-1. Hacé fork de este repo
-2. Ve a **Settings → Pages**
-3. Seleccioná `main` branch, carpeta `/`
-4. Tu app estará en `https://tu-usuario.github.io/flowex`
-
----
-
-## 🔧 Configuración de la IA
-
-El asistente IA funciona en modo demo por defecto. Para conectar con Claude:
-
-La API key se maneja del lado del servidor — no incluyas API keys en el frontend. Podés deployar un proxy simple con Cloudflare Workers o Vercel Edge Functions.
-
----
-
 ## 📄 Licencia
 
-MIT © 2025 — Hecho con ⚡ y mucho café
+EX © 2025 — Hecho con ⚡ y mucho café
