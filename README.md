@@ -71,17 +71,6 @@ Al abrir por primera vez, el usuario pasa por un flujo de 9 pantallas:
 
 ---
 
-## 💾 Persistencia de datos
-
-Todo se guarda en **localStorage** del navegador:
-- `fx_user` — preferencias y perfil
-- `fx_tareas` — lista de tareas
-- `fx_habitos` — hábitos y rachas
-
-Los datos persisten entre sesiones y se pueden exportar/importar como JSON.
-
----
-
 ## 📄 Licencia
 
 EX © 2025 — Hecho con ⚡ y mucho café
