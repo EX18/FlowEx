@@ -38,52 +38,148 @@ body.light{
   --bg:#f0f0fa;--surface:#fff;--s2:#f5f5fd;--s3:#ebebf8;
   --b:#ddddf0;--b2:#cccce0;--txt:#111128;--m:#666688;--m2:#9999bb;
 }
-html{height:100%;-webkit-text-size-adjust:100%}
+html,body{height:100%;margin:0;-webkit-text-size-adjust:100%}
 body{
   background:var(--bg);color:var(--txt);font-family:var(--fb);
-  height:100%;overflow:hidden;
+  overflow:hidden;
   -webkit-user-select:none;user-select:none;
 }
 
-/* ── RESPONSIVE ───────────────────────────── */
+/* ════════════════════════════════════════════
+   RESPONSIVE LAYOUT SYSTEM
+   Mobile → Tablet → Desktop (sidebar)
+════════════════════════════════════════════ */
+
+/* ── APP SHELL: base (mobile) ─────────────── */
+#screen-app{
+  display:flex;
+  flex-direction:column;
+  padding-top:var(--st);
+  padding-bottom:calc(64px + var(--sb));
+  height:100%;
+  overflow:hidden;
+}
+
+/* ── TABLET 600px+ ────────────────────────── */
 @media(min-width:600px){
   .auth-wrap{max-width:440px}
   .pin-pad{max-width:320px;margin:0 auto 8px}
+  .pin-display{max-width:320px;margin:18px auto 12px}
   .topnav{padding:14px 28px 10px}
   .pc{padding:0 28px 24px}
+  /* Nav centered, tabs wider */
   .bnav{justify-content:center}
-  .bnav .nt{max-width:100px}
-  .fab{right:28px}
+  .bnav .nt{max-width:90px}
+  /* Slightly bigger cards */
   .sc{min-width:130px}
+  .gs-card{padding:20px 22px}
+  .hr{padding:14px 18px}
+  /* Sheet centered */
+  .sh{max-width:560px;margin-left:auto;margin-right:auto;border-radius:24px;margin-bottom:24px}
+  .shov{align-items:center}
 }
+
+/* ── DESKTOP 900px+ — SIDEBAR LAYOUT ─────── */
 @media(min-width:900px){
-  #screen-app{display:grid!important;grid-template-columns:220px 1fr;grid-template-rows:auto 1fr;padding:0!important}
-  .topnav{grid-column:1/-1;grid-row:1;padding:14px 32px}
-  .bnav{grid-column:1;grid-row:2;position:relative;height:auto;flex-direction:column;align-items:stretch;padding:20px 12px;border-top:none;border-right:1px solid rgba(255,255,255,.06);background:rgba(7,7,15,.98);overflow-y:auto;justify-content:flex-start}
-  .bnav .nt{flex-direction:row;justify-content:flex-start;gap:12px;padding:12px 14px;border-radius:12px;max-width:100%;margin-bottom:4px}
-  .bnav .nt .ni{font-size:20px}
-  .bnav .nt .nl{font-size:13px;font-weight:600}
+  /* App shell becomes a 2-col grid */
+  #screen-app{
+    display:grid!important;
+    grid-template-columns:220px 1fr;
+    grid-template-rows:56px 1fr;
+    padding:0!important;
+    height:100%;
+    overflow:hidden;
+  }
+  /* Topnav spans full width */
+  .topnav{
+    grid-column:1/-1;
+    grid-row:1;
+    padding:0 28px;
+    height:56px;
+  }
+  /* Bottom nav becomes left sidebar */
+  .bnav{
+    grid-column:1;
+    grid-row:2;
+    /* Override fixed positioning */
+    position:relative!important;
+    bottom:auto!important;left:auto!important;right:auto!important;
+    /* Sidebar layout */
+    height:100%;
+    flex-direction:column;
+    align-items:stretch;
+    padding:16px 10px;
+    border-top:none;
+    border-right:1px solid var(--b);
+    background:rgba(7,7,15,.98);
+    overflow-y:auto;
+    justify-content:flex-start;
+    /* Remove height constraint from mobile */
+    padding-top:16px;
+  }
+  /* Nav items become horizontal rows */
+  .bnav .nt{
+    flex-direction:row;
+    justify-content:flex-start;
+    align-items:center;
+    gap:12px;
+    padding:11px 14px;
+    border-radius:10px;
+    max-width:100%;
+    margin-bottom:4px;
+    height:auto;
+  }
+  .bnav .nt .ni{font-size:19px;transform:none!important}
+  .bnav .nt .nl{font-size:13px;font-weight:500;display:block;opacity:1}
   .bnav .nt.active{background:rgba(124,109,250,.12)}
-  .bnav .nt.active .ni{transform:none}
-  .pc{grid-column:2;grid-row:2;padding:24px 40px 32px;max-width:800px;width:100%}
-  .fab{position:fixed;bottom:32px;right:40px}
-  #sr{margin:0 0 10px;padding:0 0 10px}
-  .sh{max-width:560px}
-  .auth-wrap{max-width:480px}
-  .pin-pad{max-width:340px;margin:0 auto 8px}
+  .bnav .nt.active .ni{transform:none!important}
+  /* Content area */
+  .pc{
+    grid-column:2;
+    grid-row:2;
+    padding:24px 36px 32px;
+    overflow-y:auto;
+    height:100%;
+  }
+  /* FAB repositioned for desktop */
+  .fab{
+    position:fixed;
+    bottom:28px;
+    right:32px;
+  }
+  /* Auth stays centered */
+  .auth-wrap{max-width:460px}
+  .pin-pad{max-width:320px;margin:0 auto 8px}
 }
+
+/* ── LARGE DESKTOP 1200px+ ────────────────── */
 @media(min-width:1200px){
-  #screen-app{grid-template-columns:260px 1fr}
-  .pc{max-width:900px;padding:28px 56px 40px}
-  .bnav{padding:28px 16px}
-  .bnav .nt{padding:14px 18px}
+  #screen-app{grid-template-columns:240px 1fr}
+  .pc{padding:28px 52px 40px;max-width:960px}
+  .bnav{padding:20px 12px}
+  .bnav .nt{padding:13px 16px}
+  .bnav .nt .ni{font-size:20px}
+  .bnav .nt .nl{font-size:14px}
 }
 
-/* ── CREATOR BADGE ──────────────────────────── */
-.creator-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;background:linear-gradient(135deg,rgba(250,196,109,.2),rgba(250,109,143,.15));border:1px solid rgba(250,196,109,.4);font-size:10px;font-weight:700;letter-spacing:.05em;color:var(--a4);text-transform:uppercase;box-shadow:0 0 12px rgba(250,196,109,.2);animation:creator-pulse 3s ease-in-out infinite}
-@keyframes creator-pulse{0%,100%{box-shadow:0 0 12px rgba(250,196,109,.2)}50%{box-shadow:0 0 22px rgba(250,196,109,.4)}}
+/* ── CREATOR BADGE ────────────────────────── */
+.creator-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 10px;border-radius:20px;
+  background:linear-gradient(135deg,rgba(250,196,109,.2),rgba(250,109,143,.15));
+  border:1px solid rgba(250,196,109,.4);
+  font-size:10px;font-weight:700;letter-spacing:.05em;
+  color:var(--a4);text-transform:uppercase;
+  box-shadow:0 0 12px rgba(250,196,109,.2);
+  animation:creator-pulse 3s ease-in-out infinite;
+  flex-shrink:0;
+}
+@keyframes creator-pulse{
+  0%,100%{box-shadow:0 0 12px rgba(250,196,109,.2)}
+  50%{box-shadow:0 0 22px rgba(250,196,109,.4)}
+}
 
-/* ── ADMIN PANEL ────────────────────────────── */
+/* ── ADMIN PANEL ──────────────────────────── */
 .admin-header{background:linear-gradient(135deg,rgba(250,196,109,.1),rgba(250,109,143,.08));border:1px solid rgba(250,196,109,.25);border-radius:var(--r);padding:20px;margin-bottom:16px}
 .admin-title{font-family:var(--fd);font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--a4),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
 .admin-sub{font-size:12px;color:var(--m)}
@@ -101,6 +197,7 @@ body{
 .global-stat{background:linear-gradient(135deg,rgba(250,196,109,.1),rgba(250,109,143,.06));border:1px solid rgba(250,196,109,.2);border-radius:14px;padding:14px 10px;text-align:center}
 .global-stat-val{font-family:var(--fd);font-size:24px;font-weight:800;color:var(--a4);margin-bottom:3px}
 .global-stat-lbl{font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.06em}
+.admin-spin{width:24px;height:24px;border-radius:50%;border:3px solid var(--b2);border-top-color:var(--a4);animation:spin .7s linear infinite;margin:0 auto 12px}
 .admin-spin{width:24px;height:24px;border-radius:50%;border:3px solid var(--b2);border-top-color:var(--a4);animation:spin .7s linear infinite;margin:0 auto 12px}
 
 /* GRAIN OVERLAY */
@@ -192,8 +289,6 @@ body::after{
   font-size:16px;transition:all .2s;
 }
 
-/* ─── APP SHELL ────────────────────────────── */
-#screen-app{padding-top:var(--st);padding-bottom:calc(64px + var(--sb))}
 
 .topnav{
   display:flex;align-items:center;justify-content:space-between;
