@@ -41,9 +41,67 @@ body.light{
 html{height:100%;-webkit-text-size-adjust:100%}
 body{
   background:var(--bg);color:var(--txt);font-family:var(--fb);
-  min-height:100%;overflow:hidden;position:fixed;width:100%;
+  height:100%;overflow:hidden;
   -webkit-user-select:none;user-select:none;
 }
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media(min-width:600px){
+  .auth-wrap{max-width:440px}
+  .pin-pad{max-width:320px;margin:0 auto 8px}
+  .topnav{padding:14px 28px 10px}
+  .pc{padding:0 28px 24px}
+  .bnav{justify-content:center}
+  .bnav .nt{max-width:100px}
+  .fab{right:28px}
+  .sc{min-width:130px}
+}
+@media(min-width:900px){
+  #screen-app{display:grid!important;grid-template-columns:220px 1fr;grid-template-rows:auto 1fr;padding:0!important}
+  .topnav{grid-column:1/-1;grid-row:1;padding:14px 32px}
+  .bnav{grid-column:1;grid-row:2;position:relative;height:auto;flex-direction:column;align-items:stretch;padding:20px 12px;border-top:none;border-right:1px solid rgba(255,255,255,.06);background:rgba(7,7,15,.98);overflow-y:auto;justify-content:flex-start}
+  .bnav .nt{flex-direction:row;justify-content:flex-start;gap:12px;padding:12px 14px;border-radius:12px;max-width:100%;margin-bottom:4px}
+  .bnav .nt .ni{font-size:20px}
+  .bnav .nt .nl{font-size:13px;font-weight:600}
+  .bnav .nt.active{background:rgba(124,109,250,.12)}
+  .bnav .nt.active .ni{transform:none}
+  .pc{grid-column:2;grid-row:2;padding:24px 40px 32px;max-width:800px;width:100%}
+  .fab{position:fixed;bottom:32px;right:40px}
+  #sr{margin:0 0 10px;padding:0 0 10px}
+  .sh{max-width:560px}
+  .auth-wrap{max-width:480px}
+  .pin-pad{max-width:340px;margin:0 auto 8px}
+}
+@media(min-width:1200px){
+  #screen-app{grid-template-columns:260px 1fr}
+  .pc{max-width:900px;padding:28px 56px 40px}
+  .bnav{padding:28px 16px}
+  .bnav .nt{padding:14px 18px}
+}
+
+/* ── CREATOR BADGE ──────────────────────────── */
+.creator-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;background:linear-gradient(135deg,rgba(250,196,109,.2),rgba(250,109,143,.15));border:1px solid rgba(250,196,109,.4);font-size:10px;font-weight:700;letter-spacing:.05em;color:var(--a4);text-transform:uppercase;box-shadow:0 0 12px rgba(250,196,109,.2);animation:creator-pulse 3s ease-in-out infinite}
+@keyframes creator-pulse{0%,100%{box-shadow:0 0 12px rgba(250,196,109,.2)}50%{box-shadow:0 0 22px rgba(250,196,109,.4)}}
+
+/* ── ADMIN PANEL ────────────────────────────── */
+.admin-header{background:linear-gradient(135deg,rgba(250,196,109,.1),rgba(250,109,143,.08));border:1px solid rgba(250,196,109,.25);border-radius:var(--r);padding:20px;margin-bottom:16px}
+.admin-title{font-family:var(--fd);font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--a4),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.admin-sub{font-size:12px;color:var(--m)}
+.user-card{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:14px 16px;margin-bottom:8px;transition:all .2s}
+.user-card-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.user-avatar{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--a),var(--a2));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:16px;font-weight:800;color:white;flex-shrink:0}
+.user-info{flex:1}
+.user-name{font-family:var(--fd);font-size:14px;font-weight:700;margin-bottom:2px}
+.user-meta{font-size:11px;color:var(--m)}
+.user-stats-row{display:flex;gap:8px;flex-wrap:wrap}
+.user-stat{flex:1;min-width:60px;background:var(--s2);border-radius:10px;padding:8px 10px;text-align:center}
+.user-stat-val{font-family:var(--fd);font-size:16px;font-weight:800;color:var(--a)}
+.user-stat-lbl{font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.05em}
+.global-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.global-stat{background:linear-gradient(135deg,rgba(250,196,109,.1),rgba(250,109,143,.06));border:1px solid rgba(250,196,109,.2);border-radius:14px;padding:14px 10px;text-align:center}
+.global-stat-val{font-family:var(--fd);font-size:24px;font-weight:800;color:var(--a4);margin-bottom:3px}
+.global-stat-lbl{font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.06em}
+.admin-spin{width:24px;height:24px;border-radius:50%;border:3px solid var(--b2);border-top-color:var(--a4);animation:spin .7s linear infinite;margin:0 auto 12px}
 
 /* GRAIN OVERLAY */
 body::after{
@@ -611,6 +669,7 @@ select.fi option{background:var(--s2)}
     <button class="nt" onclick="gp('notas')" id="tab-notas"><div class="ni">📓</div><div class="nl">Diario</div></button>
     <button class="nt" onclick="gp('stats')" id="tab-stats"><div class="ni">📊</div><div class="nl">Stats</div></button>
     <button class="nt" onclick="gp('ia')" id="tab-ia"><div class="ni">🤖</div><div class="nl">IA</div></button>
+    <button class="nt" id="tab-admin" onclick="gp('admin')" style="display:none"><div class="ni">👑</div><div class="nl">Admin</div></button>
   </nav>
   <button class="fab" onclick="openHabit()">＋</button>
 </div>
@@ -656,7 +715,8 @@ select.fi option{background:var(--s2)}
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
-  getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp
+  getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp,
+  collection, getDocs
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 // ── Firebase config ────────────────────────────
@@ -671,6 +731,10 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
+
+// ── Creator config ─────────────────────────────
+const CREATOR_USERNAME = 'nulvec';
+const isCreator = () => CUR_USER === CREATOR_USERNAME;
 
 // ── Utilities ───────────────────────────────────
 const uid  = () => Math.random().toString(36).slice(2,10);
@@ -912,12 +976,29 @@ const startApp = () => {
   document.getElementById('screen-app').classList.add('active');
   document.getElementById('screen-app').style.display='flex';
   if (S.theme) document.body.className = S.theme;
+  // Show admin nav tab if creator
+  const adminTab = document.getElementById('tab-admin');
+  if (adminTab) adminTab.style.display = isCreator() ? 'flex' : 'none';
   startListener(CUR_USER);
   initApp();
 };
 
 const initApp = () => {
   document.getElementById('gr-nm').textContent = S.name || CUR_USER || 'amigo';
+  // Creator badge in topnav
+  const existBadge = document.getElementById('creator-topbadge');
+  if (existBadge) existBadge.remove();
+  if (isCreator()) {
+    const logo = document.querySelector('.logo');
+    if (logo) {
+      const badge = document.createElement('span');
+      badge.id = 'creator-topbadge';
+      badge.className = 'creator-badge';
+      badge.style.marginLeft = '10px';
+      badge.innerHTML = '<span class="creator-crown">👑</span> CREADOR';
+      logo.parentNode.insertBefore(badge, logo.nextSibling);
+    }
+  }
   updateGreeting();
   renderAll();
   renderSettings();
@@ -947,6 +1028,7 @@ window.gp = (page) => {
   if(page==='stats') renderStats();
   if(page==='ajustes') renderSettings();
   if(page==='ia') initIA();
+  if(page==='admin' && isCreator()) loadAdminData();
   document.getElementById('pc').scrollTop=0;
 };
 
@@ -1286,8 +1368,9 @@ const renderSettings = () => {
     <div class="ss-group">
       <div class="ss-item">
         <div class="ss-ic" style="background:rgba(124,109,250,.12)">👤</div>
-        <div class="ss-inf"><div class="ss-lb">@${CUR_USER||''}</div><div class="ss-ds">${S.name||''} · Nivel ${S.level||1} · ${S.xp||0} XP</div></div>
+        <div class="ss-inf"><div class="ss-lb" style="display:flex;align-items:center;gap:8px">@${CUR_USER||''} ${isCreator()?'<span class="creator-badge"><span class="creator-crown">👑</span> CREADOR</span>':''}</div><div class="ss-ds">${S.name||''} · Nivel ${S.level||1} · ${S.xp||0} XP</div></div>
       </div>
+      ${isCreator()?`<div class="ss-item" onclick="window.gp('admin')"><div class="ss-ic" style="background:linear-gradient(135deg,rgba(250,196,109,.2),rgba(250,109,143,.15))">👑</div><div class="ss-inf"><div class="ss-lb">Panel Admin</div><div class="ss-ds">Ver estadísticas globales</div></div><div class="ss-arr">›</div></div>`:''}
       <div class="ss-item" onclick="window.doLogout()">
         <div class="ss-ic" style="background:rgba(250,109,143,.12)">🚪</div>
         <div class="ss-inf"><div class="ss-lb">Cerrar sesión</div><div class="ss-ds">Salir de esta cuenta</div></div>
@@ -1316,6 +1399,80 @@ window.applyTheme = (t, el) => {
   document.querySelectorAll('.tpi').forEach(x=>x.classList.remove('sel'));
   if(el) el.classList.add('sel');
   toast('🎨 Tema aplicado','success');
+};
+
+
+// ── ADMIN PANEL (NULVEC only) ──────────────────
+window.loadAdminData = async () => {
+  if (!isCreator()) return;
+  const listEl = document.getElementById('admin-users-list');
+  const globEl = document.getElementById('admin-globals');
+  if (!listEl) return;
+  listEl.innerHTML = '<div style="text-align:center;padding:30px"><div class="admin-spin"></div><div style="font-size:13px;color:var(--m)">Cargando usuarios...</div></div>';
+  try {
+    const snap = await getDocs(collection(db, 'users'));
+    const users = [];
+    snap.forEach(d => {
+      const data = d.data();
+      if (d.id !== 'nulvec' || true) users.push({ username: d.id, ...data });
+    });
+    // Sort by XP desc
+    users.sort((a,b) => (b.xp||0) - (a.xp||0));
+
+    // Global stats
+    const totalUsers = users.length;
+    const totalHabits = users.reduce((s,u) => s + (u.habits?.length||0), 0);
+    const totalLogs = users.reduce((s,u) => {
+      const h = u.habits || [];
+      return s + h.reduce((hs,hab) => hs + Object.values(hab.logs||{}).filter(Boolean).length, 0);
+    }, 0);
+    if (globEl) globEl.innerHTML = `
+      <div class="global-stat"><div class="global-stat-val">${totalUsers}</div><div class="global-stat-lbl">Usuarios</div></div>
+      <div class="global-stat"><div class="global-stat-val">${totalHabits}</div><div class="global-stat-lbl">Hábitos</div></div>
+      <div class="global-stat"><div class="global-stat-val">${totalLogs}</div><div class="global-stat-lbl">Logs totales</div></div>`;
+
+    // User cards
+    if (!users.length) { listEl.innerHTML='<div class="empty"><div class="ei">👥</div><div class="et">Sin usuarios</div></div>'; return; }
+    listEl.innerHTML = users.map(u => {
+      const initial = (u.name||u.username||'?')[0].toUpperCase();
+      const habits = u.habits || [];
+      const td = new Date().toISOString().slice(0,10);
+      const doneToday = habits.filter(h => h.logs&&h.logs[td]).length;
+      const totalLogsU = habits.reduce((s,h)=>s+Object.values(h.logs||{}).filter(Boolean).length,0);
+      const bestStreak = habits.reduce((best,h) => {
+        let s=0;
+        for(let i=0;i<365;i++){
+          const k=new Date(Date.now()-i*86400000).toISOString().slice(0,10);
+          if(h.logs&&h.logs[k]) s++; else if(i>0) break;
+        }
+        return Math.max(best,s);
+      }, 0);
+      const isThisCreator = u.username === 'nulvec';
+      return `<div class="user-card">
+        <div class="user-card-top">
+          <div class="user-avatar" style="${isThisCreator?'background:linear-gradient(135deg,var(--a4),var(--a2))':''}">
+            ${isThisCreator?'👑':initial}
+          </div>
+          <div class="user-info">
+            <div class="user-name">
+              ${u.name||u.username}
+              ${isThisCreator?'<span class="creator-badge" style="margin-left:6px"><span class="creator-crown">👑</span> CREADOR</span>':''}
+            </div>
+            <div class="user-meta">@${u.username} · Nivel ${u.level||1} · ${u.xp||0} XP</div>
+          </div>
+        </div>
+        <div class="user-stats-row">
+          <div class="user-stat"><div class="user-stat-val">${habits.length}</div><div class="user-stat-lbl">Hábitos</div></div>
+          <div class="user-stat"><div class="user-stat-val">${doneToday}/${habits.length}</div><div class="user-stat-lbl">Hoy</div></div>
+          <div class="user-stat"><div class="user-stat-val">${bestStreak}🔥</div><div class="user-stat-lbl">Racha</div></div>
+          <div class="user-stat"><div class="user-stat-val">${totalLogsU}</div><div class="user-stat-lbl">Logs</div></div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    listEl.innerHTML = '<div class="empty"><div class="ei">⚠️</div><div class="et">Error al cargar</div><div class="ed">Revisá tu conexión o las reglas de Firestore.</div></div>';
+    console.error(e);
+  }
 };
 
 window.doLogout = () => {
