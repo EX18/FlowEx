@@ -721,7 +721,7 @@ select.fi option{background:var(--s2)}
 <!-- APP SCREEN -->
 <div id="screen-app" class="screen" style="display:none">
   <div class="topnav">
-    <div class="logo">Flow<em>EX</em></div>
+    <div class="logo"></div>
     <div style="display:flex;gap:8px;align-items:center">
       <div class="sync-indicator" id="sync-status">
         <div class="sync-dot synced" id="sync-dot"></div>
@@ -896,11 +896,10 @@ select.fi option{background:var(--s2)}
       <div class="notes-toolbar">
         <input class="notes-search" id="notes-search-inp" placeholder="🔍 Buscar notas..." oninput="filterNotes()"/>
         <button class="icon-btn" onclick="openNoteEditor()" style="flex-shrink:0" title="Nueva nota">✦</button>
-        <button class="icon-btn" onclick="openFolderSheet()" style="flex-shrink:0" title="Carpetas">📁</button>
       </div>
 
-      <!-- Folders -->
-      <div class="folder-row" id="folder-row"></div>
+      <!-- Folders disabled -->
+      <div class="folder-row" id="folder-row" style="display:none"></div>
 
       <!-- Notes list -->
       <div id="notes-list" class="stg"></div>
@@ -920,12 +919,8 @@ select.fi option{background:var(--s2)}
         </div>
       </div>
 
-      <!-- Meta bar: folder + color + tags -->
+      <!-- Meta bar: color + tags -->
       <div class="note-meta-bar">
-        <span style="font-size:11px;color:var(--m);flex-shrink:0">📁</span>
-        <select id="note-folder-sel" class="note-meta-sel">
-          <option value="General">General</option>
-        </select>
         <div class="note-color-row" id="note-color-row">
           <div class="note-color-opt sel" data-c="0" style="background:var(--a)"        onclick="selNoteColor(0,this)"></div>
           <div class="note-color-opt"     data-c="1" style="background:var(--a2)"       onclick="selNoteColor(1,this)"></div>
@@ -1028,7 +1023,11 @@ select.fi option{background:var(--s2)}
     <button class="nt active" onclick="gp('dashboard')" id="tab-dashboard"><div class="ni">⊞</div><div class="nl">Inicio</div></button>
     <button class="nt" onclick="gp('habitos')" id="tab-habitos"><div class="ni">🔥</div><div class="nl">Hábitos</div></button>
     <button class="nt" onclick="gp('tareas')" id="tab-tareas"><div class="ni">✅</div><div class="nl">Tareas</div></button>
-    <button class="nt" onclick="gp('notas')" id="tab-notas"><div class="ni">�</div><div class="nl">Notas</div></button>
+    <button class="nt" onclick="gp('notas')" id="tab-notas"><div class="ni">📝</div><div class="nl">Notas</div></button>
+    <button class="nt" onclick="gp('lectura')" id="tab-lectura"><div class="ni">📚</div><div class="nl">Lectura</div></button>
+    <button class="nt" onclick="gp('notifs')" id="tab-notifs"><div class="ni">🔔</div><div class="nl">Avisos</div></button>
+    <button class="nt" onclick="gp('logros')" id="tab-logros"><div class="ni">🏆</div><div class="nl">Logros</div></button>
+    <button class="nt" onclick="gp('breath')" id="tab-breath"><div class="ni">🌬️</div><div class="nl">Mind</div></button>
     <button class="nt" onclick="gp('stats')" id="tab-stats"><div class="ni">📊</div><div class="nl">Stats</div></button>
     <button class="nt" onclick="gp('ia')" id="tab-ia"><div class="ni">🤖</div><div class="nl">IA</div></button>
     <button class="nt" id="tab-admin" onclick="gp('admin')" style="display:none"><div class="ni">👑</div><div class="nl">Admin</div></button>
@@ -1434,6 +1433,10 @@ const renderAll = () => {
   if (pid==='habitos') renderHabitos();
   if (pid==='tareas') renderTasks();
   if (pid==='notas') renderNotas();
+  if (pid==='lectura') renderLectura();
+  if (pid==='notifs') renderNotifs();
+  if (pid==='logros') renderLogros();
+  if (pid==='breath') renderBreath();
   if (pid==='stats') renderStats();
 };
 
@@ -1449,6 +1452,10 @@ window.gp = (page) => {
   if(page==='habitos') renderHabitos();
   if(page==='tareas') renderTasks();
   if(page==='notas') renderNotas();
+  if(page==='lectura') renderLectura();
+  if(page==='notifs') renderNotifs();
+  if(page==='logros') renderLogros();
+  if(page==='breath') renderBreath();
   if(page==='stats') renderStats();
   if(page==='ajustes') renderSettings();
   if(page==='ia') initIA();
@@ -1790,12 +1797,11 @@ let noteAutoSaveTimer = null;
 
 const notesInit = () => {
   if (!S.notes)        S.notes        = [];
-  if (!S.noteFolders)  S.noteFolders  = ['General','Ideas','Trabajo','Personal'];
+  if (!S.noteFolders)  S.noteFolders  = ['General'];
 };
 
 window.renderNotas = () => {
   notesInit();
-  renderFolderRow();
   renderNotesList();
   renderNotesStats();
 };
@@ -1808,7 +1814,6 @@ const renderNotesStats = () => {
   const tags  = [...new Set(n.flatMap(x=>(x.tags||[])))].length;
   el.innerHTML = `
     <div class="notes-stat"><div class="notes-stat-val">${n.length}</div><div class="notes-stat-lbl">Notas</div></div>
-    <div class="notes-stat"><div class="notes-stat-val">${(S.noteFolders||[]).length}</div><div class="notes-stat-lbl">Carpetas</div></div>
     <div class="notes-stat"><div class="notes-stat-val">${tags}</div><div class="notes-stat-lbl">Tags</div></div>
     <div class="notes-stat"><div class="notes-stat-val">${words>999?Math.round(words/1000)+'k':words}</div><div class="notes-stat-lbl">Palabras</div></div>`;
 };
@@ -1868,7 +1873,6 @@ const renderNotesList = () => {
       </div>
       ${excerpt?`<div class="note-excerpt">${excerpt}</div>`:''}
       <div class="note-meta-row">
-        <span class="note-folder-badge">📁 ${n.folder||'General'}</span>
         ${tagsHtml}
         <span class="note-date">${dateStr}</span>
       </div>
@@ -1889,8 +1893,9 @@ window.openNoteEditor = (id) => {
   document.getElementById('note-tags-inp').value  = (n?.tags||[]).join(', ');
 
   const sel = document.getElementById('note-folder-sel');
-  sel.innerHTML = (S.noteFolders||['General']).map(f=>`<option value="${f}" ${(n?.folder||'General')===f?'selected':''}>${f}</option>`).join('');
-
+  if (sel) {
+    sel.innerHTML = (S.noteFolders||['General']).map(f=>`<option value="${f}" ${(n?.folder||'General')===f?'selected':''}>${f}</option>`).join('');
+  }
   document.querySelectorAll('.note-color-opt').forEach(el => el.classList.toggle('sel', parseInt(el.dataset.c)===noteColor));
   document.getElementById('ned-pin-btn').style.opacity = notePinned ? '1' : '.5';
   document.getElementById('ned-del-btn').style.display = id ? 'flex' : 'none';
@@ -1919,7 +1924,7 @@ window.saveCurrentNote = () => {
   notesInit();
   const title  = document.getElementById('note-title-inp').value.trim();
   const body   = document.getElementById('note-body-inp').value;
-  const folder = document.getElementById('note-folder-sel').value;
+  const folder = 'General';
   const tagsRaw= document.getElementById('note-tags-inp').value;
   const tags   = tagsRaw.split(',').map(t=>t.trim().replace(/^#/,'')).filter(Boolean);
   if (!title && !body) return;
@@ -1927,7 +1932,7 @@ window.saveCurrentNote = () => {
   const now = new Date().toISOString();
   if (editNoteId) {
     const n = S.notes.find(x=>x.id===editNoteId);
-    if (n) { n.title=title||'Sin título'; n.body=body; n.folder=folder; n.tags=tags; n.color=noteColor; n.pinned=notePinned; n.updatedAt=now; }
+    if (n) { n.title=title||'Sin título'; n.body=body; n.folder='General'; n.tags=tags; n.color=noteColor; n.pinned=notePinned; n.updatedAt=now; }
   } else {
     const newNote = { id:uid(), title:title||'Sin título', body, folder, tags, color:noteColor, pinned:notePinned, createdAt:now, updatedAt:now };
     S.notes.unshift(newNote);
