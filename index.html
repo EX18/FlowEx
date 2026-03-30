@@ -12,6 +12,7 @@
 <title>FlowEX</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 /* ═══════════════════════════════════════
    FLOWEX — DESIGN SYSTEM
@@ -798,16 +799,182 @@ select.fi option{background:var(--s2)}
       <button class="plan-btn" onclick="openTaskSheet()" style="margin-top:6px">➕ Nueva tarea detallada</button>
     </div>
 
-    <!-- DIARIO -->
+<style id="MOD-NOTES-CSS">
+/* ── Layout ── */
+.notes-layout{display:flex;flex-direction:column;gap:0;height:100%}
+.notes-toolbar{display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.notes-search{flex:1;min-width:120px;background:var(--s2);border:1px solid var(--b);border-radius:var(--rs);padding:8px 12px;color:var(--txt);font-family:var(--fb);font-size:13px;outline:none;transition:border-color .2s}
+.notes-search:focus{border-color:var(--a)}
+.notes-search::placeholder{color:var(--m)}
+/* ── Folder chips ── */
+.folder-row{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px;scrollbar-width:none}
+.folder-row::-webkit-scrollbar{display:none}
+.folder-chip{flex-shrink:0;padding:5px 12px;border-radius:20px;border:1px solid var(--b);background:transparent;color:var(--m);font-family:var(--fb);font-size:11px;cursor:pointer;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.folder-chip.active{border-color:var(--a);color:var(--a);background:rgba(124,109,250,.1)}
+.folder-chip:active{transform:scale(.93)}
+.folder-chip .fc-count{background:var(--b2);border-radius:10px;padding:1px 6px;font-size:9px}
+/* ── Note cards ── */
+.note-card{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.note-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:2px 0 0 2px}
+.note-card.clr-0::before{background:var(--a)}
+.note-card.clr-1::before{background:var(--a2)}
+.note-card.clr-2::before{background:var(--a3)}
+.note-card.clr-3::before{background:var(--a4)}
+.note-card.clr-4::before{background:var(--a5)}
+.note-card:active{transform:scale(.99);background:var(--s2)}
+.note-card.pinned-note{border-color:rgba(250,196,109,.3);background:rgba(250,196,109,.03)}
+.note-card-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+.note-pin-icon{font-size:12px;color:var(--a4);flex-shrink:0;margin-top:2px}
+.note-title{font-family:var(--fd);font-size:14px;font-weight:700;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical}
+.note-excerpt{font-size:12px;color:var(--m);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;margin-bottom:7px}
+.note-meta-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.note-folder-badge{font-size:10px;padding:2px 7px;border-radius:5px;background:var(--s2);color:var(--m);border:1px solid var(--b)}
+.note-tag{font-size:10px;padding:2px 7px;border-radius:5px;background:rgba(124,109,250,.1);color:var(--a)}
+.note-date{font-size:10px;color:var(--m2);margin-left:auto}
+/* ── Editor ── */
+.note-editor-overlay{position:fixed;inset:0;background:var(--bg);z-index:400;display:flex;flex-direction:column;padding-top:var(--st)}
+.note-editor-topbar{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--b);flex-shrink:0;background:var(--surface)}
+.note-back-btn{width:34px;height:34px;border-radius:9px;background:var(--s2);border:1px solid var(--b);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:var(--m);flex-shrink:0}
+.note-back-btn:active{transform:scale(.9)}
+.note-title-inp{flex:1;background:transparent;border:none;color:var(--txt);font-family:var(--fd);font-size:17px;font-weight:700;outline:none;padding:0}
+.note-title-inp::placeholder{color:var(--m)}
+.note-editor-actions{display:flex;gap:6px}
+.ned-btn{width:32px;height:32px;border-radius:8px;background:var(--s2);border:1px solid var(--b);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;color:var(--m);flex-shrink:0;transition:all .2s}
+.ned-btn:active{transform:scale(.88)}
+.ned-btn.active-btn{background:rgba(124,109,250,.12);border-color:var(--a);color:var(--a)}
+.note-meta-bar{display:flex;gap:6px;padding:8px 16px;border-bottom:1px solid var(--b);flex-shrink:0;overflow-x:auto;scrollbar-width:none;align-items:center}
+.note-meta-bar::-webkit-scrollbar{display:none}
+.note-meta-sel{background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:5px 10px;color:var(--txt);font-family:var(--fb);font-size:12px;outline:none}
+.note-tags-inp{flex:1;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:5px 10px;color:var(--txt);font-family:var(--fb);font-size:12px;outline:none;min-width:80px}
+.note-tags-inp::placeholder{color:var(--m)}
+/* ── Editor split view ── */
+.note-body-wrap{flex:1;display:flex;overflow:hidden}
+.note-textarea{flex:1;background:transparent;border:none;color:var(--txt);font-family:var(--fb);font-size:14px;line-height:1.75;padding:16px;resize:none;outline:none;overflow-y:auto}
+.note-textarea::placeholder{color:var(--m)}
+.note-preview-pane{flex:1;padding:16px;overflow-y:auto;border-left:1px solid var(--b);font-size:14px;line-height:1.75}
+.note-preview-pane h1,.note-preview-pane h2,.note-preview-pane h3{font-family:var(--fd);color:var(--txt);margin:12px 0 6px}
+.note-preview-pane h1{font-size:20px}.note-preview-pane h2{font-size:17px}.note-preview-pane h3{font-size:15px}
+.note-preview-pane p{margin-bottom:10px;color:var(--txt)}
+.note-preview-pane code{background:var(--s2);padding:2px 6px;border-radius:4px;font-size:12px;color:var(--a)}
+.note-preview-pane pre{background:var(--s2);padding:12px;border-radius:8px;overflow-x:auto;margin-bottom:10px}
+.note-preview-pane pre code{background:none;padding:0}
+.note-preview-pane blockquote{border-left:3px solid var(--a);padding-left:12px;color:var(--m);margin-bottom:10px}
+.note-preview-pane ul,.note-preview-pane ol{padding-left:20px;margin-bottom:10px;color:var(--txt)}
+.note-preview-pane li{margin-bottom:4px}
+.note-preview-pane a{color:var(--a)}
+.note-preview-pane hr{border:none;border-top:1px solid var(--b);margin:14px 0}
+.note-preview-pane strong{color:var(--txt);font-weight:700}
+.note-preview-pane table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:13px}
+.note-preview-pane th,.note-preview-pane td{border:1px solid var(--b);padding:6px 10px;text-align:left}
+.note-preview-pane th{background:var(--s2);font-weight:600}
+/* ── Markdown toolbar ── */
+.md-toolbar{display:flex;gap:4px;padding:6px 16px;border-bottom:1px solid var(--b);flex-shrink:0;overflow-x:auto;background:var(--s2);scrollbar-width:none}
+.md-toolbar::-webkit-scrollbar{display:none}
+.md-tool{padding:5px 9px;border-radius:7px;border:none;background:transparent;color:var(--m);font-family:var(--fb);font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap;font-weight:600}
+.md-tool:active{background:var(--b);transform:scale(.9)}
+.md-tool:hover{background:var(--b);color:var(--txt)}
+/* ── Stats row ── */
+.notes-stats-row{display:flex;gap:8px;margin-bottom:12px}
+.notes-stat{flex:1;background:var(--surface);border:1px solid var(--b);border-radius:12px;padding:10px;text-align:center}
+.notes-stat-val{font-family:var(--fd);font-size:18px;font-weight:800;color:var(--a);margin-bottom:2px}
+.notes-stat-lbl{font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.05em}
+/* ── Color picker ── */
+.note-color-row{display:flex;gap:6px}
+.note-color-opt{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s}
+.note-color-opt.sel{border-color:white;transform:scale(1.2)}
+</style>
+
+    <!-- NOTAS & WIKI -->
     <div class="page" id="page-notas">
-      <div class="ph2">📓 Diario</div>
-      <div class="ph-sub">Reflexiones, logros y pensamientos del día.</div>
-      <div class="qbar">
-        <span style="font-size:16px">✍️</span>
-        <input class="qinp" id="journal-inp" placeholder="¿Cómo estuvo tu día?..." onkeydown="if(event.key==='Enter'){addJournal();event.preventDefault()}"/>
-        <button class="icon-btn" onclick="addJournal()" style="font-size:14px">➕</button>
+      <div class="ph2">Notas & Wiki 📝</div>
+      <div class="ph-sub">Tu base de conocimiento personal con markdown.</div>
+
+      <!-- Stats -->
+      <div class="notes-stats-row" id="notes-stats-row"></div>
+
+      <!-- Toolbar -->
+      <div class="notes-toolbar">
+        <input class="notes-search" id="notes-search-inp" placeholder="🔍 Buscar notas..." oninput="filterNotes()"/>
+        <button class="icon-btn" onclick="openNoteEditor()" style="flex-shrink:0" title="Nueva nota">✦</button>
+        <button class="icon-btn" onclick="openFolderSheet()" style="flex-shrink:0" title="Carpetas">📁</button>
       </div>
-      <div id="jnl" class="stg"></div>
+
+      <!-- Folders -->
+      <div class="folder-row" id="folder-row"></div>
+
+      <!-- Notes list -->
+      <div id="notes-list" class="stg"></div>
+    </div>
+
+    <!-- NOTE EDITOR (full screen overlay) -->
+    <div id="note-editor-overlay" class="note-editor-overlay" style="display:none">
+      <!-- Top bar -->
+      <div class="note-editor-topbar">
+        <div class="note-back-btn" onclick="closeNoteEditor()">‹</div>
+        <input id="note-title-inp" class="note-title-inp" placeholder="Título de la nota..." maxlength="120"/>
+        <div class="note-editor-actions">
+          <div class="ned-btn" id="ned-pin-btn"     onclick="toggleNotePin()"    title="Fijar">📌</div>
+          <div class="ned-btn" id="ned-preview-btn" onclick="toggleNotePreview()" title="Preview">👁</div>
+          <div class="ned-btn" id="ned-save-btn"    onclick="saveCurrentNote()"  title="Guardar" style="background:rgba(124,109,250,.12);border-color:var(--a);color:var(--a)">💾</div>
+          <div class="ned-btn" id="ned-del-btn"     onclick="deleteCurrentNote()" title="Eliminar" style="display:none">🗑</div>
+        </div>
+      </div>
+
+      <!-- Meta bar: folder + color + tags -->
+      <div class="note-meta-bar">
+        <span style="font-size:11px;color:var(--m);flex-shrink:0">📁</span>
+        <select id="note-folder-sel" class="note-meta-sel">
+          <option value="General">General</option>
+        </select>
+        <div class="note-color-row" id="note-color-row">
+          <div class="note-color-opt sel" data-c="0" style="background:var(--a)"        onclick="selNoteColor(0,this)"></div>
+          <div class="note-color-opt"     data-c="1" style="background:var(--a2)"       onclick="selNoteColor(1,this)"></div>
+          <div class="note-color-opt"     data-c="2" style="background:var(--a3)"       onclick="selNoteColor(2,this)"></div>
+          <div class="note-color-opt"     data-c="3" style="background:var(--a4)"       onclick="selNoteColor(3,this)"></div>
+          <div class="note-color-opt"     data-c="4" style="background:var(--a5)"       onclick="selNoteColor(4,this)"></div>
+        </div>
+        <span style="font-size:11px;color:var(--m);flex-shrink:0">🏷</span>
+        <input id="note-tags-inp" class="note-tags-inp" placeholder="tag1, tag2..."/>
+      </div>
+
+      <!-- Markdown toolbar -->
+      <div class="md-toolbar">
+        <button class="md-tool" onclick="mdInsert('**','**','negrita')">B</button>
+        <button class="md-tool" onclick="mdInsert('*','*','cursiva')" style="font-style:italic">I</button>
+        <button class="md-tool" onclick="mdInsert('~~','~~','tachado')" style="text-decoration:line-through">S</button>
+        <button class="md-tool" onclick="mdInsert('`','`','codigo')">``</button>
+        <button class="md-tool" onclick="mdInsertLine('# ')">H1</button>
+        <button class="md-tool" onclick="mdInsertLine('## ')">H2</button>
+        <button class="md-tool" onclick="mdInsertLine('### ')">H3</button>
+        <button class="md-tool" onclick="mdInsertLine('- ')">• Lista</button>
+        <button class="md-tool" onclick="mdInsertLine('1. ')">1. Lista</button>
+        <button class="md-tool" onclick="mdInsertLine('- [ ] ')">☐ Check</button>
+        <button class="md-tool" onclick="mdInsertLine('> ')">❝ Cita</button>
+        <button class="md-tool" onclick="mdInsert('\n```\n','\n```\n','código')">{ }</button>
+        <button class="md-tool" onclick="mdInsertLine('---')">― HR</button>
+        <button class="md-tool" onclick="mdInsertLink()">🔗</button>
+      </div>
+
+      <!-- Body: editor + optional preview -->
+      <div class="note-body-wrap">
+        <textarea id="note-body-inp" class="note-textarea" placeholder="Empezá a escribir... (soporta **Markdown**)\n\n# Título\n## Subtítulo\n- Lista\n- [ ] Checklist\n> Cita\n`código`" oninput="onNoteInput()"></textarea>
+        <div id="note-preview-pane" class="note-preview-pane" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- SHEET: Nueva carpeta -->
+    <div class="shov" id="sh-folder" onclick="csh('sh-folder',event)">
+      <div class="sh" onclick="event.stopPropagation()">
+        <div class="shh"></div>
+        <div class="sht">📁 Carpetas</div>
+        <div id="folder-list-sh" style="margin-bottom:14px"></div>
+        <div class="fl">Nueva carpeta</div>
+        <div style="display:flex;gap:8px">
+          <input id="new-folder-inp" class="fi" style="margin:0;flex:1" placeholder="Nombre de la carpeta..."/>
+          <button class="shbtn" style="width:auto;padding:0 20px;margin:0" onclick="addFolder()">+</button>
+        </div>
+        <button class="shbtns" onclick="csh('sh-folder')" style="margin-top:12px">Cerrar</button>
+      </div>
     </div>
 
     <!-- STATS -->
@@ -861,7 +1028,7 @@ select.fi option{background:var(--s2)}
     <button class="nt active" onclick="gp('dashboard')" id="tab-dashboard"><div class="ni">⊞</div><div class="nl">Inicio</div></button>
     <button class="nt" onclick="gp('habitos')" id="tab-habitos"><div class="ni">🔥</div><div class="nl">Hábitos</div></button>
     <button class="nt" onclick="gp('tareas')" id="tab-tareas"><div class="ni">✅</div><div class="nl">Tareas</div></button>
-    <button class="nt" onclick="gp('notas')" id="tab-notas"><div class="ni">📓</div><div class="nl">Diario</div></button>
+    <button class="nt" onclick="gp('notas')" id="tab-notas"><div class="ni">�</div><div class="nl">Notas</div></button>
     <button class="nt" onclick="gp('stats')" id="tab-stats"><div class="ni">📊</div><div class="nl">Stats</div></button>
     <button class="nt" onclick="gp('ia')" id="tab-ia"><div class="ni">🤖</div><div class="nl">IA</div></button>
     <button class="nt" id="tab-admin" onclick="gp('admin')" style="display:none"><div class="ni">👑</div><div class="nl">Admin</div></button>
@@ -1026,7 +1193,7 @@ const DEFAULT_HABITS = [
 let CUR_USER = null; // current username
 let S = {             // local mirror of Firestore doc
   name:'', theme:'', xp:0, level:1,
-  habits:[], notes:[], curHF:'todos',
+  habits:[], notes:[], noteFolders:['General','Ideas','Trabajo','Personal'], curHF:'todos',
   tasks: [],
 };
 let unsubSnapshot = null; // live listener cleanup
@@ -1266,7 +1433,7 @@ const renderAll = () => {
   const pid = p ? p.id.replace('page-','') : '';
   if (pid==='habitos') renderHabitos();
   if (pid==='tareas') renderTasks();
-  if (pid==='notas') renderJournal();
+  if (pid==='notas') renderNotas();
   if (pid==='stats') renderStats();
 };
 
@@ -1281,7 +1448,7 @@ window.gp = (page) => {
   if(page==='dashboard') renderDashboard();
   if(page==='habitos') renderHabitos();
   if(page==='tareas') renderTasks();
-  if(page==='notas') renderJournal();
+  if(page==='notas') renderNotas();
   if(page==='stats') renderStats();
   if(page==='ajustes') renderSettings();
   if(page==='ia') initIA();
@@ -1613,46 +1780,276 @@ const renderDashHabits = () => {
   el.innerHTML=S.habits.slice(0,6).map(h=>habitRow(h,wk,td)).join('');
 };
 
-// ── NOTES / JOURNAL ───────────────────────────────
-window.addNote = () => {
-  const inp=document.getElementById('quick-note');
-  const txt=inp?inp.value.trim():'';
-  if(!txt) return;
-  if(!S.notes) S.notes=[];
-  S.notes.unshift({id:uid(),date:new Date().toISOString(),text:txt});
-  scheduleSave(); inp.value='';
-  toast('📝 Nota guardada','success');
+// ── NOTES & WIKI MODULE (renderNotas) ───────────────────────────────
+let noteFilter  = 'todas';
+let editNoteId  = null;
+let notePreview = false;
+let notePinned  = false;
+let noteColor   = 0;
+let noteAutoSaveTimer = null;
+
+const notesInit = () => {
+  if (!S.notes)        S.notes        = [];
+  if (!S.noteFolders)  S.noteFolders  = ['General','Ideas','Trabajo','Personal'];
 };
 
-window.addJournal = () => {
-  const inp=document.getElementById('journal-inp');
-  const txt=inp?inp.value.trim():'';
-  if(!txt) return;
-  if(!S.notes) S.notes=[];
-  S.notes.unshift({id:uid(),date:new Date().toISOString(),text:txt});
-  scheduleSave(); inp.value='';
-  renderJournal();
-  toast('✍️ Entrada guardada','success');
+window.renderNotas = () => {
+  notesInit();
+  renderFolderRow();
+  renderNotesList();
+  renderNotesStats();
 };
 
-const renderJournal = () => {
-  const el=document.getElementById('jnl');
-  if(!el) return;
-  if(!S.notes||!S.notes.length){
-    el.innerHTML=`<div class="empty"><div class="ei">📓</div><div class="et">Sin entradas</div><div class="ed">Escribí algo sobre tu día arriba.</div></div>`;
+const renderNotesStats = () => {
+  const el = document.getElementById('notes-stats-row');
+  if (!el) return;
+  const n = S.notes;
+  const words = n.reduce((s,x)=>s+(x.body||'').split(/\s+/).filter(Boolean).length, 0);
+  const tags  = [...new Set(n.flatMap(x=>(x.tags||[])))].length;
+  el.innerHTML = `
+    <div class="notes-stat"><div class="notes-stat-val">${n.length}</div><div class="notes-stat-lbl">Notas</div></div>
+    <div class="notes-stat"><div class="notes-stat-val">${(S.noteFolders||[]).length}</div><div class="notes-stat-lbl">Carpetas</div></div>
+    <div class="notes-stat"><div class="notes-stat-val">${tags}</div><div class="notes-stat-lbl">Tags</div></div>
+    <div class="notes-stat"><div class="notes-stat-val">${words>999?Math.round(words/1000)+'k':words}</div><div class="notes-stat-lbl">Palabras</div></div>`;
+};
+
+const renderFolderRow = () => {
+  const el = document.getElementById('folder-row');
+  if (!el) return;
+  const folders = ['todas', ...(S.noteFolders||[])];
+  const counts  = {};
+  (S.notes||[]).forEach(n => { counts[n.folder||'General'] = (counts[n.folder||'General']||0)+1; });
+  el.innerHTML = folders.map(f => {
+    const label = f === 'todas' ? 'Todas' : f;
+    const cnt   = f === 'todas' ? S.notes.length : (counts[f]||0);
+    return `<button class="folder-chip ${noteFilter===f?'active':''}" onclick="setNoteFolder('${f}',this)">
+      ${f==='todas'?'📂':''} ${label} <span class="fc-count">${cnt}</span>
+    </button>`;
+  }).join('');
+};
+
+window.setNoteFolder = (f, el) => {
+  noteFilter = f;
+  document.querySelectorAll('.folder-chip').forEach(b=>b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderNotesList();
+};
+
+window.filterNotes = () => { renderNotesList(); };
+
+const renderNotesList = () => {
+  const el = document.getElementById('notes-list');
+  if (!el) return;
+  notesInit();
+  const q = (document.getElementById('notes-search-inp')?.value||'').toLowerCase().trim();
+  let list = [...S.notes];
+  if (noteFilter !== 'todas') list = list.filter(n=>(n.folder||'General')===noteFilter);
+  if (q) list = list.filter(n =>
+    (n.title||'').toLowerCase().includes(q) ||
+    (n.body||'').toLowerCase().includes(q)  ||
+    (n.tags||[]).some(t=>t.toLowerCase().includes(q))
+  );
+  list.sort((a,b) => (b.pinned?1:0)-(a.pinned?1:0) || new Date(b.updatedAt||b.createdAt||0)-new Date(a.updatedAt||a.createdAt||0));
+
+  if (!list.length) {
+    el.innerHTML = `<div class="empty"><div class="ei">📝</div><div class="et">${q?'Sin resultados':'Sin notas'}</div><div class="ed">${q?'Probá con otro término.':'Tocá ✦ para crear tu primera nota.'}</div></div>`;
     return;
   }
-  el.innerHTML=S.notes.map(n=>`
-    <div class="hr" style="flex-direction:column;align-items:flex-start;gap:6px">
-      <div style="font-size:10px;color:var(--m)">${dateLabel(n.date.slice(0,10))} · ${n.date.slice(11,16)}</div>
-      <div style="font-size:13px;line-height:1.6">${n.text}</div>
-      <button onclick="window.delNote('${n.id}')" style="font-size:10px;color:var(--m2);background:none;border:none;cursor:pointer;align-self:flex-end">🗑 borrar</button>
+
+  el.innerHTML = list.map(n => {
+    const excerpt = (n.body||'').replace(/[#*`>\-_\[\]]/g,' ').replace(/\s+/g,' ').trim().slice(0,120);
+    const tagsHtml = (n.tags||[]).slice(0,3).map(t=>`<span class="note-tag">#${t}</span>`).join('');
+    const d = new Date(n.updatedAt||n.createdAt||Date.now());
+    const dateStr = `${d.getDate()}/${d.getMonth()+1}`;
+    return `<div class="note-card clr-${n.color||0} ${n.pinned?'pinned-note':''}" onclick="openNoteEditor('${n.id}')">
+      <div class="note-card-head">
+        ${n.pinned?'<div class="note-pin-icon">📌</div>':''}
+        <div class="note-title">${n.title||'Sin título'}</div>
+      </div>
+      ${excerpt?`<div class="note-excerpt">${excerpt}</div>`:''}
+      <div class="note-meta-row">
+        <span class="note-folder-badge">📁 ${n.folder||'General'}</span>
+        ${tagsHtml}
+        <span class="note-date">${dateStr}</span>
+      </div>
+    </div>`;
+  }).join('');
+};
+
+window.openNoteEditor = (id) => {
+  notesInit();
+  editNoteId  = id || null;
+  const n     = id ? S.notes.find(x=>x.id===id) : null;
+  notePinned  = n?.pinned || false;
+  noteColor   = n?.color  || 0;
+  notePreview = false;
+
+  document.getElementById('note-title-inp').value = n?.title || '';
+  document.getElementById('note-body-inp').value  = n?.body  || '';
+  document.getElementById('note-tags-inp').value  = (n?.tags||[]).join(', ');
+
+  const sel = document.getElementById('note-folder-sel');
+  sel.innerHTML = (S.noteFolders||['General']).map(f=>`<option value="${f}" ${(n?.folder||'General')===f?'selected':''}>${f}</option>`).join('');
+
+  document.querySelectorAll('.note-color-opt').forEach(el => el.classList.toggle('sel', parseInt(el.dataset.c)===noteColor));
+  document.getElementById('ned-pin-btn').style.opacity = notePinned ? '1' : '.5';
+  document.getElementById('ned-del-btn').style.display = id ? 'flex' : 'none';
+
+  document.getElementById('note-preview-pane').style.display = 'none';
+  document.getElementById('note-body-inp').style.display     = 'block';
+  document.getElementById('ned-preview-btn').classList.remove('active-btn');
+
+  document.getElementById('note-editor-overlay').style.display = 'flex';
+};
+
+window.closeNoteEditor = () => {
+  saveCurrentNote();
+  document.getElementById('note-editor-overlay').style.display = 'none';
+  editNoteId = null;
+  renderNotas();
+};
+
+window.onNoteInput = () => {
+  if (notePreview) updateNotePreview();
+  clearTimeout(noteAutoSaveTimer);
+  noteAutoSaveTimer = setTimeout(saveCurrentNote, 2000);
+};
+
+window.saveCurrentNote = () => {
+  notesInit();
+  const title  = document.getElementById('note-title-inp').value.trim();
+  const body   = document.getElementById('note-body-inp').value;
+  const folder = document.getElementById('note-folder-sel').value;
+  const tagsRaw= document.getElementById('note-tags-inp').value;
+  const tags   = tagsRaw.split(',').map(t=>t.trim().replace(/^#/,'')).filter(Boolean);
+  if (!title && !body) return;
+
+  const now = new Date().toISOString();
+  if (editNoteId) {
+    const n = S.notes.find(x=>x.id===editNoteId);
+    if (n) { n.title=title||'Sin título'; n.body=body; n.folder=folder; n.tags=tags; n.color=noteColor; n.pinned=notePinned; n.updatedAt=now; }
+  } else {
+    const newNote = { id:uid(), title:title||'Sin título', body, folder, tags, color:noteColor, pinned:notePinned, createdAt:now, updatedAt:now };
+    S.notes.unshift(newNote);
+    editNoteId = newNote.id;
+    document.getElementById('ned-del-btn').style.display = 'flex';
+  }
+  scheduleSave();
+};
+
+window.deleteCurrentNote = () => {
+  if (!editNoteId || !confirm('¿Eliminar esta nota?')) return;
+  S.notes = S.notes.filter(n=>n.id!==editNoteId);
+  scheduleSave();
+  document.getElementById('note-editor-overlay').style.display = 'none';
+  editNoteId = null;
+  renderNotas();
+};
+
+window.toggleNotePin = () => {
+  notePinned = !notePinned;
+  document.getElementById('ned-pin-btn').style.opacity = notePinned ? '1' : '.5';
+  saveCurrentNote();
+};
+
+window.toggleNotePreview = () => {
+  notePreview = !notePreview;
+  const prev = document.getElementById('note-preview-pane');
+  const ed   = document.getElementById('note-body-inp');
+  const btn  = document.getElementById('ned-preview-btn');
+  if (notePreview) {
+    updateNotePreview();
+    prev.style.display = 'block';
+    ed.style.flex      = '1';
+    btn.classList.add('active-btn');
+  } else {
+    prev.style.display = 'none';
+    btn.classList.remove('active-btn');
+  }
+};
+
+const updateNotePreview = () => {
+  const prev = document.getElementById('note-preview-pane');
+  if (!prev || !notePreview) return;
+  const body = document.getElementById('note-body-inp').value;
+  try {
+    prev.innerHTML = typeof marked !== 'undefined' ? marked.parse(body) : body.replace(/\n/g,'<br>');
+    prev.querySelectorAll('li').forEach(li => {
+      if (li.innerHTML.startsWith('[ ]')) li.innerHTML = li.innerHTML.replace('[ ]','<input type="checkbox" onclick="this.parentNode.querySelector(\'s,span\')&&void 0">');
+      if (li.innerHTML.startsWith('[x]')||li.innerHTML.startsWith('[X]')) li.innerHTML = li.innerHTML.replace(/\[x\]/i,'<input type="checkbox" checked>');
+    });
+  } catch(e) { prev.textContent = body; }
+};
+
+window.selNoteColor = (c, el) => {
+  noteColor = c;
+  document.querySelectorAll('.note-color-opt').forEach(x=>x.classList.remove('sel'));
+  if (el) el.classList.add('sel');
+};
+
+window.mdInsert = (before, after, placeholder) => {
+  const ta  = document.getElementById('note-body-inp');
+  const s   = ta.selectionStart, e = ta.selectionEnd;
+  const sel = ta.value.slice(s, e) || placeholder;
+  ta.value  = ta.value.slice(0,s) + before + sel + after + ta.value.slice(e);
+  ta.selectionStart = s + before.length;
+  ta.selectionEnd   = s + before.length + sel.length;
+  ta.focus();
+  onNoteInput();
+};
+
+window.mdInsertLine = (prefix) => {
+  const ta  = document.getElementById('note-body-inp');
+  const s   = ta.selectionStart;
+  const lineStart = ta.value.lastIndexOf('\n', s-1) + 1;
+  ta.value  = ta.value.slice(0,lineStart) + prefix + ta.value.slice(lineStart);
+  ta.selectionStart = ta.selectionEnd = lineStart + prefix.length;
+  ta.focus();
+  onNoteInput();
+};
+
+window.mdInsertLink = () => {
+  const url = prompt('URL del enlace:','https://');
+  if (!url) return;
+  mdInsert('[',']('+url+')','texto del enlace');
+};
+
+window.openFolderSheet = () => {
+  notesInit();
+  renderFolderListSheet();
+  document.getElementById('sh-folder').classList.add('open');
+};
+
+const renderFolderListSheet = () => {
+  const el = document.getElementById('folder-list-sh');
+  if (!el) return;
+  el.innerHTML = (S.noteFolders||[]).map((f,i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--b)">
+      <span style="font-size:13px;flex:1">📁 ${f}</span>
+      ${i > 0 ? `<button onclick="deleteFolder('${f}')" style="font-size:11px;color:var(--m2);background:none;border:none;cursor:pointer">✕</button>` : ''}
     </div>`).join('');
 };
 
-window.delNote = id => {
-  S.notes=S.notes.filter(n=>n.id!==id);
-  scheduleSave(); renderJournal();
+window.addFolder = () => {
+  const inp = document.getElementById('new-folder-inp');
+  const name = inp?.value.trim();
+  if (!name) return;
+  notesInit();
+  if (!S.noteFolders.includes(name)) {
+    S.noteFolders.push(name);
+    scheduleSave();
+    inp.value = '';
+    renderFolderListSheet();
+    renderFolderRow();
+    toast('📁 Carpeta creada','success');
+  } else { toast('Esa carpeta ya existe','warn'); }
+};
+
+window.deleteFolder = (name) => {
+  if (!confirm(`¿Eliminar carpeta "${name}"? Las notas se moverán a General.`)) return;
+  S.noteFolders = S.noteFolders.filter(f=>f!==name);
+  S.notes.forEach(n => { if (n.folder===name) n.folder='General'; });
+  scheduleSave(); renderFolderListSheet(); renderFolderRow(); renderNotesList();
 };
 
 // ── STATS ─────────────────────────────────────────
