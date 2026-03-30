@@ -831,6 +831,9 @@ select.fi option{background:var(--s2)}
 .note-folder-badge{font-size:10px;padding:2px 7px;border-radius:5px;background:var(--s2);color:var(--m);border:1px solid var(--b)}
 .note-tag{font-size:10px;padding:2px 7px;border-radius:5px;background:rgba(124,109,250,.1);color:var(--a)}
 .note-date{font-size:10px;color:var(--m2);margin-left:auto}
+.note-card-actions{display:flex;gap:4px;margin-top:8px}
+.note-edit-btn,.note-del-btn{width:24px;height:24px;border-radius:6px;background:var(--s2);border:1px solid var(--b);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;color:var(--m);transition:all .2s}
+.note-edit-btn:active,.note-del-btn:active{transform:scale(.9)}
 /* ── Editor ── */
 .note-editor-overlay{position:fixed;inset:0;background:var(--bg);z-index:400;display:flex;flex-direction:column;padding-top:var(--st)}
 .note-editor-topbar{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--b);flex-shrink:0;background:var(--surface)}
@@ -952,7 +955,7 @@ select.fi option{background:var(--s2)}
 
       <!-- Body: editor + optional preview -->
       <div class="note-body-wrap">
-        <textarea id="note-body-inp" class="note-textarea" placeholder="Empezá a escribir... (soporta **Markdown**)\n\n# Título\n## Subtítulo\n- Lista\n- [ ] Checklist\n> Cita\n`código`" oninput="onNoteInput()"></textarea>
+        <textarea id="note-body-inp" class="note-textarea" placeholder="Escribí tu nota aquí..." oninput="onNoteInput()"></textarea>
         <div id="note-preview-pane" class="note-preview-pane" style="display:none"></div>
       </div>
     </div>
@@ -1420,6 +1423,30 @@ const initApp = () => {
       logo.parentNode.insertBefore(badge, logo.nextSibling);
     }
   }
+
+  // Agregar ejemplos para nuevos usuarios
+  if (!S.books || S.books.length === 0) {
+    S.books = [
+      { id: uid(), title: 'Atomic Habits', author: 'James Clear', emoji: '📗', coverColor: '#7c6dfa', pages: 320, curPage: 50, status: 'leyendo', genre: 'Desarrollo personal', review: 'Libro excelente sobre hábitos.', sessions: [], rating: 0, addedAt: today() },
+      { id: uid(), title: 'Sapiens', author: 'Yuval Noah Harari', emoji: '📚', coverColor: '#6dfac4', pages: 400, curPage: 0, status: 'backlog', genre: 'Historia', review: '', sessions: [], rating: 0, addedAt: today() }
+    ];
+  }
+  if (!S.notifSettings) {
+    S.notifSettings = { enabled: false, habits: {}, dailySummary: '21:00', remindUnmarked: true };
+  }
+  if (!S.breathHistory || S.breathHistory.length === 0) {
+    S.breathHistory = [
+      { id: uid(), date: today(), time: '08:00', tech: 'Box Breathing', icon: '📦', cycles: 4 },
+      { id: uid(), date: today(), time: '12:00', tech: '4-7-8', icon: '😴', cycles: 4 }
+    ];
+    S.breathSessions = 8;
+  }
+  if (!S.notes || S.notes.length === 0) {
+    S.notes = [
+      { id: uid(), title: 'Bienvenido a Notas', body: 'Esta es una nota de ejemplo. Podés editarla o eliminarla.\n\n**Markdown soportado**: # Título, - Lista, etc.', folder: 'General', tags: ['ejemplo'], color: 0, pinned: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    ];
+  }
+
   updateGreeting();
   renderAll();
   renderSettings();
@@ -1876,6 +1903,10 @@ const renderNotesList = () => {
         ${tagsHtml}
         <span class="note-date">${dateStr}</span>
       </div>
+      <div class="note-card-actions">
+        <button class="note-edit-btn" onclick="openNoteEditor('${n.id}'); event.stopPropagation()" title="Editar">✎</button>
+        <button class="note-del-btn" onclick="deleteNote('${n.id}'); event.stopPropagation()" title="Eliminar">🗑</button>
+      </div>
     </div>`;
   }).join('');
 };
@@ -1942,13 +1973,12 @@ window.saveCurrentNote = () => {
   scheduleSave();
 };
 
-window.deleteCurrentNote = () => {
-  if (!editNoteId || !confirm('¿Eliminar esta nota?')) return;
-  S.notes = S.notes.filter(n=>n.id!==editNoteId);
+window.deleteNote = (id) => {
+  if (!confirm('¿Eliminar esta nota?')) return;
+  S.notes = S.notes.filter(n => n.id !== id);
   scheduleSave();
-  document.getElementById('note-editor-overlay').style.display = 'none';
-  editNoteId = null;
   renderNotas();
+  toast('🗑 Nota eliminada','info');
 };
 
 window.toggleNotePin = () => {
