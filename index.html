@@ -38,17 +38,34 @@ body.light{
   --bg:#f0f0fa;--surface:#fff;--s2:#f5f5fd;--s3:#ebebf8;
   --b:#ddddf0;--b2:#cccce0;--txt:#111128;--m:#666688;--m2:#9999bb;
 }
-html,body{height:100%;margin:0;-webkit-text-size-adjust:100%}
+html,body{height:100%;margin:0;-webkit-text-size-adjust:100%;font-size:clamp(14px,1.8vw,18px)}
 body{
   background:var(--bg);color:var(--txt);font-family:var(--fb);
-  overflow:hidden;
+  min-height:100vh;
+  overflow:auto;
   -webkit-user-select:none;user-select:none;
 }
+
+/* Mejora responsive general */
+#screen-app, .screen { min-height:100dvh; }
+.auth-wrap { width:min(96vw, 460px); }
+.sh, .page, .pc, .bnav, .topnav, .auth-wrap { box-sizing:border-box; }
+
+@supports (height: 100dvh) {
+  #screen-app, .screen { min-height: 100dvh; }
+}
+@supports not (height: 100dvh) {
+  #screen-app, .screen { min-height: 100vh; }
+}
+
+/* Mejor asabilidad táctil */
+button, .icon-btn, .fab, .pin-key, .auth-tab, .shbtn, .shbtns, .plan-btn, .nt { touch-action: manipulation; }
+button, .icon-btn, .fab, .pin-key, .auth-tab, .shbtn, .shbtns, .plan-btn, .nt { -webkit-tap-highlight-color: rgba(0,0,0,0.16); }
 
 /* ════════════════════════════════════════════
    RESPONSIVE LAYOUT SYSTEM
    Mobile → Tablet → Desktop (sidebar)
-════════════════════════════════════════════ */
+════════════════════════════════════ */
 
 /* ── APP SHELL: base (mobile) ─────────────── */
 #screen-app{
@@ -160,6 +177,27 @@ body{
   .bnav .nt{padding:13px 16px}
   .bnav .nt .ni{font-size:20px}
   .bnav .nt .nl{font-size:14px}
+}
+
+/* ── SMALL DEVICES 420px- ─────────────────── */
+@media(max-width:420px){
+  :root{--r:14px;--rs:10px}
+  .topnav{padding:10px 12px 8px}
+  .logo{font-size:20px}
+  .sync-indicator{font-size:9px;padding:3px 6px}
+  .pc{padding:0 10px 14px}
+  .auth-logo{font-size:34px}
+  .auth-tagline{font-size:12px;margin-bottom:30px}
+  .ph2{font-size:20px}
+  .ph-sub{font-size:11px}
+  .sec-title{font-size:13px}
+  .fi,.auth-input,.pin-key,.plan-btn{font-size:13px}
+  .pin-pad{gap:8px}
+  .fp{padding:6px 10px;font-size:10px}
+  .bnav{height:calc(72px + var(--sb));padding-top:5px}
+  .bnav .nt .ni{font-size:20px}
+  .bnav .nt .nl{font-size:9px}
+  .fab{width:48px;height:48px;bottom:70px;right:14px;font-size:24px}
 }
 
 /* ── CREATOR BADGE ────────────────────────── */
@@ -553,6 +591,41 @@ select.fi option{background:var(--s2)}
 /* PLAN BTN */
 .plan-btn{width:100%;padding:13px;border-radius:var(--rs);background:linear-gradient(135deg,var(--a),var(--a2));border:none;color:white;font-family:var(--fd);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:12px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
 .plan-btn:active{transform:scale(.98);opacity:.9}
+
+/* TAREAS */
+.task-row{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:12px 14px;display:flex;align-items:flex-start;gap:10px;margin-bottom:7px;transition:all .2s;cursor:pointer}
+.task-row:active{transform:scale(.99);background:var(--s2)}
+.task-row.done-task{opacity:.5}
+.task-chk{width:22px;height:22px;border-radius:6px;border:2px solid var(--b2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;cursor:pointer;font-size:11px;margin-top:1px}
+.task-chk.done{background:var(--a3);border-color:var(--a3);color:#07070f}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:13px;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task-title.done{text-decoration:line-through;color:var(--m)}
+.task-meta-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.task-tag{padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600}
+.tag-work{background:rgba(124,109,250,.12);color:var(--a)}
+.tag-personal{background:rgba(109,250,196,.12);color:var(--a3)}
+.tag-health{background:rgba(250,109,143,.12);color:var(--a2)}
+.tag-learn{background:rgba(250,196,109,.12);color:var(--a4)}
+.task-date{font-size:10px;color:var(--m2)}
+.task-date.overdue{color:var(--a2)}
+.task-pri{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.pri-high{background:var(--a2)}.pri-mid{background:var(--a4)}.pri-low{background:var(--a3)}
+.task-actions{display:flex;gap:4px;flex-shrink:0}
+.task-act-btn{width:26px;height:26px;border-radius:7px;background:var(--s2);border:1px solid var(--b);font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+.task-act-btn:active{transform:scale(.88)}
+.tasks-empty{text-align:center;padding:36px 20px}
+.subtask-list-view{margin-top:6px;display:flex;flex-direction:column;gap:3px}
+.subtask-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--m)}
+.subtask-chk{width:14px;height:14px;border-radius:3px;border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:8px;cursor:pointer;flex-shrink:0}
+.subtask-chk.done{background:var(--a3);border-color:var(--a3);color:#07070f}
+/* Sheet subtasks */
+.sbt-list{margin-bottom:10px;display:flex;flex-direction:column;gap:4px}
+.sbt-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--b)}
+.sbt-row:last-child{border-bottom:none}
+.sbt-inp{flex:1;background:none;border:none;color:var(--txt);font-family:var(--fb);font-size:13px;outline:none}
+.sbt-del{font-size:12px;color:var(--m2);background:none;border:none;cursor:pointer;padding:2px 4px}
+.add-sbt{font-size:12px;color:var(--a);background:none;border:none;cursor:pointer;font-family:var(--fb);padding:4px 0;margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -699,6 +772,32 @@ select.fi option{background:var(--s2)}
       <button class="plan-btn" onclick="openHabit()" style="margin-top:8px">➕ Agregar hábito personalizado</button>
     </div>
 
+    <!-- TAREAS -->
+    <div class="page" id="page-tareas">
+      <div class="ph2">Mis Tareas ✅</div>
+      <div class="ph-sub">Organizá todo lo que tenés pendiente.</div>
+
+      <div class="frow" id="task-filters">
+        <button class="fp active" data-f="todas" onclick="setTF('todas',this)">Todas</button>
+        <button class="fp" data-f="hoy" onclick="setTF('hoy',this)">📅 Hoy</button>
+        <button class="fp" data-f="work" onclick="setTF('work',this)">💼 Trabajo</button>
+        <button class="fp" data-f="personal" onclick="setTF('personal',this)">🏠 Personal</button>
+        <button class="fp" data-f="health" onclick="setTF('health',this)">💪 Salud</button>
+        <button class="fp" data-f="learn" onclick="setTF('learn',this)">📚 Aprender</button>
+        <button class="fp" data-f="done" onclick="setTF('done',this)">✓ Hechas</button>
+      </div>
+
+      <div class="qbar" style="margin-bottom:14px">
+        <span style="font-size:16px">⚡</span>
+        <input class="qinp" id="quick-task-inp" placeholder="+ Tarea rápida (Enter para guardar)..." onkeydown="if(event.key==='Enter'){addQuickTaskInline();event.preventDefault()}"/>
+        <button class="icon-btn" onclick="addQuickTaskInline()" style="font-size:14px">➕</button>
+      </div>
+
+      <div id="task-list" class="stg"></div>
+
+      <button class="plan-btn" onclick="openTaskSheet()" style="margin-top:6px">➕ Nueva tarea detallada</button>
+    </div>
+
     <!-- DIARIO -->
     <div class="page" id="page-notas">
       <div class="ph2">📓 Diario</div>
@@ -761,12 +860,72 @@ select.fi option{background:var(--s2)}
   <nav class="bnav">
     <button class="nt active" onclick="gp('dashboard')" id="tab-dashboard"><div class="ni">⊞</div><div class="nl">Inicio</div></button>
     <button class="nt" onclick="gp('habitos')" id="tab-habitos"><div class="ni">🔥</div><div class="nl">Hábitos</div></button>
+    <button class="nt" onclick="gp('tareas')" id="tab-tareas"><div class="ni">✅</div><div class="nl">Tareas</div></button>
     <button class="nt" onclick="gp('notas')" id="tab-notas"><div class="ni">📓</div><div class="nl">Diario</div></button>
     <button class="nt" onclick="gp('stats')" id="tab-stats"><div class="ni">📊</div><div class="nl">Stats</div></button>
     <button class="nt" onclick="gp('ia')" id="tab-ia"><div class="ni">🤖</div><div class="nl">IA</div></button>
     <button class="nt" id="tab-admin" onclick="gp('admin')" style="display:none"><div class="ni">👑</div><div class="nl">Admin</div></button>
   </nav>
   <button class="fab" onclick="openHabit()">＋</button>
+</div>
+
+<!-- SHEET TAREA -->
+<div class="shov" id="sh-task" onclick="csh('sh-task',event)">
+  <div class="sh" onclick="event.stopPropagation()">
+    <div class="shh"></div>
+    <div class="sht" id="sh-task-title">✦ Nueva tarea</div>
+
+    <div class="fl">Nombre</div>
+    <input id="task-nm" class="fi" placeholder="¿Qué hay que hacer?"/>
+
+    <div class="fr">
+      <div>
+        <div class="fl">Prioridad</div>
+        <select id="task-pri" class="fi">
+          <option value="high">🔴 Alta</option>
+          <option value="mid" selected>🟡 Media</option>
+          <option value="low">🟢 Baja</option>
+        </select>
+      </div>
+      <div>
+        <div class="fl">Categoría</div>
+        <select id="task-cat" class="fi">
+          <option value="work">💼 Trabajo</option>
+          <option value="personal">🏠 Personal</option>
+          <option value="health">💪 Salud</option>
+          <option value="learn">📚 Aprender</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="fr">
+      <div>
+        <div class="fl">Fecha límite</div>
+        <input id="task-date" class="fi" type="date"/>
+      </div>
+      <div>
+        <div class="fl">Tiempo estimado</div>
+        <select id="task-time" class="fi">
+          <option value="15m">15 min</option>
+          <option value="30m">30 min</option>
+          <option value="1h" selected>1 hora</option>
+          <option value="2h">2 horas</option>
+          <option value="4h+">+4 horas</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="fl">Subtareas (opcional)</div>
+    <div class="sbt-list" id="sbt-list"></div>
+    <button class="add-sbt" onclick="addSubtaskField()">+ Agregar subtarea</button>
+
+    <div class="fl">Notas (opcional)</div>
+    <textarea id="task-notes" class="fi" rows="2" placeholder="Contexto, links..."></textarea>
+
+    <button class="shbtn" onclick="saveTask()">Guardar tarea</button>
+    <button class="del-btn" id="del-task-btn" onclick="deleteTask()" style="display:none">🗑 Eliminar tarea</button>
+    <button class="shbtns" onclick="csh('sh-task')">Cancelar</button>
+  </div>
 </div>
 
 <!-- SHEET HÁBITO -->
@@ -868,6 +1027,7 @@ let CUR_USER = null; // current username
 let S = {             // local mirror of Firestore doc
   name:'', theme:'', xp:0, level:1,
   habits:[], notes:[], curHF:'todos',
+  tasks: [],
 };
 let unsubSnapshot = null; // live listener cleanup
 let syncTimer = null;
@@ -1105,6 +1265,7 @@ const renderAll = () => {
   const p = document.querySelector('.page.active');
   const pid = p ? p.id.replace('page-','') : '';
   if (pid==='habitos') renderHabitos();
+  if (pid==='tareas') renderTasks();
   if (pid==='notas') renderJournal();
   if (pid==='stats') renderStats();
 };
@@ -1119,12 +1280,166 @@ window.gp = (page) => {
   if(tb) tb.classList.add('active');
   if(page==='dashboard') renderDashboard();
   if(page==='habitos') renderHabitos();
+  if(page==='tareas') renderTasks();
   if(page==='notas') renderJournal();
   if(page==='stats') renderStats();
   if(page==='ajustes') renderSettings();
   if(page==='ia') initIA();
   if(page==='admin' && isCreator()) loadAdminData();
   document.getElementById('pc').scrollTop=0;
+};
+
+// ── TASKS MODULE ───────────────────────────────────
+let curTaskFilter = 'todas';
+let editTaskId = null;
+let subtaskFields = [];
+
+const taskDueBadge = (dateStr) => {
+  if (!dateStr) return '';
+  const due = new Date(dateStr + 'T00:00:00');
+  const now = new Date(); now.setHours(0,0,0,0);
+  const diff = Math.round((due - now) / 86400000);
+  if (diff < 0) return `<span class="task-date overdue">⚠ Vencida hace ${Math.abs(diff)}d</span>`;
+  if (diff === 0) return `<span class="task-date" style="color:var(--a4)">📅 Hoy</span>`;
+  if (diff === 1) return `<span class="task-date" style="color:var(--a)">📅 Mañana</span>`;
+  return `<span class="task-date">📅 ${dateStr.slice(5).replace('-','/')}</span>`;
+};
+
+const tagClass = (cat) => ({'work':'tag-work','personal':'tag-personal','health':'tag-health','learn':'tag-learn'}[cat]||'tag-work');
+const tagLabel = (cat) => ({'work':'💼 Trabajo','personal':'🏠 Personal','health':'💪 Salud','learn':'📚 Aprender'}[cat]||cat);
+
+window.renderTasks = () => {
+  const el = document.getElementById('task-list');
+  if (!el) return;
+  if (!S.tasks) S.tasks = [];
+  const td = today();
+  const f = curTaskFilter;
+
+  let list = [...S.tasks];
+  if (f === 'hoy') list = list.filter(t => t.date === td && !t.done);
+  else if (f === 'done') list = list.filter(t => t.done);
+  else if (f !== 'todas') list = list.filter(t => t.cat === f && !t.done);
+  else list = list.filter(t => !t.done);
+
+  const priOrder = {high:0,mid:1,low:2};
+  list.sort((a,b) => {
+    const pd = (priOrder[a.pri]||1) - (priOrder[b.pri]||1);
+    if (pd !== 0) return pd;
+    if (a.date && b.date) return a.date.localeCompare(b.date);
+    return 0;
+  });
+
+  if (!list.length) {
+    el.innerHTML = `<div class="tasks-empty"><div style="font-size:42px;margin-bottom:12px">${f==='done'?'🎉':'📭'}</div><div style="font-family:var(--fd);font-size:16px;font-weight:700;margin-bottom:6px">${f==='done'?'Sin tareas completadas':'Todo limpio'}</div><div style="font-size:12px;color:var(--m)">${f==='done'?'Completá tareas para verlas acá.':'No hay tareas pendientes aquí.'}</div></div>`;
+    return;
+  }
+
+  el.innerHTML = list.map(t => {
+    const subs = (t.subtasks||[]);
+    const doneSubs = subs.filter(s=>s.done).length;
+    const subsHtml = subs.length ? `<div class="subtask-list-view">${subs.slice(0,3).map(s=>`<div class="subtask-item"><div class="subtask-chk ${s.done?'done':''}" onclick="toggleSubtask('${t.id}','${s.id}',event)">${s.done?'✓':''}</div><span style="${s.done?'text-decoration:line-through;color:var(--m)':''}">${s.text}</span></div>`).join('')}${subs.length > 3 ? `<div style="font-size:10px;color:var(--m)">+${subs.length-3} más</div>`:''}</div>` : '';
+
+    return `<div class="task-row ${t.done?'done-task':''}"><div class="task-pri pri-${t.pri||'mid'}"></div><div class="task-chk ${t.done?'done':''}" onclick="toggleTask('${t.id}',event)">${t.done?'✓':''}</div><div class="task-body"><div class="task-title ${t.done?'done':''}">${t.name}</div><div class="task-meta-row"><span class="task-tag ${tagClass(t.cat)}">${tagLabel(t.cat)}</span>${t.time?`<span style="font-size:10px;color:var(--m)">⏱ ${t.time}</span>`:''}${taskDueBadge(t.date)}${subs.length?`<span style="font-size:10px;color:var(--m)">${doneSubs}/${subs.length} ✓</span>`:''}</div>${t.notes?`<div style="font-size:11px;color:var(--m);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.notes}</div>`:''}${subsHtml}</div><div class="task-actions"><div class="task-act-btn" onclick="openTaskSheet('${t.id}')">✎</div></div></div>`;
+  }).join('');
+};
+
+window.toggleTask = (id, e) => {
+  if (e) e.stopPropagation();
+  const t = (S.tasks||[]).find(x=>x.id===id);
+  if (!t) return;
+  t.done = !t.done;
+  if (t.done) { addXP(15); confetti(); toast('✅ ¡Tarea completada!','success'); }
+  scheduleSave();
+  renderTasks();
+};
+
+window.toggleSubtask = (taskId, subId, e) => {
+  if (e) e.stopPropagation();
+  const t = (S.tasks||[]).find(x=>x.id===taskId);
+  if (!t || !t.subtasks) return;
+  const s = t.subtasks.find(x=>x.id===subId);
+  if (s) { s.done = !s.done; scheduleSave(); renderTasks(); }
+};
+
+window.addQuickTaskInline = () => {
+  const inp = document.getElementById('quick-task-inp');
+  const nm = inp ? inp.value.trim() : '';
+  if (!nm) return;
+  if (!S.tasks) S.tasks = [];
+  S.tasks.unshift({ id:uid(), name:nm, pri:'mid', cat:'personal', done:false, date:'', time:'1h', notes:'', subtasks:[], created:today() });
+  scheduleSave();
+  inp.value = '';
+  renderTasks();
+  toast('⚡ Tarea agregada','success');
+};
+
+window.openTaskSheet = (id) => {
+  editTaskId = id || null;
+  const t = id ? (S.tasks||[]).find(x=>x.id===id) : null;
+  document.getElementById('sh-task-title').textContent = t ? '✎ Editar tarea' : '✦ Nueva tarea';
+  document.getElementById('task-nm').value    = t ? t.name  : '';
+  document.getElementById('task-pri').value   = t ? (t.pri||'mid') : 'mid';
+  document.getElementById('task-cat').value   = t ? (t.cat||'personal') : 'personal';
+  document.getElementById('task-date').value  = t ? (t.date||'') : '';
+  document.getElementById('task-time').value  = t ? (t.time||'1h') : '1h';
+  document.getElementById('task-notes').value = t ? (t.notes||'') : '';
+  const delBtn = document.getElementById('del-task-btn');
+  if (delBtn) delBtn.style.display = t ? 'block' : 'none';
+  subtaskFields = t ? (t.subtasks||[]).map(s=>({...s})) : [];
+  renderSubtaskFields();
+  document.getElementById('sh-task').classList.add('open');
+};
+
+window.addSubtaskField = () => {
+  subtaskFields.push({ id:uid(), text:'', done:false });
+  renderSubtaskFields();
+};
+
+const renderSubtaskFields = () => {
+  const el = document.getElementById('sbt-list');
+  if (!el) return;
+  el.innerHTML = subtaskFields.map((s,i) => `<div class="sbt-row"><div class="subtask-chk ${s.done?'done':''}" onclick="subtaskFields[${i}].done=!subtaskFields[${i}].done;renderSubtaskFields()">${s.done?'✓':''}</div><input class="sbt-inp" value="${s.text}" placeholder="Subtarea..." oninput="subtaskFields[${i}].text=this.value"/><button class="sbt-del" onclick="subtaskFields.splice(${i},1);renderSubtaskFields()">✕</button></div>`).join('');
+};
+
+window.saveTask = () => {
+  const nm = document.getElementById('task-nm').value.trim();
+  if (!nm) { toast('Escribí el nombre de la tarea','warn'); return; }
+  if (!S.tasks) S.tasks = [];
+  const subs = subtaskFields.filter(s=>s.text.trim()).map(s=>({...s,text:s.text.trim()}));
+  if (editTaskId) {
+    const t = S.tasks.find(x=>x.id===editTaskId);
+    if (t) {
+      t.name     = nm;
+      t.pri      = document.getElementById('task-pri').value;
+      t.cat      = document.getElementById('task-cat').value;
+      t.date     = document.getElementById('task-date').value;
+      t.time     = document.getElementById('task-time').value;
+      t.notes    = document.getElementById('task-notes').value.trim();
+      t.subtasks = subs;
+    }
+    toast('✅ Tarea actualizada','success');
+  } else {
+    S.tasks.unshift({ id:uid(), name:nm, pri:document.getElementById('task-pri').value, cat:document.getElementById('task-cat').value, date:document.getElementById('task-date').value, time:document.getElementById('task-time').value, notes:document.getElementById('task-notes').value.trim(), subtasks:subs, done:false, created:today() });
+    addXP(5); toast('✦ Tarea creada','success');
+  }
+  scheduleSave();
+  csh('sh-task');
+  renderTasks();
+};
+
+window.deleteTask = () => {
+  if (!editTaskId) return;
+  if (!confirm('¿Eliminar esta tarea?')) return;
+  S.tasks = (S.tasks||[]).filter(t=>t.id!==editTaskId);
+  scheduleSave(); csh('sh-task'); renderTasks();
+  toast('🗑 Tarea eliminada','info');
+};
+
+window.setTF = (f, el) => {
+  curTaskFilter = f;
+  document.querySelectorAll('#task-filters .fp').forEach(b=>b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderTasks();
 };
 
 // ── GREETING ──────────────────────────────────────
