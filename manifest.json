@@ -2,7 +2,7 @@
   "name": "FlowEX — Mis Hábitos",
   "short_name": "FlowEX",
   "description": "Tu rastreador de hábitos personal con sincronización en la nube",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#080810",
   "theme_color": "#7c6dfa",
