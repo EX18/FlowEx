@@ -887,181 +887,162 @@ select.fi option{background:var(--s2)}
 .note-color-opt.sel{border-color:white;transform:scale(1.2)}
 
 /* ════════════════════════════════════════════ MÓDULOS ════════════════════════════════════════════ */
+/* ── Shared ── */
+.mod-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.mod-stat-cell{background:var(--surface);border:1px solid var(--b);border-radius:14px;padding:12px 8px;text-align:center}
+.mod-stat-val{font-family:var(--fd);font-size:22px;font-weight:800;color:var(--a);margin-bottom:2px}
+.mod-stat-lbl{font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.06em}
 
-/* MÓDULO: SUEÑO 😴 */
-.sleep-ring-wrap{display:flex;justify-content:center;margin-bottom:16px;position:relative}
+/* ── POMODORO ── */
+.pom-timer-wrap{display:flex;flex-direction:column;align-items:center;padding:20px 0 10px}
+.pom-ring-wrap{position:relative;width:200px;height:200px;margin-bottom:16px}
+.pom-ring-wrap svg{transform:rotate(-90deg)}
+.pom-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.pom-time-display{font-family:var(--fd);font-size:48px;font-weight:800;color:var(--txt);line-height:1;letter-spacing:-2px}
+.pom-phase-lbl{font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.1em}
+.pom-mode-tabs{display:flex;gap:0;background:var(--s2);border-radius:12px;padding:3px;margin-bottom:16px;border:1px solid var(--b);width:100%}
+.pom-tab{flex:1;padding:9px;border-radius:9px;border:none;background:transparent;color:var(--m);font-family:var(--fd);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center}
+.pom-tab.active{background:var(--surface);color:var(--txt);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.pom-ctrl-row{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
+.pom-btn{width:56px;height:56px;border-radius:16px;border:1px solid var(--b);background:var(--surface);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.pom-btn:active{transform:scale(.88)}
+.pom-btn.primary{background:linear-gradient(135deg,var(--a),var(--a2));border:none;box-shadow:0 4px 16px rgba(124,109,250,.35)}
+.pom-sessions-row{display:flex;gap:6px;justify-content:center;margin-bottom:14px}
+.pom-session-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--b2);transition:all .3s}
+.pom-session-dot.done{background:var(--a);border-color:var(--a)}
+.pom-session-dot.current{background:var(--a2);border-color:var(--a2);transform:scale(1.2)}
+.pom-task-sel{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:var(--rs);padding:10px 14px;color:var(--txt);font-family:var(--fb);font-size:13px;outline:none;margin-bottom:12px}
+.pom-task-sel:focus{border-color:var(--a)}
+.pom-hist-row{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.pom-hist-icon{font-size:20px;flex-shrink:0}
+.pom-hist-info{flex:1}
+.pom-hist-title{font-size:12px;font-weight:600;margin-bottom:2px}
+.pom-hist-meta{font-size:10px;color:var(--m)}
+
+/* ── FINANZAS ── */
+.fin-balance-card{background:linear-gradient(135deg,rgba(124,109,250,.1),rgba(109,250,196,.06));border:1px solid rgba(124,109,250,.2);border-radius:var(--r);padding:20px;margin-bottom:14px;text-align:center}
+.fin-balance-lbl{font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.fin-balance-val{font-family:var(--fd);font-size:40px;font-weight:800;line-height:1;margin-bottom:4px}
+.fin-balance-val.pos{color:var(--a3)}.fin-balance-val.neg{color:var(--a2)}
+.fin-balance-sub{font-size:12px;color:var(--m)}
+.fin-tabs{display:flex;gap:0;background:var(--s2);border-radius:12px;padding:3px;margin-bottom:14px;border:1px solid var(--b)}
+.fin-tab{flex:1;padding:9px;border-radius:9px;border:none;background:transparent;color:var(--m);font-family:var(--fd);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center}
+.fin-tab.active{background:var(--surface);color:var(--txt);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.fin-tx-row{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.fin-tx-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.fin-tx-info{flex:1;min-width:0}
+.fin-tx-name{font-size:13px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fin-tx-meta{font-size:10px;color:var(--m)}
+.fin-tx-amount{font-family:var(--fd);font-size:15px;font-weight:800;flex-shrink:0}
+.fin-tx-amount.gasto{color:var(--a2)}.fin-tx-amount.ingreso{color:var(--a3)}
+.fin-cat-bar{height:8px;background:var(--b);border-radius:4px;overflow:hidden;margin-bottom:3px}
+.fin-cat-fill{height:100%;border-radius:4px;transition:width .5s}
+.fin-budget-card{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:14px;margin-bottom:8px}
+.fin-budget-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.fin-budget-name{font-size:13px;font-weight:600}
+.fin-budget-pct{font-family:var(--fd);font-size:14px;font-weight:800}
+
+/* ── SUEÑO ── */
+.sleep-ring-wrap{display:flex;justify-content:center;margin-bottom:16px;position:relative;width:180px;margin:0 auto 16px}
 .sleep-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .sleep-hours-big{font-family:var(--fd);font-size:38px;font-weight:800;color:var(--a);line-height:1}
 .sleep-hours-lbl{font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.08em}
-.sleep-input-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.sleep-input-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .sleep-inp-card{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:12px}
 .sleep-inp-lbl{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
-.sleep-inp{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:8px;color:var(--txt);font-family:var(--fb);font-size:15px;font-weight:700;text-align:center;outline:none}
+.sleep-inp{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:8px;color:var(--txt);font-family:var(--fb);font-size:16px;font-weight:700;text-align:center;outline:none}
 .sleep-inp:focus{border-color:var(--a)}
 .sleep-quality-row{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
-.sleep-q-btn{width:44px;height:44px;border-radius:12px;border:1.5px solid var(--b);background:transparent;font-size:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.sleep-q-btn{width:46px;height:46px;border-radius:12px;border:1.5px solid var(--b);background:transparent;font-size:22px;cursor:pointer;transition:all .2s}
 .sleep-q-btn.sel{border-color:var(--a);background:rgba(124,109,250,.12);transform:scale(1.1)}
 .sleep-q-btn:active{transform:scale(.88)}
-.sleep-history-row{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:11px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
-.sleep-hist-date{font-size:11px;color:var(--m);min-width:70px}
+.sleep-hist-row{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
 .sleep-hist-bar-bg{flex:1;height:8px;background:var(--b);border-radius:4px;overflow:hidden}
-.sleep-hist-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--a),var(--a5));transition:width .5s}
-.sleep-hist-val{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--a);min-width:36px;text-align:right}
-.sleep-hist-q{font-size:16px}
+.sleep-hist-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--a),var(--a5));transition:width .5s}
 
-/* MÓDULO: METAS 🎯 */
-.goal-card{background:var(--surface);border:1px solid var(--b);border-radius:var(--r);padding:16px;margin-bottom:10px;transition:all .2s}
-.goal-card.done-goal{opacity:.6}
-.goal-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
-.goal-em{font-size:26px;flex-shrink:0}
-.goal-info{flex:1}
-.goal-title{font-family:var(--fd);font-size:15px;font-weight:700;margin-bottom:3px}
-.goal-deadline{font-size:11px;color:var(--m)}
-.goal-progress-wrap{margin-bottom:10px}
-.goal-progress-bar{height:8px;background:var(--b);border-radius:4px;overflow:hidden;margin-bottom:5px}
-.goal-progress-fill{height:100%;background:linear-gradient(90deg,var(--a),var(--a3));border-radius:4px;transition:width .6s ease}
-.goal-progress-row{display:flex;justify-content:space-between;align-items:center}
-.goal-pct{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--a)}
-.goal-val{font-size:11px;color:var(--m)}
-.goal-milestones{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
-.goal-ms{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--m);cursor:pointer}
-.goal-ms-chk{width:16px;height:16px;border-radius:4px;border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;transition:all .15s}
-.goal-ms-chk.done{background:var(--a3);border-color:var(--a3);color:#07070f}
-.goal-ms-text.done{text-decoration:line-through;color:var(--m2)}
-.goal-actions{display:flex;gap:6px}
-.goal-act-btn{flex:1;padding:8px;border-radius:8px;border:1px solid var(--b);background:transparent;color:var(--m);font-family:var(--fb);font-size:11px;cursor:pointer;transition:all .2s;text-align:center}
-.goal-act-btn:active{background:var(--s2)}
-.goal-act-btn.primary{border-color:var(--a);color:var(--a);background:rgba(124,109,250,.08)}
+/* ── METAS ── */
+.meta-card{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:14px;margin-bottom:8px;transition:all .2s}
+.meta-card:active{transform:scale(.99)}
+.meta-card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.meta-emoji{font-size:24px;flex-shrink:0}
+.meta-info{flex:1;min-width:0}
+.meta-title{font-family:var(--fd);font-size:14px;font-weight:700;margin-bottom:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.meta-deadline{font-size:10px;color:var(--m)}
+.meta-pct-lbl{font-family:var(--fd);font-size:16px;font-weight:800;color:var(--a);flex-shrink:0}
+.meta-bar{height:8px;background:var(--b);border-radius:4px;overflow:hidden;margin-bottom:6px}
+.meta-bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.meta-milestones{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.meta-milestone{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--m)}
+.meta-ms-chk{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:9px;cursor:pointer;flex-shrink:0;transition:all .2s}
+.meta-ms-chk.done{background:var(--a3);border-color:var(--a3);color:#07070f}
+.meta-cat-badge{font-size:9px;padding:2px 7px;border-radius:10px;font-weight:600}
+.cat-salud{background:rgba(109,250,196,.12);color:var(--a3)}
+.cat-trabajo{background:rgba(124,109,250,.12);color:var(--a)}
+.cat-personal{background:rgba(250,196,109,.12);color:var(--a4)}
+.cat-finanzas{background:rgba(250,109,143,.12);color:var(--a2)}
+.cat-aprender{background:rgba(96,165,250,.12);color:var(--a5)}
+.meta-actions{display:flex;gap:5px;margin-top:8px;padding-top:8px;border-top:1px solid var(--b)}
+.meta-act-btn{display:flex;align-items:center;gap:3px;padding:5px 10px;border-radius:7px;border:1px solid var(--b);background:var(--s2);font-size:11px;color:var(--m);cursor:pointer;transition:all .2s;font-family:var(--fb)}
+.meta-act-btn:active{transform:scale(.92)}
 
-/* MÓDULO: CALENDARIO 📅 */
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px}
-.cal-day-hdr{text-align:center;font-size:10px;color:var(--m);text-transform:uppercase;padding:6px 0;letter-spacing:.04em}
-.cal-day{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;cursor:pointer;color:var(--m);transition:all .15s;position:relative;gap:2px}
-.cal-day:active{transform:scale(.85)}
-.cal-day.today{background:var(--a);color:white;font-weight:700}
-.cal-day.selected{border:1.5px solid var(--a);color:var(--txt)}
-.cal-day.other-month{opacity:.2}
-.cal-day.has-events::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--a3)}
-.cal-day.today.has-events::after{background:white}
-.cal-event-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
-.cal-event-row{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:10px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:6px}
-.cal-event-bar{width:3px;align-self:stretch;border-radius:2px;flex-shrink:0}
-.cal-event-info{flex:1}
-.cal-event-name{font-size:13px;font-weight:600;margin-bottom:2px}
-.cal-event-time{font-size:10px;color:var(--m)}
-.cal-event-del{font-size:11px;color:var(--m2);background:none;border:none;cursor:pointer;padding:2px}
+/* ── CALENDARIO ── */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-month-title{font-family:var(--fd);font-size:18px;font-weight:800}
+.cal-nav-btn{width:36px;height:36px;border-radius:10px;background:var(--surface);border:1px solid var(--b);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--m);transition:all .2s}
+.cal-nav-btn:active{transform:scale(.88);background:var(--s2)}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px}
+.cal-wd{text-align:center;font-size:10px;color:var(--m);font-weight:600;padding:4px 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:14px}
+.cal-day{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;background:var(--surface);border:1px solid var(--b)}
+.cal-day:active{transform:scale(.9)}
+.cal-day.other-month{opacity:.3;background:transparent;border-color:transparent}
+.cal-day.today{border-color:var(--a);background:rgba(124,109,250,.08)}
+.cal-day.has-data::after{content:'';position:absolute;bottom:4px;width:5px;height:5px;border-radius:50%;background:var(--a3)}
+.cal-day.perfect::after{background:var(--a3)}
+.cal-day.partial::after{background:var(--a4)}
+.cal-day-num{font-size:12px;font-weight:600;line-height:1}
+.cal-day.today .cal-day-num{color:var(--a);font-weight:800}
+.cal-legend{display:flex;gap:12px;font-size:10px;color:var(--m);justify-content:center;margin-bottom:14px}
+.cal-legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:3px}
 
-/* MÓDULO: AGUA & NUTRICIÓN 💧 */
-.water-main{display:flex;flex-direction:column;align-items:center;margin-bottom:20px}
-.water-tank{width:140px;height:200px;border:3px solid var(--b2);border-radius:20px;overflow:hidden;position:relative;background:var(--s2);margin-bottom:14px}
-.water-fill{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(0deg,var(--a5),rgba(96,165,250,.5));transition:height .6s cubic-bezier(.34,1.2,.64,1);border-radius:0 0 17px 17px}
-.water-wave{position:absolute;top:-4px;left:-10px;right:-10px;height:10px;background:rgba(96,165,250,.4);border-radius:50%}
-.water-pct-lbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:28px;font-weight:800;color:var(--a5)}
-.water-glasses-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
-.water-glass{width:42px;height:42px;border-radius:12px;border:2px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all .2s}
-.water-glass.filled{background:rgba(96,165,250,.2);border-color:var(--a5)}
-.water-glass:active{transform:scale(.85)}
-.water-goal-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.water-goal-lbl{font-size:12px;color:var(--m)}
-.water-goal-inp{width:60px;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:5px 8px;color:var(--txt);font-family:var(--fd);font-size:14px;font-weight:700;text-align:center;outline:none}
-.water-goal-inp:focus{border-color:var(--a5)}
-.meal-row{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:11px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
-.meal-em{font-size:20px;width:28px;text-align:center}
-.meal-info{flex:1}
-.meal-name{font-size:13px;font-weight:600;margin-bottom:2px}
-.meal-meta{font-size:10px;color:var(--m)}
-.meal-cals{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--a4)}
-.meal-del{font-size:11px;color:var(--m2);background:none;border:none;cursor:pointer}
-.cals-bar-wrap{background:var(--surface);border:1px solid var(--b);border-radius:var(--r);padding:14px;margin-bottom:14px}
+/* ── NUTRICIÓN / AGUA ── */
+.water-display{display:flex;flex-direction:column;align-items:center;padding:16px 0}
+.water-glasses{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:16px}
+.water-glass{width:44px;height:54px;border-radius:8px 8px 12px 12px;border:2px solid var(--b2);cursor:pointer;position:relative;overflow:hidden;transition:all .2s;background:var(--surface)}
+.water-glass:active{transform:scale(.88)}
+.water-glass-fill{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(0deg,var(--a5),rgba(96,165,250,.5));transition:height .4s ease;border-radius:0 0 8px 8px}
+.water-glass-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px;z-index:1}
+.water-goal-bar{height:12px;background:var(--b);border-radius:6px;overflow:hidden;margin-bottom:6px}
+.water-goal-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--a5),var(--a));transition:width .5s ease}
+.macro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.macro-card{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:12px;text-align:center}
+.macro-val{font-family:var(--fd);font-size:20px;font-weight:800;margin-bottom:4px}
+.macro-lbl{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.macro-bar{height:5px;background:var(--b);border-radius:3px;overflow:hidden}
+.macro-fill{height:100%;border-radius:3px;transition:width .5s}
 
-/* MÓDULO: MOOD TRACKER 😊 */
-.mood-selector{display:flex;gap:10px;justify-content:center;margin:20px 0 16px;flex-wrap:wrap}
-.mood-btn{width:56px;height:56px;border-radius:16px;border:2px solid var(--b);background:transparent;font-size:26px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
-.mood-btn.sel{transform:scale(1.2);border-color:var(--a);background:rgba(124,109,250,.12);box-shadow:0 0 16px rgba(124,109,250,.25)}
+/* ── MOOD ── */
+.mood-picker{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.mood-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 10px;border-radius:14px;border:1.5px solid var(--b);background:transparent;cursor:pointer;transition:all .2s;min-width:54px}
 .mood-btn:active{transform:scale(.88)}
-.mood-label{font-family:var(--fd);font-size:16px;font-weight:700;text-align:center;min-height:24px;margin-bottom:14px;transition:all .3s}
-.mood-history-item{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:11px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
-.mood-hist-em{font-size:24px;width:32px;text-align:center}
+.mood-btn.sel-5{border-color:var(--a3);background:rgba(109,250,196,.08)}
+.mood-btn.sel-4{border-color:var(--a);background:rgba(124,109,250,.08)}
+.mood-btn.sel-3{border-color:var(--a4);background:rgba(250,196,109,.08)}
+.mood-btn.sel-2{border-color:var(--a2);background:rgba(250,109,143,.08)}
+.mood-btn.sel-1{border-color:#888;background:rgba(138,138,160,.08)}
+.mood-emoji{font-size:28px;line-height:1}
+.mood-lbl{font-size:9px;color:var(--m);font-weight:600;white-space:nowrap}
+.mood-note-inp{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:var(--rs);padding:12px;color:var(--txt);font-family:var(--fb);font-size:13px;outline:none;resize:none;margin-bottom:12px;line-height:1.6}
+.mood-note-inp:focus{border-color:var(--a)}
+.mood-hist-row{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.mood-hist-emoji{font-size:24px;flex-shrink:0}
 .mood-hist-info{flex:1}
-.mood-hist-date{font-size:11px;color:var(--m);margin-bottom:2px}
-.mood-hist-note{font-size:13px}
-.mood-week-chart{display:flex;gap:6px;height:80px;align-items:flex-end;background:var(--surface);border:1px solid var(--b);border-radius:var(--r);padding:14px;margin-bottom:14px}
-.mood-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
-.mood-bar-em{font-size:14px;height:22px;display:flex;align-items:center;justify-content:center}
-.mood-bar-inner{width:100%;border-radius:4px 4px 0 0;min-height:3px;transition:height .5s ease}
-.mood-bar-day{font-size:9px;color:var(--m)}
-
-/* MÓDULO: POMODORO 🍅 */
-.pom-wrap{display:flex;flex-direction:column;align-items:center;gap:0}
-.pom-mode-row{display:flex;gap:6px;margin-bottom:20px}
-.pom-mode-btn{padding:7px 16px;border-radius:20px;border:1px solid var(--b);background:transparent;color:var(--m);font-family:var(--fb);font-size:11px;cursor:pointer;transition:all .2s;white-space:nowrap}
-.pom-mode-btn.active{border-color:var(--a);color:var(--a);background:rgba(124,109,250,.1)}
-.pom-clock-wrap{position:relative;width:220px;height:220px;margin-bottom:20px}
-.pom-clock-wrap svg{transform:rotate(-90deg)}
-.pom-clock-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-.pom-time-display{font-family:var(--fd);font-size:52px;font-weight:800;color:var(--txt);letter-spacing:-2px;line-height:1}
-.pom-mode-label{font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.1em}
-.pom-task-label{font-size:12px;color:var(--a);margin-bottom:18px;min-height:18px;text-align:center;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pom-controls{display:flex;gap:10px;margin-bottom:20px}
-.pom-ctrl-btn{padding:11px 24px;border-radius:12px;border:1px solid var(--b);background:transparent;color:var(--txt);font-family:var(--fd);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
-.pom-ctrl-btn.primary{background:linear-gradient(135deg,var(--a),var(--a2));border-color:transparent;color:white;min-width:120px}
-.pom-ctrl-btn:active{transform:scale(.94)}
-.pom-session-dots{display:flex;gap:8px;margin-bottom:24px}
-.pom-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--b2);transition:all .3s}
-.pom-dot.done{background:var(--a);border-color:var(--a)}
-.pom-dot.active{background:var(--a2);border-color:var(--a2);transform:scale(1.2)}
-.pom-task-select-wrap{width:100%;max-width:340px;margin-bottom:20px}
-.pom-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:340px;margin-bottom:20px}
-.pom-stat-card{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:12px;text-align:center}
-.pom-stat-val{font-family:var(--fd);font-size:20px;font-weight:800;color:var(--a);margin-bottom:3px}
-.pom-stat-lbl{font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.06em}
-.pom-history{width:100%;max-width:340px}
-.pom-hist-item{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
-.pom-hist-em{font-size:18px}
-.pom-hist-info{flex:1}
-.pom-hist-task{font-size:12px;font-weight:600;margin-bottom:2px}
-.pom-hist-time{font-size:10px;color:var(--m)}
-.pom-hist-dur{font-size:11px;color:var(--a4);font-weight:700}
-.pom-config-row{display:flex;gap:8px;width:100%;max-width:340px;margin-bottom:20px}
-.pom-cfg-card{flex:1;background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:10px;text-align:center}
-.pom-cfg-lbl{font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-.pom-cfg-inp{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:7px;padding:5px;color:var(--txt);font-family:var(--fd);font-size:16px;font-weight:700;text-align:center;outline:none}
-.pom-cfg-inp:focus{border-color:var(--a)}
-.pom-ring-work{stroke:var(--a)}
-.pom-ring-short{stroke:var(--a3)}
-.pom-ring-long{stroke:var(--a4)}
-
-/* MÓDULO: FINANZAS 💰 */
-.fin-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
-.fin-sum-card{background:var(--surface);border:1px solid var(--b);border-radius:14px;padding:14px 10px;text-align:center}
-.fin-sum-val{font-family:var(--fd);font-size:20px;font-weight:800;margin-bottom:3px}
-.fin-sum-lbl{font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.06em}
-.fin-income{color:var(--a3)}.fin-expense{color:var(--a2)}.fin-balance{color:var(--a)}
-.fin-bar-wrap{background:var(--surface);border:1px solid var(--b);border-radius:var(--r);padding:16px;margin-bottom:12px}
-.fin-bar-title{font-family:var(--fd);font-size:13px;font-weight:700;margin-bottom:12px}
-.fin-cat-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.fin-cat-label{font-size:11px;color:var(--m);min-width:80px}
-.fin-cat-bar-bg{flex:1;height:8px;background:var(--b);border-radius:4px;overflow:hidden}
-.fin-cat-bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
-.fin-cat-val{font-size:11px;color:var(--txt);min-width:50px;text-align:right;font-weight:600}
-.fin-tx-list{display:flex;flex-direction:column;gap:6px}
-.fin-tx{background:var(--surface);border:1px solid var(--b);border-radius:var(--rs);padding:11px 14px;display:flex;align-items:center;gap:10px;transition:all .2s}
-.fin-tx:active{background:var(--s2)}
-.fin-tx-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.fin-tx-info{flex:1}
-.fin-tx-desc{font-size:13px;font-weight:600;margin-bottom:2px}
-.fin-tx-meta{font-size:10px;color:var(--m)}
-.fin-tx-amt{font-family:var(--fd);font-size:15px;font-weight:800;flex-shrink:0}
-.fin-tx-del{font-size:11px;color:var(--m2);background:none;border:none;cursor:pointer;padding:4px;flex-shrink:0}
-.fin-budget-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--b)}
-.fin-budget-row:last-child{border-bottom:none}
-.fin-budget-name{font-size:12px;font-weight:600}
-.fin-budget-progress{font-size:11px;color:var(--m)}
-.fin-budget-bar-bg{width:80px;height:5px;background:var(--b);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin:0 6px}
-.fin-budget-bar-fill{height:100%;border-radius:3px;transition:width .5s}
-.fin-tab-row{display:flex;gap:0;background:var(--s2);border-radius:12px;padding:3px;margin-bottom:14px;border:1px solid var(--b)}
-.fin-tab{flex:1;padding:8px;border-radius:9px;border:none;background:transparent;color:var(--m);font-family:var(--fd);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center}
-.fin-tab.active{background:var(--surface);color:var(--txt);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.mood-hist-date{font-size:12px;font-weight:600;margin-bottom:2px}
+.mood-hist-note{font-size:11px;color:var(--m)}
+.mood-chart{display:flex;align-items:flex-end;gap:4px;height:60px;margin-bottom:14px}
+.mood-bar-w{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.mood-bar{width:100%;border-radius:3px 3px 0 0;min-height:3px;transition:height .5s}
+.mood-bar-lbl{font-size:9px;color:var(--m)}
 </style>
 
     <!-- NOTAS & WIKI -->
@@ -1197,14 +1178,6 @@ select.fi option{background:var(--s2)}
       <div class="ph2">🏆 Logros</div>
       <div class="ph-sub">Tus hitos y recompensas.</div>
       <div id="achievements-list" class="stg"></div>
-    </div>
-
-    <!-- BREATH -->
-    <div class="page" id="page-breath">
-      <div class="ph2">🌬️ Mindfulness</div>
-      <div class="ph-sub">Sesiones de respiración y meditación.</div>
-      <div id="breath-content"></div>
-      <button class="plan-btn" onclick="startBreathSession()" style="margin-top:8px">🌬️ Nueva sesión</button>
     </div>
 
     <!-- ADMIN -->
@@ -1457,7 +1430,6 @@ select.fi option{background:var(--s2)}
     <button class="nt" onclick="gp('lectura')" id="tab-lectura"><div class="ni">📚</div><div class="nl">Lectura</div></button>
     <button class="nt" onclick="gp('notifs')" id="tab-notifs"><div class="ni">🔔</div><div class="nl">Avisos</div></button>
     <button class="nt" onclick="gp('logros')" id="tab-logros"><div class="ni">🏆</div><div class="nl">Logros</div></button>
-    <button class="nt" onclick="gp('breath')" id="tab-breath"><div class="ni">🌬️</div><div class="nl">Mind</div></button>
     <button class="nt" onclick="gp('stats')" id="tab-stats"><div class="ni">📊</div><div class="nl">Stats</div></button>
     <button class="nt" onclick="gp('ia')" id="tab-ia"><div class="ni">🤖</div><div class="nl">IA</div></button>
     <button class="nt" onclick="gp('sueno')" id="tab-sueno"><div class="ni">😴</div><div class="nl">Sueño</div></button>
@@ -1802,7 +1774,7 @@ const DEFAULT_HABITS = [
   mkHabit('Tomar agua','💧','salud','2 litros al día — 8 vasos'),
   mkHabit('Dormir 8 horas','😴','salud','Acostarme antes de las 11pm'),
   mkHabit('Leer','📚','mente','20 páginas por día'),
-  mkHabit('Meditar','🧘','mente','10 minutos de mindfulness'),
+  mkHabit('Meditar','🧘','mente','10 minutos de meditación diaria'),
   mkHabit('Dieta saludable','🥗','nutricion','Comer real, evitar procesados'),
   mkHabit('Sin azúcar','🚫','nutricion','Sin dulces ni refrescos'),
   mkHabit('Caminar','🚶','salud','10,000 pasos diarios'),
@@ -2059,18 +2031,22 @@ const initApp = () => {
     S.notifSettings.enabled = false;
   }
   scheduleNotifications();
-  if (!S.breathHistory || S.breathHistory.length === 0) {
-    S.breathHistory = [
-      { id: uid(), date: today(), time: '08:00', tech: 'Box Breathing', icon: '📦', cycles: 4 },
-      { id: uid(), date: today(), time: '12:00', tech: '4-7-8', icon: '😴', cycles: 4 }
-    ];
-    S.breathSessions = 8;
-  }
   if (!S.notes || S.notes.length === 0) {
     S.notes = [
       { id: uid(), title: 'Bienvenido a Notas', body: 'Esta es una nota de ejemplo. Podés editarla o eliminarla.\n\n**Markdown soportado**: # Título, - Lista, etc.', folder: 'General', tags: ['ejemplo'], color: 0, pinned: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
     ];
   }
+
+  // Initialize new modules
+  if (!S.sleep) S.sleep = [];
+  if (!S.goals) S.goals = [];
+  if (!S.events) S.events = [];
+  if (!S.water) S.water = { today: 0, goal: 8, logs: [] };
+  if (!S.meals) S.meals = [];
+  if (!S.moods) S.moods = [];
+  if (!S.pom) S.pom = { sessions: [], config: { work: 25, short: 5, long: 15 }, today: 0 };
+  if (!S.finance) S.finance = { transactions: [], budget: {}, currency: 'USD' };
+  if (!S.calGoal) S.calGoal = 2000;
 
   updateGreeting();
   renderAll();
@@ -2088,8 +2064,14 @@ const renderAll = () => {
   if (pid==='lectura') renderLectura();
   if (pid==='notifs') renderNotifs();
   if (pid==='logros') renderLogros();
-  if (pid==='breath') renderBreath();
   if (pid==='stats') renderStats();
+  if (pid==='sueno') renderSueno();
+  if (pid==='metas') renderMetas();
+  if (pid==='calendario') renderCalendario();
+  if (pid==='nutricion') renderNutricion();
+  if (pid==='mood') renderMood();
+  if (pid==='pomodoro') renderPomodoro();
+  if (pid==='finanzas') renderFinanzas();
 };
 
 // ── NAVIGATION ────────────────────────────────────
@@ -2107,7 +2089,6 @@ window.gp = (page) => {
   if(page==='lectura') renderLectura();
   if(page==='notifs') renderNotifs();
   if(page==='logros') renderLogros();
-  if(page==='breath') renderBreath();
   if(page==='stats') renderStats();
   if(page==='ajustes') renderSettings();
   if(page==='ia') initIA();
@@ -2829,8 +2810,7 @@ const renderLogros = () => {
     { id: 'week_streak', name: 'Semana perfecta', desc: 'Completaste todos los hábitos por 7 días', icon: '🔥', unlocked: S.habits.some(h => getStreak(h) >= 7) },
     { id: 'month_streak', name: 'Mes de consistencia', desc: 'Mantuviste una racha de 30 días', icon: '🏆', unlocked: S.habits.some(h => getStreak(h) >= 30) },
     { id: 'book_finished', name: 'Lector voraz', desc: 'Terminaste tu primer libro', icon: '📚', unlocked: S.books && S.books.some(b => b.status === 'terminado') },
-    { id: 'note_master', name: 'Escritor', desc: 'Creaste 10 notas', icon: '✍️', unlocked: S.notes && S.notes.length >= 10 },
-    { id: 'breath_zen', name: 'Zen master', desc: 'Completaste 10 sesiones de respiración', icon: '🧘', unlocked: S.breathSessions >= 10 }
+    { id: 'note_master', name: 'Escritor', desc: 'Creaste 10 notas', icon: '✍️', unlocked: S.notes && S.notes.length >= 10 }
   ];
   al.innerHTML = achievements.map(a => `
     <div class="hr" style="opacity:${a.unlocked ? 1 : 0.5}">
@@ -2841,35 +2821,6 @@ const renderLogros = () => {
         ${a.unlocked ? '<span class="streak-badge">✅ Desbloqueado</span>' : '<span class="streak-badge" style="background:var(--b);color:var(--m)">🔒 Bloqueado</span>'}
       </div>
     </div>`).join('');
-};
-
-// ── BREATH ─────────────────────────────────────────
-const renderBreath = () => {
-  const bc = document.getElementById('breath-content');
-  if (!bc) return;
-  if (!S.breathHistory) S.breathHistory = [];
-  bc.innerHTML = `
-    <div class="stat-card">
-      <div style="text-align:center;margin-bottom:16px">
-        <div style="font-family:var(--fd);font-size:32px;font-weight:800;color:var(--a);margin-bottom:4px">${S.breathSessions || 0}</div>
-        <div style="font-size:12px;color:var(--m)">Sesiones completadas</div>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:16px">
-        <button class="plan-btn" onclick="startBreathSession('4-7-8')" style="flex:1">4-7-8</button>
-        <button class="plan-btn" onclick="startBreathSession('Box Breathing')" style="flex:1">Box</button>
-      </div>
-    </div>
-    <div class="sec-head"><div class="sec-title">📅 Historial</div></div>
-    <div class="stg">
-      ${S.breathHistory.slice(-10).reverse().map(s => `
-        <div class="hr">
-          <div class="hem">${s.icon}</div>
-          <div class="hinfo">
-            <div class="hnm">${s.tech}</div>
-            <div class="hsub">${s.date} • ${s.time} • ${s.cycles} ciclos</div>
-          </div>
-        </div>`).join('')}
-    </div>`;
 };
 
 // ── ADMIN ──────────────────────────────────────────
@@ -3326,25 +3277,6 @@ window.toggleNotifs = async () => {
   renderNotifs();
 };
 
-// ── BREATH FUNCTIONS ───────────────────────────────
-window.startBreathSession = (tech) => {
-  if (!tech) tech = '4-7-8';
-  const icons = { '4-7-8': '😴', 'Box Breathing': '📦' };
-  const cycles = 4;
-  S.breathHistory = S.breathHistory || [];
-  S.breathHistory.push({
-    id: uid(),
-    date: today(),
-    time: new Date().toTimeString().slice(0,5),
-    tech: tech,
-    icon: icons[tech] || '🧘',
-    cycles: cycles
-  });
-  S.breathSessions = (S.breathSessions || 0) + 1;
-  scheduleSave();
-  renderBreath();
-  toast(`Sesión de ${tech} completada!`, 'success');
-};
 // ── UI HELPERS ─────────────────────────────────────
 window.csh = (id,event) => {
   if(event&&event.target!==document.getElementById(id)) return;
