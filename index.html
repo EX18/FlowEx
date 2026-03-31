@@ -367,8 +367,10 @@ body::after{
   background:rgba(7,7,15,.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border-top:1px solid rgba(255,255,255,.06);
   display:flex;align-items:flex-start;padding-top:8px;z-index:100;
+  overflow-x:auto;overflow-y:hidden;white-space:nowrap;
 }
-.nt{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;cursor:pointer;border:none;background:none;color:var(--m);transition:color .2s;position:relative}
+.bnav::-webkit-scrollbar{display:none}
+.nt{flex:0 0 auto;min-width:72px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;cursor:pointer;border:none;background:none;color:var(--m);transition:color .2s;position:relative}
 .nt .ni{font-size:22px;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
 .nt .nl{font-family:var(--fb);font-size:10px;transition:color .2s}
 .nt.active .ni{transform:translateY(-3px) scale(1.1)}
