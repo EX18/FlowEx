@@ -1073,6 +1073,59 @@ select.fi option{background:var(--s2)}
 .mood-bar-w{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
 .mood-bar{width:100%;border-radius:3px 3px 0 0;min-height:3px;transition:height .5s}
 .mood-bar-lbl{font-size:9px;color:var(--m)}
+
+/* ── MEJORAS VISUALES AUXILIARES - módulos avanzados ── */
+/* SUEÑO */
+.sleep-input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px}
+.sleep-inp-card{background:linear-gradient(135deg,rgba(124,109,250,.08),rgba(96,165,250,.05));border:1px solid rgba(124,109,250,.35);border-radius:18px;padding:14px;box-shadow:0 8px 20px rgba(0,0,0,.20)}
+.sleep-inp-lbl{font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.11em;margin-bottom:8px}
+.sleep-quality-row{display:flex;gap:8px;justify-content:flex-start;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.sleep-quality-row::-webkit-scrollbar{display:none}
+.sleep-q-btn{width:58px;height:58px;border-radius:14px;border:1.5px solid var(--b);background:var(--surface);font-size:22px;transition:all .2s}
+.sleep-q-btn.sel{border-color:var(--a2);background:rgba(109,250,196,.18);transform:scale(1.05)}
+.sleep-hist-row{background:linear-gradient(135deg,rgba(18,21,51,.8),rgba(21,25,68,.8));border:1px solid rgba(96,165,250,.3);border-radius:16px;padding:12px 14px;margin-bottom:8px}
+.sleep-hist-bar-bg{height:10px;background:rgba(31,35,75,.7);border-radius:6px}
+.sleep-hist-bar-fill{border-radius:6px}
+
+/* METAS */
+.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:14px}
+.meta-card{background:linear-gradient(145deg,rgba(25,29,70,.8),rgba(30,35,85,.8));border:1px solid rgba(124,109,250,.3);border-radius:18px;padding:16px;box-shadow:0 10px 22px rgba(0,0,0,.22)}
+.meta-card-top{gap:12px;margin-bottom:12px}
+.meta-title{font-size:15px;color:var(--txt)}
+.meta-deadline{font-size:11px;color:var(--m)}
+.meta-bar{height:10px;margin-bottom:8px}
+.meta-ms-chk{width:18px;height:18px}
+
+/* AGUA + NUTRICIÓN */
+.water-tank{width:160px;height:220px;border:3px solid var(--b2);box-shadow:0 8px 18px rgba(0,0,0,.22);border-radius:22px}
+.water-fill{border-radius:0 0 20px 20px}
+.water-glass{width:46px;height:46px;border-radius:14px}
+.water-glass.filled{background:linear-gradient(135deg,rgba(109,250,196,.3),rgba(96,165,250,.25));border-color:var(--a3)}
+.water-goal-row{gap:12px}
+
+/* MOOD */
+.mood-selector{gap:10px;justify-content:center;overflow-x:auto;padding-bottom:6px}
+.mood-selector::-webkit-scrollbar{display:none}
+.mood-btn{min-width:58px;height:58px;border-radius:18px;border:1.5px solid var(--b);background:var(--surface);font-size:24px}
+.mood-btn.sel{transform:scale(1.1);box-shadow:0 8px 16px rgba(124,109,250,.3)}
+.mood-label{font-size:15px}
+.mood-history-item{background:linear-gradient(135deg,rgba(18,22,61,.8),rgba(27,33,68,.8));border:1px solid rgba(96,165,250,.22);border-radius:14px;padding:12px 14px}
+
+/* POMODORO */
+.pom-ring-wrap{width:220px;height:220px}
+.pom-time-display{font-size:56px}
+.pom-controls{gap:12px;margin-bottom:24px}
+.pom-ctrl-btn{border-radius:14px;padding:12px 28px}
+.pom-task-select-wrap{max-width:380px}
+
+/* FINANZAS */
+.fin-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.fin-sum-card{border-radius:16px;padding:16px;box-shadow:0 8px 16px rgba(0,0,0,.2)}
+.fin-bar-wrap{border-radius:16px;padding:18px}
+.fin-cat-row{align-items:center;padding:5px}
+.fin-tx{border-radius:14px}
+.fin-budget-row{padding:10px}
+
 </style>
 
     <!-- NOTAS & WIKI -->
