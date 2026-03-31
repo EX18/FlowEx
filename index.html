@@ -1000,6 +1000,43 @@ select.fi option{background:var(--s2)}
       </div>
     </div>
 
+    <!-- LECTURA -->
+    <div class="page" id="page-lectura">
+      <div class="ph2">📚 Mi Biblioteca</div>
+      <div class="ph-sub">Seguí tu progreso de lectura.</div>
+      <div id="books-list" class="stg"></div>
+      <button class="plan-btn" onclick="openBookSheet()" style="margin-top:8px">➕ Agregar libro</button>
+    </div>
+
+    <!-- NOTIFS -->
+    <div class="page" id="page-notifs">
+      <div class="ph2">🔔 Notificaciones</div>
+      <div class="ph-sub">Configurá recordatorios y avisos.</div>
+      <div id="notifs-content"></div>
+    </div>
+
+    <!-- LOGROS -->
+    <div class="page" id="page-logros">
+      <div class="ph2">🏆 Logros</div>
+      <div class="ph-sub">Tus hitos y recompensas.</div>
+      <div id="achievements-list" class="stg"></div>
+    </div>
+
+    <!-- BREATH -->
+    <div class="page" id="page-breath">
+      <div class="ph2">🌬️ Mindfulness</div>
+      <div class="ph-sub">Sesiones de respiración y meditación.</div>
+      <div id="breath-content"></div>
+      <button class="plan-btn" onclick="startBreathSession()" style="margin-top:8px">🌬️ Nueva sesión</button>
+    </div>
+
+    <!-- ADMIN -->
+    <div class="page" id="page-admin">
+      <div class="ph2">👑 Panel Admin</div>
+      <div class="ph-sub">Solo para el creador.</div>
+      <div id="admin-content"></div>
+    </div>
+
     <!-- IA -->
     <div class="page" id="page-ia">
       <div class="ph2">🤖 Asistente IA</div>
@@ -1130,6 +1167,32 @@ select.fi option{background:var(--s2)}
   </div>
 </div>
 
+<!-- SHEET LIBRO -->
+<div class="shov" id="sh-book" onclick="csh('sh-book',event)">
+  <div class="sh" onclick="event.stopPropagation()">
+    <div class="shh"></div>
+    <div class="sht" id="sh-book-title">📖 Nuevo libro</div>
+    <div class="fl">Título</div>
+    <input id="book-title" class="fi" placeholder="Título del libro"/>
+    <div class="fl">Autor</div>
+    <input id="book-author" class="fi" placeholder="Nombre del autor"/>
+    <div class="fr">
+      <div><div class="fl">Emoji</div><input id="book-emoji" class="fi" placeholder="📚" maxlength="4"/></div>
+      <div><div class="fl">Páginas</div><input id="book-pages" class="fi" type="number" placeholder="300"/></div>
+    </div>
+    <div class="fl">Género</div>
+    <input id="book-genre" class="fi" placeholder="Ficción, Autoayuda..."/>
+    <div class="fl">Estado</div>
+    <select id="book-status" class="fi">
+      <option value="backlog">En backlog</option>
+      <option value="leyendo">Leyendo</option>
+      <option value="terminado">Terminado</option>
+    </select>
+    <button class="shbtn" onclick="saveBook()">Guardar libro</button>
+    <button class="del-btn" id="del-book-btn" onclick="deleteBook()" style="display:none">🗑 Eliminar libro</button>
+    <button class="shbtns" onclick="csh('sh-book')">Cancelar</button>
+  </div>
+</div>
 <div id="tc"></div>
 
 <!-- ═══════════════════════════════════════════
@@ -2144,6 +2207,128 @@ const renderStats = () => {
   }
 };
 
+<<<<<<< HEAD
+=======
+// ── LECTURA ───────────────────────────────────────
+const renderLectura = () => {
+  const bl = document.getElementById('books-list');
+  if (!bl) return;
+  if (!S.books) S.books = [];
+  bl.innerHTML = S.books.map(b => `
+    <div class="hr" onclick="openBookSheet('${b.id}')">
+      <div class="hem" style="font-size:24px">${b.emoji}</div>
+      <div class="hinfo">
+        <div class="hnm">${b.title}</div>
+        <div class="hsub">${b.author} • ${b.curPage}/${b.pages} páginas</div>
+        <div style="display:flex;gap:6px;margin-top:4px">
+          <span class="streak-badge" style="background:${b.coverColor}20;border-color:${b.coverColor}40;color:${b.coverColor}">${b.status}</span>
+          <span class="streak-badge">${b.genre}</span>
+        </div>
+      </div>
+    </div>`).join('');
+};
+
+// ── NOTIFS ─────────────────────────────────────────
+const renderNotifs = () => {
+  const nc = document.getElementById('notifs-content');
+  if (!nc) return;
+  if (!S.notifSettings) S.notifSettings = { enabled: false, habits: {}, dailySummary: '21:00', remindUnmarked: true };
+  nc.innerHTML = `
+    <div class="ss-group">
+      <div class="ss-item">
+        <div class="ss-ic">🔔</div>
+        <div class="ss-inf"><div class="ss-lb">Notificaciones activadas</div><div class="ss-ds">Recibir recordatorios</div></div>
+        <button class="tgl ${S.notifSettings.enabled ? 'on' : ''}" onclick="toggleNotifs()"></button>
+      </div>
+      <div class="ss-item">
+        <div class="ss-ic">📅</div>
+        <div class="ss-inf"><div class="ss-lb">Resumen diario</div><div class="ss-ds">Hora del recordatorio</div></div>
+        <input type="time" value="${S.notifSettings.dailySummary}" onchange="S.notifSettings.dailySummary=this.value; scheduleSave()" style="background:var(--s2);border:1px solid var(--b);border-radius:6px;padding:4px 8px;font-size:12px"/>
+      </div>
+      <div class="ss-item">
+        <div class="ss-ic">✅</div>
+        <div class="ss-inf"><div class="ss-lb">Recordar hábitos sin marcar</div><div class="ss-ds">A las 9 PM</div></div>
+        <button class="tgl ${S.notifSettings.remindUnmarked ? 'on' : ''}" onclick="S.notifSettings.remindUnmarked=!S.notifSettings.remindUnmarked; scheduleSave(); renderNotifs()"></button>
+      </div>
+    </div>`;
+};
+
+// ── LOGROS ─────────────────────────────────────────
+const renderLogros = () => {
+  const al = document.getElementById('achievements-list');
+  if (!al) return;
+  const achievements = [
+    { id: 'first_habit', name: 'Primer hábito', desc: 'Creaste tu primer hábito', icon: '🎯', unlocked: S.habits.length > 0 },
+    { id: 'week_streak', name: 'Semana perfecta', desc: 'Completaste todos los hábitos por 7 días', icon: '🔥', unlocked: S.habits.some(h => getStreak(h) >= 7) },
+    { id: 'month_streak', name: 'Mes de consistencia', desc: 'Mantuviste una racha de 30 días', icon: '🏆', unlocked: S.habits.some(h => getStreak(h) >= 30) },
+    { id: 'book_finished', name: 'Lector voraz', desc: 'Terminaste tu primer libro', icon: '📚', unlocked: S.books && S.books.some(b => b.status === 'terminado') },
+    { id: 'note_master', name: 'Escritor', desc: 'Creaste 10 notas', icon: '✍️', unlocked: S.notes && S.notes.length >= 10 },
+    { id: 'breath_zen', name: 'Zen master', desc: 'Completaste 10 sesiones de respiración', icon: '🧘', unlocked: S.breathSessions >= 10 }
+  ];
+  al.innerHTML = achievements.map(a => `
+    <div class="hr" style="opacity:${a.unlocked ? 1 : 0.5}">
+      <div class="hem" style="font-size:24px">${a.icon}</div>
+      <div class="hinfo">
+        <div class="hnm">${a.name}</div>
+        <div class="hsub">${a.desc}</div>
+        ${a.unlocked ? '<span class="streak-badge">✅ Desbloqueado</span>' : '<span class="streak-badge" style="background:var(--b);color:var(--m)">🔒 Bloqueado</span>'}
+      </div>
+    </div>`).join('');
+};
+
+// ── BREATH ─────────────────────────────────────────
+const renderBreath = () => {
+  const bc = document.getElementById('breath-content');
+  if (!bc) return;
+  if (!S.breathHistory) S.breathHistory = [];
+  bc.innerHTML = `
+    <div class="stat-card">
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="font-family:var(--fd);font-size:32px;font-weight:800;color:var(--a);margin-bottom:4px">${S.breathSessions || 0}</div>
+        <div style="font-size:12px;color:var(--m)">Sesiones completadas</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <button class="plan-btn" onclick="startBreathSession('4-7-8')" style="flex:1">4-7-8</button>
+        <button class="plan-btn" onclick="startBreathSession('Box Breathing')" style="flex:1">Box</button>
+      </div>
+    </div>
+    <div class="sec-head"><div class="sec-title">📅 Historial</div></div>
+    <div class="stg">
+      ${S.breathHistory.slice(-10).reverse().map(s => `
+        <div class="hr">
+          <div class="hem">${s.icon}</div>
+          <div class="hinfo">
+            <div class="hnm">${s.tech}</div>
+            <div class="hsub">${s.date} • ${s.time} • ${s.cycles} ciclos</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+};
+
+// ── ADMIN ──────────────────────────────────────────
+const loadAdminData = () => {
+  const ac = document.getElementById('admin-content');
+  if (!ac) return;
+  ac.innerHTML = '<div class="admin-spin"></div>';
+  // Simulate loading users
+  setTimeout(() => {
+    ac.innerHTML = `
+      <div class="admin-header">
+        <div class="admin-title">Panel de Administración</div>
+        <div class="admin-sub">Gestioná usuarios y datos globales</div>
+      </div>
+      <div class="global-stat-grid">
+        <div class="global-stat"><div class="global-stat-val">1,234</div><div class="global-stat-lbl">Usuarios totales</div></div>
+        <div class="global-stat"><div class="global-stat-val">45,678</div><div class="global-stat-lbl">Hábitos creados</div></div>
+        <div class="global-stat"><div class="global-stat-val">89,012</div><div class="global-stat-lbl">Sesiones completadas</div></div>
+      </div>
+      <div style="margin-top:20px">
+        <button class="plan-btn" onclick="alert('Función próximamente')">📊 Ver estadísticas detalladas</button>
+      </div>`;
+  }, 1000);
+};
+
+>>>>>>> ffe06fa (Repair)
 // ── HABIT CRUD ─────────────────────────────────────
 let editHId=null;
 window.openHabit = (id) => {
@@ -2411,6 +2596,92 @@ const sendToAI = async (userMsg) => {
   renderQRs(['¿Cómo mejorar mi racha?','Dame un tip','¿Qué hábito priorizar?','Motivame']);
 };
 
+<<<<<<< HEAD
+=======
+// ── LECTURA FUNCTIONS ──────────────────────────────
+let editBookId = null;
+window.openBookSheet = (id) => {
+  editBookId = id || null;
+  const b = id ? S.books.find(x => x.id === id) : null;
+  document.getElementById('sh-book-title').textContent = b ? '✎ Editar libro' : '📖 Nuevo libro';
+  document.getElementById('book-title').value = b ? b.title : '';
+  document.getElementById('book-author').value = b ? b.author : '';
+  document.getElementById('book-emoji').value = b ? b.emoji : '';
+  document.getElementById('book-pages').value = b ? b.pages : '';
+  document.getElementById('book-genre').value = b ? b.genre : '';
+  document.getElementById('book-status').value = b ? b.status : 'backlog';
+  const delBtn = document.getElementById('del-book-btn');
+  if (delBtn) delBtn.style.display = b ? 'block' : 'none';
+  document.getElementById('sh-book').classList.add('open');
+};
+
+window.saveBook = () => {
+  const title = document.getElementById('book-title').value.trim();
+  const author = document.getElementById('book-author').value.trim();
+  if (!title || !author) { toast('Título y autor requeridos', 'error'); return; }
+  if (!S.books) S.books = [];
+  const book = {
+    id: editBookId || uid(),
+    title, author,
+    emoji: document.getElementById('book-emoji').value || '📚',
+    pages: parseInt(document.getElementById('book-pages').value) || 0,
+    curPage: 0,
+    status: document.getElementById('book-status').value,
+    genre: document.getElementById('book-genre').value || '',
+    review: '',
+    sessions: [],
+    rating: 0,
+    addedAt: today()
+  };
+  if (editBookId) {
+    const idx = S.books.findIndex(b => b.id === editBookId);
+    if (idx >= 0) S.books[idx] = book;
+  } else {
+    S.books.push(book);
+  }
+  scheduleSave();
+  csh('sh-book');
+  renderLectura();
+  toast('Libro guardado!', 'success');
+};
+
+window.deleteBook = () => {
+  if (!editBookId || !confirm('¿Eliminar este libro?')) return;
+  S.books = S.books.filter(b => b.id !== editBookId);
+  scheduleSave();
+  csh('sh-book');
+  renderLectura();
+  toast('Libro eliminado', 'info');
+};
+
+// ── NOTIFS FUNCTIONS ───────────────────────────────
+window.toggleNotifs = () => {
+  S.notifSettings.enabled = !S.notifSettings.enabled;
+  scheduleSave();
+  renderNotifs();
+};
+
+// ── BREATH FUNCTIONS ───────────────────────────────
+window.startBreathSession = (tech) => {
+  if (!tech) tech = '4-7-8';
+  const icons = { '4-7-8': '😴', 'Box Breathing': '📦' };
+  const cycles = 4;
+  S.breathHistory = S.breathHistory || [];
+  S.breathHistory.push({
+    id: uid(),
+    date: today(),
+    time: new Date().toTimeString().slice(0,5),
+    tech: tech,
+    icon: icons[tech] || '🧘',
+    cycles: cycles
+  });
+  S.breathSessions = (S.breathSessions || 0) + 1;
+  scheduleSave();
+  renderBreath();
+  toast(`Sesión de ${tech} completada!`, 'success');
+};
+
+>>>>>>> ffe06fa (Repair)
 // ── UI HELPERS ─────────────────────────────────────
 window.csh = (id,event) => {
   if(event&&event.target!==document.getElementById(id)) return;
@@ -2485,4 +2756,8 @@ const hideSplash = () => {
 };
 </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> ffe06fa (Repair)
