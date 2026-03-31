@@ -1497,6 +1497,10 @@ const initApp = () => {
   if (!S.notifSettings) {
     S.notifSettings = { enabled: false, habits: {}, dailySummary: '21:00', remindUnmarked: true };
   }
+  if (S.notifSettings.enabled && Notification.permission !== 'granted') {
+    S.notifSettings.enabled = false;
+  }
+  scheduleNotifications();
   if (!S.breathHistory || S.breathHistory.length === 0) {
     S.breathHistory = [
       { id: uid(), date: today(), time: '08:00', tech: 'Box Breathing', icon: '📦', cycles: 4 },
@@ -2235,7 +2239,7 @@ const renderNotifs = () => {
     <div class="ss-group">
       <div class="ss-item">
         <div class="ss-ic">🔔</div>
-        <div class="ss-inf"><div class="ss-lb">Notificaciones activadas</div><div class="ss-ds">Recibir recordatorios</div></div>
+        <div class="ss-inf"><div class="ss-lb">Notificaciones</div><div class="ss-ds">${Notification.permission==='granted' ? 'Permitidas' : Notification.permission==='denied' ? 'Denegadas (ajustes)' : 'No solicitadas'}</div></div>
         <button class="tgl ${S.notifSettings.enabled ? 'on' : ''}" onclick="toggleNotifs()"></button>
       </div>
       <div class="ss-item">
@@ -2649,8 +2653,110 @@ window.deleteBook = () => {
 };
 
 // ── NOTIFS FUNCTIONS ───────────────────────────────
-window.toggleNotifs = () => {
-  S.notifSettings.enabled = !S.notifSettings.enabled;
+const NOTIF_CHECK_INTERVAL_MS = 60 * 1000;
+let notifIntervalId = null;
+let lastDailyNotifDate = null;
+let lastUnmarkedNotifDate = null;
+
+const showNotification = async (title, options={}) => {
+  if (!('Notification' in window)) return;
+  try {
+    if ('serviceWorker' in navigator) {
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg && reg.showNotification) {
+        return reg.showNotification(title, options);
+      }
+    }
+    return new Notification(title, options);
+  } catch (e) {
+    console.warn('No se puede mostrar notificación:', e);
+  }
+};
+
+const requestNotificationsPermission = async () => {
+  if (!('Notification' in window)) {
+    toast('Notificaciones no disponibles en este navegador', 'error');
+    return false;
+  }
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') {
+    toast('Permiso de notificaciones denegado. Activalo en la configuración del navegador.', 'error');
+    return false;
+  }
+  const perm = await Notification.requestPermission();
+  if (perm !== 'granted') {
+    toast('No se otorgó permiso para recibir recordatorios.', 'warn');
+    return false;
+  }
+  toast('Notificaciones activadas. ¡Recibirás recordatorios!', 'success');
+  return true;
+};
+
+const checkNotificationsDue = () => {
+  if (!S.notifSettings || !S.notifSettings.enabled) return;
+  if (Notification.permission !== 'granted') return;
+
+  const now = new Date();
+  const todayKey = now.toISOString().slice(0,10);
+  const [hour, minute] = (S.notifSettings.dailySummary || '21:00').split(':').map(Number);
+
+  if (Number.isInteger(hour) && Number.isInteger(minute)) {
+    const target = new Date(now);
+    target.setHours(hour, minute, 0, 0);
+    const diff = now - target;
+
+    if (diff >= 0 && diff < NOTIF_CHECK_INTERVAL_MS && lastDailyNotifDate !== todayKey) {
+      lastDailyNotifDate = todayKey;
+      const total = S.habits ? S.habits.length : 0;
+      const done = S.habits ? S.habits.filter(h => h.logs && h.logs[todayKey]).length : 0;
+      showNotification('FlowEX: Resumen diario', {
+        body: `Completaste ${done}/${total} hábitos hoy.
+${S.notifSettings.remindUnmarked ? 'Revisá hábitos sin marcar.' : ''}`.trim(),
+        icon: './icon-192.png'
+      });
+    }
+  }
+
+  if (S.notifSettings.remindUnmarked && lastUnmarkedNotifDate !== todayKey) {
+    const unmarked = S.habits ? S.habits.filter(h => !(h.logs && h.logs[todayKey])).length : 0;
+    if (unmarked > 0 && now.getHours() === 21 && now.getMinutes() === 0) {
+      lastUnmarkedNotifDate = todayKey;
+      showNotification('FlowEX: Hábitos sin marcar', {
+        body: `Quedan ${unmarked} hábito${unmarked===1?'':'s'} por marcar. ¡Todavía podés cerrar el día!`,
+        icon: './icon-192.png'
+      });
+    }
+  }
+};
+
+const scheduleNotifications = () => {
+  clearInterval(notifIntervalId);
+  notifIntervalId = null;
+  if (!S.notifSettings || !S.notifSettings.enabled || Notification.permission !== 'granted') return;
+  checkNotificationsDue();
+  notifIntervalId = setInterval(checkNotificationsDue, NOTIF_CHECK_INTERVAL_MS);
+};
+
+window.toggleNotifs = async () => {
+  if (!S.notifSettings) S.notifSettings = { enabled: false, habits: {}, dailySummary: '21:00', remindUnmarked: true };
+  if (!S.notifSettings.enabled) {
+    const granted = await requestNotificationsPermission();
+    if (!granted) {
+      S.notifSettings.enabled = false;
+      scheduleSave();
+      renderNotifs();
+      return;
+    }
+    S.notifSettings.enabled = true;
+    lastDailyNotifDate = null;
+    lastUnmarkedNotifDate = null;
+    scheduleNotifications();
+  } else {
+    S.notifSettings.enabled = false;
+    clearInterval(notifIntervalId);
+    notifIntervalId = null;
+    toast('Notificaciones desactivadas', 'info');
+  }
   scheduleSave();
   renderNotifs();
 };

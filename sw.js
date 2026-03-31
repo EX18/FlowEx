@@ -44,6 +44,20 @@ self.addEventListener('fetch', e => {
   );
 });
 
+// Notification click behavior
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
+      const client = clients.find(c => c.visibilityState === 'visible') || clients[0];
+      if (client) {
+        return client.focus();
+      }
+      return self.clients.openWindow('/');
+    })
+  );
+});
+
 // Background sync message
 self.addEventListener('message', e => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();
