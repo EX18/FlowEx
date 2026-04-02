@@ -480,6 +480,8 @@ const initApp = () => {
 
     updateGreeting();
     renderAll();
+    // Hide FAB initially (dashboard active)
+    document.querySelector('.fab').style.display = 'none';
     renderSettings();
     initIA();
 };
@@ -500,6 +502,7 @@ const renderAll = () => {
     if (pid === 'calendario') renderCalendario();
     if (pid === 'nutricion') renderNutricion();
     if (pid === 'mood') renderMood();
+    if (pid === 'mindfulness') renderMindfulness();
     if (pid === 'pomodoro') renderPomodoro();
     if (pid === 'finanzas') renderFinanzas();
 };
@@ -522,15 +525,19 @@ window.gp = (page) => {
     if (page === 'stats') renderStats();
     if (page === 'ajustes') renderSettings();
     if (page === 'ia') initIA();
-    if (page === 'admin' && isCreator()) loadAdminData();
+    if (page === 'admin' && isCreator()) window.loadAdminData();
     if (page === 'sueno') renderSueno();
     if (page === 'metas') renderMetas();
     if (page === 'calendario') renderCalendario();
     if (page === 'nutricion') renderNutricion();
     if (page === 'mood') renderMood();
+    if (page === 'mindfulness') renderMindfulness();
     if (page === 'pomodoro') renderPomodoro();
     if (page === 'finanzas') renderFinanzas();
     document.getElementById('pc').scrollTop = 0;
+    // Show FAB only on habits page
+    const fab = document.querySelector('.fab');
+    fab.style.display = page === 'habitos' ? 'block' : 'none';
 };
 
 // ── TASKS MODULE ───────────────────────────────────
@@ -874,6 +881,7 @@ const renderDashboard = () => {
     renderStatsRow();
     renderProgressRing();
     renderDashHabits();
+    renderDashWidgets();
 };
 
 const lvlName = l => ['Semilla', 'Brotando', 'En Forma', 'Constante', 'Imparable', 'Legendario', 'Máquina'][Math.min(l - 1, 6)];
@@ -953,6 +961,38 @@ const renderDashHabits = () => {
         return;
     }
     el.innerHTML = S.habits.slice(0, 6).map(h => habitRow(h, wk, td)).join('');
+};
+
+const renderDashWidgets = () => {
+    // Sleep widget
+    const sleepEl = document.getElementById('dash-sleep');
+    if (sleepEl) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const ydKey = yesterday.toISOString().slice(0, 10);
+        const lastSleep = S.sleep && S.sleep.find(s => s.date === ydKey);
+        const sleepValue = lastSleep ? `${lastSleep.hours}h ${lastSleep.quality}/5` : 'Sin datos';
+        document.getElementById('dash-sleep-value').textContent = sleepValue;
+        sleepEl.onclick = () => gp('sueno');
+    }
+
+    // Mood widget
+    const moodEl = document.getElementById('dash-mood');
+    if (moodEl) {
+        const td = today();
+        const todayMood = S.moods && S.moods.find(m => m.date === td);
+        const moodValue = todayMood ? `${todayMood.mood}/5` : 'Sin registrar';
+        document.getElementById('dash-mood-value').textContent = moodValue;
+        moodEl.onclick = () => gp('mood');
+    }
+
+    // Goals widget
+    const goalsEl = document.getElementById('dash-goals');
+    if (goalsEl) {
+        const activeGoals = S.goals ? S.goals.filter(g => !g.done).length : 0;
+        document.getElementById('dash-goals-value').textContent = `${activeGoals} activas`;
+        goalsEl.onclick = () => gp('metas');
+    }
 };
 
 // ── NOTES & WIKI MODULE (renderNotas) ───────────────────────────────
@@ -1374,12 +1414,27 @@ const renderNotifs = () => {
 const renderLogros = () => {
     const al = document.getElementById('achievements-list');
     if (!al) return;
-    const achievements = [{
+    const achievements = [
+        {
             id: 'first_habit',
             name: 'Primer hábito',
             desc: 'Creaste tu primer hábito',
             icon: '🎯',
             unlocked: S.habits.length > 0
+        },
+        {
+            id: 'ten_habits',
+            name: 'Hábitos múltiples',
+            desc: 'Creaste 10 hábitos',
+            icon: '🔥',
+            unlocked: S.habits.length >= 10
+        },
+        {
+            id: 'fifty_habits',
+            name: 'Maestro de hábitos',
+            desc: 'Creaste 50 hábitos',
+            icon: '🏅',
+            unlocked: S.habits.length >= 50
         },
         {
             id: 'week_streak',
@@ -1396,6 +1451,20 @@ const renderLogros = () => {
             unlocked: S.habits.some(h => getStreak(h) >= 30)
         },
         {
+            id: 'hundred_streak',
+            name: 'Leyenda',
+            desc: '100 días de racha en un hábito',
+            icon: '👑',
+            unlocked: S.habits.some(h => getStreak(h) >= 100)
+        },
+        {
+            id: 'year_streak',
+            name: 'Inmortal',
+            desc: '365 días de racha',
+            icon: '🌟',
+            unlocked: S.habits.some(h => getStreak(h) >= 365)
+        },
+        {
             id: 'book_finished',
             name: 'Lector voraz',
             desc: 'Terminaste tu primer libro',
@@ -1403,11 +1472,186 @@ const renderLogros = () => {
             unlocked: S.books && S.books.some(b => b.status === 'terminado')
         },
         {
+            id: 'five_books',
+            name: 'Bibliófilo',
+            desc: 'Terminaste 5 libros',
+            icon: '📖',
+            unlocked: S.books && S.books.filter(b => b.status === 'terminado').length >= 5
+        },
+        {
+            id: 'ten_books',
+            name: 'Erudito',
+            desc: 'Terminaste 10 libros',
+            icon: '🎓',
+            unlocked: S.books && S.books.filter(b => b.status === 'terminado').length >= 10
+        },
+        {
+            id: 'first_note',
+            name: 'Primer apunte',
+            desc: 'Creaste tu primera nota',
+            icon: '📝',
+            unlocked: S.notes && S.notes.length > 0
+        },
+        {
             id: 'note_master',
-            name: 'Escritor',
-            desc: 'Creaste 10 notas',
+            name: 'Escritor prolífico',
+            desc: 'Creaste 50 notas',
             icon: '✍️',
-            unlocked: S.notes && S.notes.length >= 10
+            unlocked: S.notes && S.notes.length >= 50
+        },
+        {
+            id: 'first_task',
+            name: 'Productivo',
+            desc: 'Completaste tu primera tarea',
+            icon: '✅',
+            unlocked: S.tasks && S.tasks.some(t => t.done)
+        },
+        {
+            id: 'hundred_tasks',
+            name: 'Máquina de tareas',
+            desc: 'Completaste 100 tareas',
+            icon: '🚀',
+            unlocked: S.tasks && S.tasks.filter(t => t.done).length >= 100
+        },
+        {
+            id: 'first_goal',
+            name: 'Ambicioso',
+            desc: 'Creaste tu primera meta',
+            icon: '🎯',
+            unlocked: S.goals && S.goals.length > 0
+        },
+        {
+            id: 'ten_goals',
+            name: 'Visionario',
+            desc: 'Completaste 10 metas',
+            icon: '🏔️',
+            unlocked: S.goals && S.goals.filter(g => g.done).length >= 10
+        },
+        {
+            id: 'first_sleep',
+            name: 'Descansado',
+            desc: 'Registraste tu primera noche de sueño',
+            icon: '😴',
+            unlocked: S.sleep && S.sleep.length > 0
+        },
+        {
+            id: 'thirty_sleep',
+            name: 'Experto en sueño',
+            desc: 'Registraste 30 noches de sueño',
+            icon: '🌙',
+            unlocked: S.sleep && S.sleep.length >= 30
+        },
+        {
+            id: 'first_mood',
+            name: 'Consciente',
+            desc: 'Registraste tu primer estado de ánimo',
+            icon: '😊',
+            unlocked: S.moods && S.moods.length > 0
+        },
+        {
+            id: 'thirty_mood',
+            name: 'Psicólogo',
+            desc: 'Registraste 30 estados de ánimo',
+            icon: '🧠',
+            unlocked: S.moods && S.moods.length >= 30
+        },
+        {
+            id: 'first_water',
+            name: 'Hidratado',
+            desc: 'Alcanzaste tu meta de agua por primera vez',
+            icon: '💧',
+            unlocked: S.water && S.water.logs && Object.keys(S.water.logs).length > 0
+        },
+        {
+            id: 'seven_water',
+            name: 'Acuático',
+            desc: 'Alcanzaste la meta de agua 7 días seguidos',
+            icon: '🌊',
+            unlocked: S.water && S.water.logs && Object.values(S.water.logs).filter(l => l >= S.water.goal).length >= 7
+        },
+        {
+            id: 'first_pom',
+            name: 'Enfocado',
+            desc: 'Completaste tu primera sesión Pomodoro',
+            icon: '🍅',
+            unlocked: S.pom && S.pom.sessions && S.pom.sessions.length > 0
+        },
+        {
+            id: 'hundred_pom',
+            name: 'Meditativo',
+            desc: 'Completaste 100 sesiones Pomodoro',
+            icon: '🧘',
+            unlocked: S.pom && S.pom.sessions && S.pom.sessions.length >= 100
+        },
+        {
+            id: 'first_transaction',
+            name: 'Financiero',
+            desc: 'Registraste tu primera transacción',
+            icon: '💰',
+            unlocked: S.finance && S.finance.transactions && S.finance.transactions.length > 0
+        },
+        {
+            id: 'hundred_transactions',
+            name: 'Contador',
+            desc: 'Registraste 100 transacciones',
+            icon: '📊',
+            unlocked: S.finance && S.finance.transactions && S.finance.transactions.length >= 100
+        },
+        {
+            id: 'first_event',
+            name: 'Organizado',
+            desc: 'Creaste tu primer evento',
+            icon: '📅',
+            unlocked: S.events && S.events.length > 0
+        },
+        {
+            id: 'fifty_events',
+            name: 'Planificador',
+            desc: 'Creaste 50 eventos',
+            icon: '🗓️',
+            unlocked: S.events && S.events.length >= 50
+        },
+        {
+            id: 'first_meal',
+            name: 'Nutricionista',
+            desc: 'Registraste tu primera comida',
+            icon: '🍽️',
+            unlocked: S.meals && S.meals.length > 0
+        },
+        {
+            id: 'thirty_meals',
+            name: 'Chef',
+            desc: 'Registraste 30 comidas',
+            icon: '👨‍🍳',
+            unlocked: S.meals && S.meals.length >= 30
+        },
+        {
+            id: 'level_five',
+            name: 'Nivel 5',
+            desc: 'Alcanzaste el nivel 5',
+            icon: '⭐',
+            unlocked: S.level >= 5
+        },
+        {
+            id: 'level_ten',
+            name: 'Nivel 10',
+            desc: 'Alcanzaste el nivel 10',
+            icon: '🌟',
+            unlocked: S.level >= 10
+        },
+        {
+            id: 'thousand_xp',
+            name: 'Experto',
+            desc: 'Ganaste 1,000 XP',
+            icon: '💎',
+            unlocked: S.xp >= 1000
+        },
+        {
+            id: 'five_thousand_xp',
+            name: 'Maestro',
+            desc: 'Ganaste 5,000 XP',
+            icon: '👑',
+            unlocked: S.xp >= 5000
         }
     ];
     al.innerHTML = achievements.map(a => `
@@ -1453,6 +1697,7 @@ window.openHabit = (id) => {
     document.getElementById('h-em').value = h ? h.emoji : '';
     document.getElementById('h-ar').value = h ? h.area : 'salud';
     document.getElementById('h-fr').value = h ? h.freq : 'daily';
+    document.getElementById('h-reminder').value = h ? (h.reminder || '') : '';
     document.getElementById('h-goal').value = h ? (h.goal || '') : '';
     const delBtn = document.getElementById('del-habit-btn');
     if (delBtn) delBtn.style.display = h ? 'block' : 'none';
@@ -1473,6 +1718,7 @@ window.saveHabit = () => {
             h.area = document.getElementById('h-ar').value;
             h.freq = document.getElementById('h-fr').value;
             h.goal = document.getElementById('h-goal').value.trim();
+            h.reminder = document.getElementById('h-reminder').value || null;
         }
         toast('✅ Hábito actualizado', 'success');
     } else {
@@ -1483,6 +1729,7 @@ window.saveHabit = () => {
             area: document.getElementById('h-ar').value,
             freq: document.getElementById('h-fr').value,
             goal: document.getElementById('h-goal').value.trim(),
+            reminder: document.getElementById('h-reminder').value || null,
             logs: {},
             created: today()
         });
@@ -1898,6 +2145,21 @@ const checkNotificationsDue = () => {
             });
         }
     }
+
+    // Per-habit reminders
+    if (S.habits) {
+        S.habits.forEach(h => {
+            if (h.reminder && !(h.logs && h.logs[todayKey])) {
+                const [rHour, rMin] = h.reminder.split(':').map(Number);
+                if (Number.isInteger(rHour) && Number.isInteger(rMin) && now.getHours() === rHour && now.getMinutes() === rMin) {
+                    showNotification(`FlowEX: ${h.emoji} ${h.name}`, {
+                        body: '¿Completaste este hábito hoy?',
+                        icon: './icon-192.png'
+                    });
+                }
+            }
+        });
+    }
 };
 
 const scheduleNotifications = () => {
@@ -1935,6 +2197,104 @@ window.toggleNotifs = async () => {
     }
     scheduleSave();
     renderNotifs();
+};
+
+// ── SEARCH ──────────────────────────────────────────
+let searchTimeout = null;
+
+window.openSearch = () => {
+    document.getElementById('sh-search').classList.add('open');
+    document.getElementById('search-input').focus();
+    performSearch();
+};
+
+window.performSearch = () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        const query = document.getElementById('search-input').value.toLowerCase().trim();
+        const resultsEl = document.getElementById('search-results');
+        if (!query) {
+            resultsEl.innerHTML = '<div class="empty"><div class="ei">🔍</div><div class="et">Escribí algo para buscar</div></div>';
+            return;
+        }
+        let results = [];
+
+        // Search habits
+        if (S.habits) {
+            S.habits.forEach(h => {
+                if (h.name.toLowerCase().includes(query) || (h.goal && h.goal.toLowerCase().includes(query))) {
+                    results.push({
+                        type: 'habito',
+                        icon: h.emoji,
+                        title: h.name,
+                        desc: h.goal || 'Sin descripción',
+                        action: `gp('habitos')`
+                    });
+                }
+            });
+        }
+
+        // Search tasks
+        if (S.tasks) {
+            S.tasks.forEach(t => {
+                if (t.name.toLowerCase().includes(query)) {
+                    results.push({
+                        type: 'tarea',
+                        icon: '✅',
+                        title: t.name,
+                        desc: t.done ? 'Completada' : 'Pendiente',
+                        action: `gp('tareas')`
+                    });
+                }
+            });
+        }
+
+        // Search notes
+        if (S.notes) {
+            S.notes.forEach(n => {
+                if (n.title.toLowerCase().includes(query) || n.body.toLowerCase().includes(query)) {
+                    results.push({
+                        type: 'nota',
+                        icon: '📝',
+                        title: n.title,
+                        desc: n.body.substring(0, 50) + (n.body.length > 50 ? '...' : ''),
+                        action: `gp('notas')`
+                    });
+                }
+            });
+        }
+
+        // Search goals
+        if (S.goals) {
+            S.goals.forEach(g => {
+                if (g.name.toLowerCase().includes(query) || (g.desc && g.desc.toLowerCase().includes(query))) {
+                    results.push({
+                        type: 'meta',
+                        icon: '🎯',
+                        title: g.name,
+                        desc: g.desc || 'Sin descripción',
+                        action: `gp('metas')`
+                    });
+                }
+            });
+        }
+
+        if (!results.length) {
+            resultsEl.innerHTML = '<div class="empty"><div class="ei">😔</div><div class="et">No se encontraron resultados</div></div>';
+            return;
+        }
+
+        resultsEl.innerHTML = results.map(r => `
+            <div class="search-result" onclick="${r.action}">
+                <div class="sr-icon">${r.icon}</div>
+                <div class="sr-content">
+                    <div class="sr-title">${r.title}</div>
+                    <div class="sr-desc">${r.desc}</div>
+                    <div class="sr-type">${r.type}</div>
+                </div>
+            </div>
+        `).join('');
+    }, 300);
 };
 
 // ── UI HELPERS ─────────────────────────────────────
@@ -1977,6 +2337,123 @@ window.confetti = () => {
         div.appendChild(p);
     }
     setTimeout(() => div.remove(), 1700);
+};
+
+// ── MÓDULO: MINDFULNESS 🧘 ───────────────────────────
+let breathInterval = null;
+let breathPhase = 0; // 0: inhale, 1: hold, 2: exhale
+let breathTime = 0;
+let meditationTimer = null;
+let meditationTime = 0;
+
+window.renderMindfulness = () => {
+    if (!S.mindfulness) S.mindfulness = { sessions: [], totalTime: 0 };
+    const statsEl = document.getElementById('mindfulness-stats');
+    if (statsEl) {
+        const totalSessions = S.mindfulness.sessions.length;
+        const totalTime = S.mindfulness.totalTime || 0;
+        const avgTime = totalSessions > 0 ? Math.round(totalTime / totalSessions) : 0;
+        statsEl.innerHTML = `
+            <div class="stat-item">
+                <div class="stat-val">${totalSessions}</div>
+                <div class="stat-lbl">Sesiones</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">${Math.floor(totalTime / 60)}min</div>
+                <div class="stat-lbl">Tiempo total</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">${avgTime}min</div>
+                <div class="stat-lbl">Promedio</div>
+            </div>
+        `;
+    }
+};
+
+window.startBreath = () => {
+    const circle = document.getElementById('breath-circle');
+    const instr = document.getElementById('breath-instr');
+    const startBtn = document.getElementById('breath-start');
+    const stopBtn = document.getElementById('breath-stop');
+    if (breathInterval) return;
+    startBtn.style.display = 'none';
+    stopBtn.style.display = 'block';
+    breathPhase = 0;
+    breathTime = 0;
+    instr.textContent = 'Inhalá';
+    circle.style.transform = 'scale(1)';
+    breathInterval = setInterval(() => {
+        breathTime++;
+        if (breathPhase === 0 && breathTime >= 4) { // inhale 4s
+            instr.textContent = 'Retené';
+            breathPhase = 1;
+            breathTime = 0;
+        } else if (breathPhase === 1 && breathTime >= 7) { // hold 7s
+            instr.textContent = 'Exhalá';
+            circle.style.transform = 'scale(0.5)';
+            breathPhase = 2;
+            breathTime = 0;
+        } else if (breathPhase === 2 && breathTime >= 8) { // exhale 8s
+            instr.textContent = 'Inhalá';
+            circle.style.transform = 'scale(1)';
+            breathPhase = 0;
+            breathTime = 0;
+        }
+    }, 1000);
+};
+
+window.stopBreath = () => {
+    const startBtn = document.getElementById('breath-start');
+    const stopBtn = document.getElementById('breath-stop');
+    const instr = document.getElementById('breath-instr');
+    const circle = document.getElementById('breath-circle');
+    clearInterval(breathInterval);
+    breathInterval = null;
+    startBtn.style.display = 'block';
+    stopBtn.style.display = 'none';
+    instr.textContent = 'Inhalá';
+    circle.style.transform = 'scale(1)';
+};
+
+window.startMeditation = (minutes) => {
+    if (meditationTimer) return;
+    meditationTime = minutes * 60;
+    const timerEl = document.createElement('div');
+    timerEl.id = 'meditation-timer';
+    timerEl.className = 'meditation-timer';
+    timerEl.innerHTML = `
+        <div class="med-timer-circle">
+            <div class="med-timer-text" id="med-timer-text">${minutes}:00</div>
+        </div>
+        <button class="med-stop-btn" onclick="stopMeditation()">Detener</button>
+    `;
+    document.body.appendChild(timerEl);
+    meditationTimer = setInterval(() => {
+        meditationTime--;
+        const min = Math.floor(meditationTime / 60);
+        const sec = meditationTime % 60;
+        document.getElementById('med-timer-text').textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+        if (meditationTime <= 0) {
+            stopMeditation();
+            toast('¡Sesión completada! 🧘', 'success');
+            // Save session
+            if (!S.mindfulness) S.mindfulness = { sessions: [], totalTime: 0 };
+            S.mindfulness.sessions.push({
+                date: today(),
+                duration: minutes
+            });
+            S.mindfulness.totalTime = (S.mindfulness.totalTime || 0) + minutes;
+            scheduleSave();
+            renderMindfulness();
+        }
+    }, 1000);
+};
+
+window.stopMeditation = () => {
+    clearInterval(meditationTimer);
+    meditationTimer = null;
+    const timerEl = document.getElementById('meditation-timer');
+    if (timerEl) timerEl.remove();
 };
 
 // ── PWA + BOOT ─────────────────────────────────────

@@ -4181,6 +4181,196 @@
         font-size: 13px;
         padding: 30px;
       }
+
+      /* MINDFULNESS STYLES */
+      .breath-hero {
+        text-align: center;
+        padding: 40px 20px;
+      }
+      .breath-circle {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: radial-gradient(circle, var(--a) 0%, var(--surface) 70%);
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 4s ease-in-out;
+        box-shadow: 0 8px 32px rgba(124, 109, 250, 0.3);
+      }
+      .breath-instr {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--txt);
+      }
+      .breath-controls {
+        margin-bottom: 20px;
+      }
+      .breath-btn {
+        background: var(--a);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .breath-btn:hover {
+        background: var(--a2);
+        transform: scale(1.05);
+      }
+      .breath-desc {
+        color: var(--m);
+        font-size: 14px;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+      .meditation-sessions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        padding: 20px;
+      }
+      .med-btn {
+        background: var(--surface);
+        border: 1px solid var(--b);
+        padding: 12px 20px;
+        border-radius: 20px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .med-btn:hover {
+        background: var(--a);
+        color: white;
+        border-color: var(--a);
+      }
+      .meditation-timer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+      .med-timer-circle {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: var(--surface);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      }
+      .med-timer-text {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--txt);
+      }
+      .med-stop-btn {
+        background: var(--a2);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      /* DASHBOARD WIDGETS */
+      .dashboard-widgets {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding: 0 0 20px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .dashboard-widgets::-webkit-scrollbar {
+        display: none;
+      }
+      .dash-widget {
+        min-width: 140px;
+        background: var(--surface);
+        border: 1px solid var(--b);
+        border-radius: 16px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .dash-widget:hover {
+        background: var(--s2);
+        border-color: var(--a);
+      }
+      .dw-icon {
+        font-size: 24px;
+      }
+      .dw-info {
+        flex: 1;
+      }
+      .dw-title {
+        font-size: 12px;
+        color: var(--m);
+        margin-bottom: 4px;
+      }
+      .dw-value {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--txt);
+      }
+
+      /* SEARCH STYLES */
+      .search-result {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 8px;
+        background: var(--surface);
+        border: 1px solid var(--b);
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .search-result:hover {
+        background: var(--s2);
+        border-color: var(--a);
+      }
+      .sr-icon {
+        font-size: 20px;
+      }
+      .sr-content {
+        flex: 1;
+      }
+      .sr-title {
+        font-weight: 600;
+        color: var(--txt);
+        margin-bottom: 2px;
+      }
+      .sr-desc {
+        font-size: 13px;
+        color: var(--m);
+        margin-bottom: 2px;
+      }
+      .sr-type {
+        font-size: 11px;
+        color: var(--m2);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
     </style>
   </head>
   <body>
@@ -4330,6 +4520,7 @@
       <div class="topnav">
         <div class="logo"></div>
         <div style="display: flex; gap: 8px; align-items: center">
+          <button class="icon-btn" onclick="openSearch()">🔍</button>
           <div class="sync-indicator" id="sync-status">
             <div class="sync-dot synced" id="sync-dot"></div>
             <span id="sync-label">Sync</span>
@@ -4393,6 +4584,34 @@
             </button>
           </div>
           <div id="dh" class="stg"></div>
+
+          <!-- DASHBOARD WIDGETS -->
+          <div class="sec-head">
+            <div class="sec-title">📈 Resumen diario</div>
+          </div>
+          <div class="dashboard-widgets">
+            <div class="dash-widget" id="dash-sleep">
+              <div class="dw-icon">😴</div>
+              <div class="dw-info">
+                <div class="dw-title">Sueño anoche</div>
+                <div class="dw-value" id="dash-sleep-value">Sin datos</div>
+              </div>
+            </div>
+            <div class="dash-widget" id="dash-mood">
+              <div class="dw-icon">😊</div>
+              <div class="dw-info">
+                <div class="dw-title">Ánimo hoy</div>
+                <div class="dw-value" id="dash-mood-value">Sin registrar</div>
+              </div>
+            </div>
+            <div class="dash-widget" id="dash-goals">
+              <div class="dw-icon">🎯</div>
+              <div class="dw-info">
+                <div class="dw-title">Próximas metas</div>
+                <div class="dw-value" id="dash-goals-value">0 activas</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- HÁBITOS -->
@@ -6604,7 +6823,14 @@
         <div class="page" id="page-admin">
           <div class="ph2">👑 Panel Admin</div>
           <div class="ph-sub">Solo para el creador.</div>
-          <div id="admin-content"></div>
+          <div class="admin-header">
+            <div class="admin-title">Estadísticas Globales</div>
+          </div>
+          <div class="global-stat-grid" id="admin-globals"></div>
+          <div class="admin-users-section">
+            <div class="admin-title">Usuarios</div>
+            <div id="admin-users-list"></div>
+          </div>
         </div>
 
         <!-- IA -->
@@ -7001,6 +7227,40 @@
           <div id="mood-history" class="stg"></div>
         </div>
 
+        <!-- MINDFULNESS 🧘 -->
+        <div class="page" id="page-mindfulness">
+          <div class="ph2">Mindfulness 🧘</div>
+          <div class="ph-sub">Ejercicios de respiración y meditación para tu bienestar.</div>
+
+          <div class="breath-hero">
+            <div class="breath-circle" id="breath-circle">
+              <div class="breath-instr" id="breath-instr">Inhalá</div>
+            </div>
+            <div class="breath-controls">
+              <button class="breath-btn" id="breath-start" onclick="startBreath()">Comenzar</button>
+              <button class="breath-btn" id="breath-stop" onclick="stopBreath()" style="display:none">Detener</button>
+            </div>
+            <div class="breath-desc">
+              Respiración 4-7-8: Inhalá 4s, retené 7s, exhalá 8s.
+            </div>
+          </div>
+
+          <div class="sec-head">
+            <div class="sec-title">🧘 Sesiones de Meditación</div>
+          </div>
+          <div class="meditation-sessions" id="meditation-sessions">
+            <button class="med-btn" onclick="startMeditation(5)">5 min</button>
+            <button class="med-btn" onclick="startMeditation(10)">10 min</button>
+            <button class="med-btn" onclick="startMeditation(15)">15 min</button>
+            <button class="med-btn" onclick="startMeditation(20)">20 min</button>
+          </div>
+
+          <div class="sec-head">
+            <div class="sec-title">📊 Tu progreso</div>
+          </div>
+          <div id="mindfulness-stats" class="stg"></div>
+        </div>
+
         <!-- POMODORO 🍅 -->
         <div class="page" id="page-pomodoro">
           <div class="ph2">Pomodoro 🍅</div>
@@ -7267,6 +7527,10 @@
           <div class="ni">😊</div>
           <div class="nl">Mood</div>
         </button>
+        <button class="nt" onclick="gp('mindfulness')" id="tab-mindfulness">
+          <div class="ni">🧘</div>
+          <div class="nl">Mente</div>
+        </button>
         <button class="nt" onclick="gp('pomodoro')" id="tab-pomodoro">
           <div class="ni">🍅</div>
           <div class="nl">Foco</div>
@@ -7390,6 +7654,8 @@
           <option value="weekends">Fines de semana</option>
           <option value="3x">3 veces por semana</option>
         </select>
+        <div class="fl">Recordatorio (opcional)</div>
+        <input id="h-reminder" class="fi" type="time" placeholder="09:00" />
         <div class="fl">Meta / Descripción (opcional)</div>
         <input id="h-goal" class="fi" placeholder="Ej: 8 vasos por día..." />
         <button class="shbtn" onclick="saveHabit()">Guardar hábito</button>
@@ -7737,6 +8003,17 @@
       </div>
     </div>
 
+    <!-- SHEET BÚSQUEDA -->
+    <div class="shov" id="sh-search" onclick="csh('sh-search', event)">
+      <div class="sh" onclick="event.stopPropagation()">
+        <div class="shh"></div>
+        <div class="sht">🔍 Búsqueda global</div>
+        <input id="search-input" class="fi" placeholder="Buscar en hábitos, tareas, notas, metas..." oninput="performSearch()" />
+        <div id="search-results" class="stg"></div>
+        <button class="shbtns" onclick="csh('sh-search')">Cerrar</button>
+      </div>
+    </div>
+
     <div id="tc"></div>
 
     <!-- ═══════════════════════════════════════════
@@ -7744,4 +8021,4 @@
 ═══════════════════════════════════════════ -->
     <script type="module" src="app.js"></script>
   </body>
-</html>
+/html>
