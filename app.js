@@ -402,6 +402,8 @@ const initApp = () => {
         appShell.appendChild(fab);
     }
 
+    updateNotifIcon();
+
     // Agregar ejemplos para nuevos usuarios
     if (!S.books || S.books.length === 0) {
         S.books = [{
@@ -1437,7 +1439,7 @@ const renderNotifs = () => {
             <div class="ss-item">
               <div class="ss-ic">🔔</div>
               <div class="ss-inf"><div class="ss-lb">Notificaciones</div><div class="ss-ds">${Notification.permission==='granted' ? 'Permitidas' : Notification.permission==='denied' ? 'Denegadas (ajustes)' : 'No solicitadas'}</div></div>
-              <button class="tgl ${S.notifSettings.enabled ? 'on' : ''}" onclick="toggleNotifs()"></button>
+              <button class="tgl ${S.notifSettings.enabled ? 'on' : ''}" onclick="toggleNotifs(); updateNotifIcon()"></button>
             </div>
             <div class="ss-item">
               <div class="ss-ic">📅</div>
@@ -1450,6 +1452,21 @@ const renderNotifs = () => {
               <button class="tgl ${S.notifSettings.remindUnmarked ? 'on' : ''}" onclick="S.notifSettings.remindUnmarked=!S.notifSettings.remindUnmarked; scheduleSave(); renderNotifs()"></button>
             </div>
           </div>`;
+    updateNotifIcon();
+};
+
+window.updateNotifIcon = () => {
+    const btn = document.getElementById('notif-toggle-btn');
+    if (!btn) return;
+    const enabled = S.notifSettings?.enabled;
+    const permission = Notification.permission;
+    btn.textContent = enabled && permission === 'granted' ? '🔔' : '🔕';
+    btn.title = enabled && permission === 'granted' ? 'Notificaciones activas' : 'Presiona para pedir permiso y activar';
+    if (enabled && permission === 'granted') {
+        btn.style.background = 'rgba(124, 109, 250, 0.22)';
+    } else {
+        btn.style.background = 'transparent';
+    }
 };
 
 // ── LOGROS ─────────────────────────────────────────
@@ -1982,6 +1999,8 @@ const initSmartNotifications = () => {
         smartNotificationsManager = new SmartNotificationsManager();
     }
     smartNotificationsManager.init();
+    renderNotifs();
+    updateNotifIcon();
 };
 
 // ── COMMUNITY ───────────────────────────────────────
