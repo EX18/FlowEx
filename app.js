@@ -391,6 +391,17 @@ const initApp = () => {
         }
     }
 
+    // Mover navegación y FAB a raíz de pantalla para no depender de un solo page
+    const appShell = document.getElementById('screen-app');
+    const bottomNav = document.querySelector('.bnav');
+    if (appShell && bottomNav && bottomNav.parentElement && bottomNav.parentElement !== appShell) {
+        appShell.appendChild(bottomNav);
+    }
+    const fab = document.querySelector('.fab');
+    if (appShell && fab && fab.parentElement && fab.parentElement !== appShell) {
+        appShell.appendChild(fab);
+    }
+
     // Agregar ejemplos para nuevos usuarios
     if (!S.books || S.books.length === 0) {
         S.books = [{
@@ -564,10 +575,11 @@ window.gp = (page) => {
     if (page === 'diario') renderDiario();
     if (page === 'tiempo') renderTiempo();
     if (page === 'buscar') renderBuscar();
-    document.getElementById('pc').scrollTop = 0;
+    const activePc = document.querySelector('.page.active .pc');
+    if (activePc) activePc.scrollTop = 0;
     // Show FAB only on habits page
     const fab = document.querySelector('.fab');
-    fab.style.display = page === 'habitos' ? 'block' : 'none';
+    if (fab) fab.style.display = page === 'habitos' ? 'block' : 'none';
 };
 
 // ── TASKS MODULE ───────────────────────────────────
