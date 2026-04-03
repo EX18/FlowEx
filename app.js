@@ -484,6 +484,28 @@ const initApp = () => {
     document.querySelector('.fab').style.display = 'none';
     renderSettings();
     initIA();
+
+    // Initialize Smart Notifications and Community (lazy load)
+    setTimeout(() => {
+        // Add sample community data if empty
+        if (!S.communityInitialized) {
+            S.communityInitialized = true;
+            scheduleSave();
+        }
+        // Initialize updates manager for notifications
+        initUpdates().then(() => {
+            // Show important announcements
+            if (updatesManager && updatesManager.announcements.length > 0) {
+                const importantAnnouncements = updatesManager.announcements.filter(a => a.important && !a.read).slice(0, 1);
+                if (importantAnnouncements.length > 0) {
+                    const announcement = importantAnnouncements[0];
+                    setTimeout(() => {
+                        showUpdateBanner(announcement.title, announcement.message, announcement.actionLink, announcement.action);
+                    }, 500);
+                }
+            }
+        });
+    }, 1000);
 };
 
 const renderAll = () => {
@@ -525,6 +547,10 @@ window.gp = (page) => {
     if (page === 'stats') renderStats();
     if (page === 'ajustes') renderSettings();
     if (page === 'ia') initIA();
+    if (page === 'notificaciones') initSmartNotifications();
+    if (page === 'comunidad') initCommunity();
+    if (page === 'actualizaciones') initUpdates();
+    if (page === 'todolist') initTodoList();
     if (page === 'admin' && isCreator()) window.loadAdminData();
     if (page === 'sueno') renderSueno();
     if (page === 'metas') renderMetas();
@@ -534,6 +560,10 @@ window.gp = (page) => {
     if (page === 'mindfulness') renderMindfulness();
     if (page === 'pomodoro') renderPomodoro();
     if (page === 'finanzas') renderFinanzas();
+    if (page === 'proyectos') renderProyectos();
+    if (page === 'diario') renderDiario();
+    if (page === 'tiempo') renderTiempo();
+    if (page === 'buscar') renderBuscar();
     document.getElementById('pc').scrollTop = 0;
     // Show FAB only on habits page
     const fab = document.querySelector('.fab');
@@ -1925,89 +1955,48 @@ window.exportData = () => {
 };
 
 // ── IA ─────────────────────────────────────────────
-let iaHist = [];
+let aiMentor = null;
 const initIA = () => {
-    const el = document.getElementById('ia-msgs');
-    if (!el || el.children.length > 0) return;
-    iaHist = [];
-    appendMsg('bot', '¡Hola ' + (S.name || CUR_USER || 'amigo') + '! 👋 Soy tu coach de hábitos. Puedo analizar tu progreso, darte consejos y motivarte. ¿Qué querés saber?');
-    renderQRs(['¿Cómo voy esta semana?', '¿Cuál es mi mejor racha?', 'Dame motivación', '¿Qué hábito mejorar?']);
-};
-
-const renderQRs = qs => {
-    const el = document.getElementById('ia-qrs');
-    if (el) el.innerHTML = qs.map(q => `<button class="iaqr" onclick="window.quickAsk('${q.replace(/'/g,"\\'")}')"> ${q}</button>`).join('');
-};
-
-window.quickAsk = q => {
-    document.getElementById('ia-qrs').innerHTML = '';
-    appendMsg('user', q);
-    sendToAI(q);
-};
-window.sendIA = () => {
-    const inp = document.getElementById('ia-inp');
-    const msg = inp ? inp.value.trim() : '';
-    if (!msg) return;
-    inp.value = '';
-    document.getElementById('ia-qrs').innerHTML = '';
-    appendMsg('user', msg);
-    sendToAI(msg);
-};
-
-const appendMsg = (role, text) => {
-    const el = document.getElementById('ia-msgs');
-    if (!el) return;
-    const div = document.createElement('div');
-    div.className = 'iam ' + role;
-    div.innerHTML = `<div class="iamav">${role==='bot'?'🤖':'👤'}</div><div class="iabub">${text}</div>`;
-    el.appendChild(div);
-    el.scrollTop = el.scrollHeight;
-};
-
-const sendToAI = async (userMsg) => {
-    const typing = document.createElement('div');
-    typing.className = 'iam bot';
-    typing.id = 'typing';
-    typing.innerHTML = `<div class="iamav">🤖</div><div class="iabub"><div class="tdots"><span></span><span></span><span></span></div></div>`;
-    document.getElementById('ia-msgs').appendChild(typing);
-    document.getElementById('ia-msgs').scrollTop = 9999;
-
-    const td = today();
-    const doneCnt = S.habits.filter(h => h.logs && h.logs[td]).length;
-    const habInfo = S.habits.map(h => `- ${h.emoji} ${h.name} (racha: ${getStreak(h)} días, hoy: ${h.logs&&h.logs[td]?'✅':'⬜'})`).join('\n');
-    const sys = `Eres FlowEX AI, coach motivador de hábitos para @${CUR_USER} (${S.name||''}). Español conciso, máximo 3 oraciones. Nivel ${S.level}, ${S.xp} XP. Hoy: ${doneCnt}/${S.habits.length} hábitos.\nHábitos:\n${habInfo}`;
-    iaHist.push({
-        role: 'user',
-        content: userMsg
-    });
-
-    try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
-                max_tokens: 400,
-                system: sys,
-                messages: iaHist.slice(-8)
-            })
-        });
-        const data = await res.json();
-        document.getElementById('typing')?.remove();
-        const reply = data.content?.[0]?.text || 'Intentá de nuevo.';
-        iaHist.push({
-            role: 'assistant',
-            content: reply
-        });
-        appendMsg('bot', reply);
-    } catch (e) {
-        document.getElementById('typing')?.remove();
-        const tips = ['No rompas la cadena — cada ✅ construye tu identidad. 🔗', 'La consistencia vence a la intensidad. 10 min/día > 2h una vez. ⚡', 'Celebrá los pequeños logros. Cada marca es una victoria. 🏆'];
-        appendMsg('bot', tips[Math.floor(Math.random() * tips.length)]);
+    if (!aiMentor) {
+        aiMentor = new AIMentor();
     }
-    renderQRs(['¿Cómo mejorar mi racha?', 'Dame un tip', '¿Qué hábito priorizar?', 'Motivame']);
+    aiMentor.init();
+};
+
+// ── SMART NOTIFICATIONS ─────────────────────────────
+let smartNotificationsManager = null;
+const initSmartNotifications = () => {
+    if (!smartNotificationsManager) {
+        smartNotificationsManager = new SmartNotificationsManager();
+    }
+    smartNotificationsManager.init();
+};
+
+// ── COMMUNITY ───────────────────────────────────────
+let communityManager = null;
+const initCommunity = () => {
+    if (!communityManager) {
+        communityManager = new CommunityManager();
+    }
+    communityManager.init();
+};
+
+// ── UPDATES ─────────────────────────────────────────
+let updatesManager = null;
+const initUpdates = async () => {
+    if (!updatesManager) {
+        updatesManager = new UpdatesManager();
+    }
+    await updatesManager.init();
+};
+
+// ── TODO LIST ───────────────────────────────────────────
+let todoListManager = null;
+const initTodoList = async () => {
+    if (!todoListManager) {
+        todoListManager = new TodoListManager();
+    }
+    await todoListManager.init();
 };
 
 // ── LECTURA FUNCTIONS ──────────────────────────────
@@ -2323,6 +2312,30 @@ window.toast = (msg, type = 'info') => {
         t.style.transition = 'opacity .3s';
         setTimeout(() => t.remove(), 300);
     }, 2800);
+};
+
+// Show update banner notifications
+window.showUpdateBanner = (title, message, action = null, actionLabel = 'Ver') => {
+    const container = document.getElementById('updates-notifications-container');
+    if (!container) return;
+
+    const banner = document.createElement('div');
+    banner.className = 'updates-banner';
+    banner.innerHTML = `
+        <div class="updates-banner-title">${title}</div>
+        <div class="updates-banner-text">${message}</div>
+        <div class="updates-banner-actions">
+            <button class="updates-banner-btn" onclick="this.closest('.updates-banner').remove()">Descartar</button>
+            ${action ? `<button class="updates-banner-btn primary" onclick="gp('${action}'); this.closest('.updates-banner').remove()">${actionLabel}</button>` : ''}
+        </div>
+    `;
+    
+    container.appendChild(banner);
+    
+    // Auto-dismiss after 8 seconds
+    setTimeout(() => {
+        if (banner.remove) banner.remove();
+    }, 8000);
 };
 
 window.confetti = () => {
@@ -3793,3 +3806,33 @@ window.renderFinanzas = () => {
         content.innerHTML = `<div class="fin-bar-wrap"><div class="fin-bar-title">Presupuesto mensual</div><div class="fin-empty" style="padding:10px 0">Función próximamente</div></div>`;
     }
 };
+
+// ── PROYECTOS MODULE ─────────────────────────────────
+window.renderProyectos = () => {
+    projectManager.init();
+};
+
+// ── DIARIO MODULE ─────────────────────────────────
+window.renderDiario = () => {
+    journalManager.init();
+    updateJournalStats();
+};
+
+// ── TIEMPO MODULE ─────────────────────────────────
+window.renderTiempo = () => {
+    timeTrackerManager.init();
+};
+
+// ── BUSCAR MODULE ─────────────────────────────────
+window.renderBuscar = () => {
+    searchManager.init();
+};
+
+// Actualizar estadísticas del diario
+function updateJournalStats() {
+    const stats = journalManager.getStats();
+    document.getElementById('journal-streak').textContent = stats.streak;
+    document.getElementById('journal-this-month').textContent = stats.thisMonth;
+    document.getElementById('journal-avg-mood').textContent = journalManager.getMoodEmoji(stats.avgMood);
+    document.getElementById('journal-avg-mood-text').textContent = stats.avgMood.charAt(0).toUpperCase() + stats.avgMood.slice(1);
+}
