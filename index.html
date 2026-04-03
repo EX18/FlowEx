@@ -1018,6 +1018,18 @@
       .nt.active .ni {
         transform: translateY(-3px) scale(1.1);
       }
+      .nt:hover {
+        color: var(--a);
+      }
+      .nt:hover .ni {
+        transform: translateY(-2px) scale(1.05);
+        filter: drop-shadow(0 0 8px rgba(124, 109, 250, 0.4));
+      }
+      .nt.active {
+        color: var(--a);
+        background: rgba(124, 109, 250, 0.1);
+        border-radius: 12px;
+      }
       .nt.active {
         color: var(--a);
       }
@@ -7487,6 +7499,62 @@
         color: var(--txt);
       }
 
+      /* MÓDULOS GRID */
+      .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 16px;
+        padding: 0 0 20px;
+      }
+      .module-card {
+        background: var(--surface);
+        border: 1px solid var(--b);
+        border-radius: 16px;
+        padding: 20px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        min-height: 100px;
+        position: relative;
+        overflow: hidden;
+      }
+      .module-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: inherit;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .module-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: var(--a);
+      }
+      .module-card:hover::before {
+        opacity: 1;
+      }
+      .module-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--txt);
+        margin-bottom: 8px;
+        z-index: 1;
+        position: relative;
+      }
+      .module-icon {
+        font-size: 28px;
+        z-index: 1;
+        position: relative;
+      }
+
       /* SEARCH STYLES */
       .search-result {
         display: flex;
@@ -7766,6 +7834,45 @@
                 <div class="dw-value" id="dash-goals-value">0 activas</div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- MÓDULOS PRINCIPALES -->
+        <div class="sec-head">
+          <div class="sec-title">🚀 Módulos principales</div>
+        </div>
+        <div class="modules-grid">
+          <div class="module-card" onclick="gp('habitos')" style="background: linear-gradient(135deg, rgba(250, 109, 143, 0.15), rgba(250, 196, 109, 0.1)); border: 1px solid rgba(250, 109, 143, 0.3);">
+            <div class="module-name">Hábitos</div>
+            <div class="module-icon">🔥</div>
+          </div>
+          <div class="module-card" onclick="gp('tareas')" style="background: linear-gradient(135deg, rgba(109, 250, 143, 0.15), rgba(109, 196, 250, 0.1)); border: 1px solid rgba(109, 250, 143, 0.3);">
+            <div class="module-name">Tareas</div>
+            <div class="module-icon">✅</div>
+          </div>
+          <div class="module-card" onclick="gp('notas')" style="background: linear-gradient(135deg, rgba(250, 196, 109, 0.15), rgba(250, 109, 196, 0.1)); border: 1px solid rgba(250, 196, 109, 0.3);">
+            <div class="module-name">Notas</div>
+            <div class="module-icon">📝</div>
+          </div>
+          <div class="module-card" onclick="gp('ia')" style="background: linear-gradient(135deg, rgba(124, 109, 250, 0.15), rgba(250, 109, 196, 0.1)); border: 1px solid rgba(124, 109, 250, 0.3);">
+            <div class="module-name">AI Mentor</div>
+            <div class="module-icon">🤖</div>
+          </div>
+          <div class="module-card" onclick="gp('comunidad')" style="background: linear-gradient(135deg, rgba(109, 250, 196, 0.15), rgba(109, 143, 250, 0.1)); border: 1px solid rgba(109, 250, 196, 0.3);">
+            <div class="module-name">Comunidad</div>
+            <div class="module-icon">🌍</div>
+          </div>
+          <div class="module-card" onclick="gp('actualizaciones')" style="background: linear-gradient(135deg, rgba(250, 143, 109, 0.15), rgba(196, 250, 109, 0.1)); border: 1px solid rgba(250, 143, 109, 0.3);">
+            <div class="module-name">Actualizaciones</div>
+            <div class="module-icon">📢</div>
+          </div>
+          <div class="module-card" onclick="gp('stats')" style="background: linear-gradient(135deg, rgba(143, 250, 109, 0.15), rgba(250, 196, 143, 0.1)); border: 1px solid rgba(143, 250, 109, 0.3);">
+            <div class="module-name">Estadísticas</div>
+            <div class="module-icon">📊</div>
+          </div>
+          <div class="module-card" onclick="gp('ajustes')" style="background: linear-gradient(135deg, rgba(196, 109, 250, 0.15), rgba(250, 143, 196, 0.1)); border: 1px solid rgba(196, 109, 250, 0.3);">
+            <div class="module-name">Ajustes</div>
+            <div class="module-icon">⚙️</div>
           </div>
         </div>
 
