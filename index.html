@@ -309,23 +309,6 @@
           bottom: 28px;
           right: 32px;
         }
-        .updates-fab {
-          position: fixed;
-          bottom: 96px;
-          right: 32px;
-          background: var(--a);
-          color: #0f0f1a;
-          border-radius: 24px;
-          padding: 0.8em 1rem;
-          font-weight: 700;
-          box-shadow: var(--shadow);
-          border: 1px solid rgba(124,109,250,0.5);
-          z-index: 100;
-          transition: transform 0.2s ease;
-        }
-        .updates-fab:hover {
-          transform: translateY(-2px);
-        }
         /* Auth stays centered */
         .auth-wrap {
           max-width: 460px;
@@ -1034,18 +1017,6 @@
       }
       .nt.active .ni {
         transform: translateY(-3px) scale(1.1);
-      }
-      .nt:hover {
-        color: var(--a);
-      }
-      .nt:hover .ni {
-        transform: translateY(-2px) scale(1.05);
-        filter: drop-shadow(0 0 8px rgba(124, 109, 250, 0.4));
-      }
-      .nt.active {
-        color: var(--a);
-        background: rgba(124, 109, 250, 0.1);
-        border-radius: 12px;
       }
       .nt.active {
         color: var(--a);
@@ -7522,6 +7493,24 @@
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
         gap: 16px;
         padding: 0 0 20px;
+        max-height: 400px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--a) var(--b);
+      }
+      .modules-grid::-webkit-scrollbar {
+        width: 6px;
+      }
+      .modules-grid::-webkit-scrollbar-track {
+        background: var(--b);
+        border-radius: 3px;
+      }
+      .modules-grid::-webkit-scrollbar-thumb {
+        background: var(--a);
+        border-radius: 3px;
+      }
+      .modules-grid::-webkit-scrollbar-thumb:hover {
+        background: var(--a2);
       }
       .module-card {
         background: var(--surface);
@@ -7761,7 +7750,6 @@
         <div class="logo"></div>
         <div style="display: flex; gap: 8px; align-items: center">
           <button class="icon-btn" onclick="openSearch()">🔍</button>
-          <button class="icon-btn" id="notif-toggle-btn" onclick="toggleNotifs(); updateNotifIcon()" title="Activar/desactivar notificaciones">🔕</button>
           <div class="sync-indicator" id="sync-status">
             <div class="sync-dot synced" id="sync-dot"></div>
             <span id="sync-label">Sync</span>
@@ -7950,15 +7938,6 @@
               <div class="module-name">IA Mentor</div>
             </button>
           </div>
-        </div>
-
-        <!-- IA PRÓXIMAMENTE -->
-        <div class="sec-head">
-          <div class="sec-title">🤖 IA Mentor (Próximo lanzamiento)</div>
-        </div>
-        <div class="gs-card" style="border:1px dashed rgba(124,109,250,0.4); background:rgba(124,109,250,0.08);">
-          <div style="font-family:var(--fd); font-size:1rem;">En desarrollo: pronto tendrás recomendaciones inteligentes, análisis de hábitos y apoyo diario directamente en tu panel.</div>
-          <button class="plan-btn" onclick="gp('ia')" style="margin-top:8px; width:100%;">Ver detalles de IA (borrador)</button>
         </div>
 
         <!-- HÁBITOS -->
@@ -10152,6 +10131,13 @@
           </button>
         </div>
 
+        <!-- NOTIFS -->
+        <div class="page" id="page-notifs">
+          <div class="ph2">🔔 Notificaciones</div>
+          <div class="ph-sub">Configurá recordatorios y avisos.</div>
+          <div id="notifs-content"></div>
+        </div>
+
         <!-- LOGROS -->
         <div class="page" id="page-logros">
           <div class="ph2">🏆 Logros</div>
@@ -10162,10 +10148,9 @@
         <!-- ADMIN -->
         <div class="page" id="page-admin">
           <div class="ph2">👑 Panel Admin</div>
-          <div class="ph-sub">Solo para el creador. Control y métricas rápidas.</div>
-          <div class="admin-header" style="margin-bottom:10px;">
+          <div class="ph-sub">Solo para el creador.</div>
+          <div class="admin-header">
             <div class="admin-title">Estadísticas Globales</div>
-            <div class="admin-note" style="font-size:12px;color:var(--m);">Datos de uso, salud de la app y acceso directo a acciones de mantenimiento</div>
           </div>
           <div class="global-stat-grid" id="admin-globals"></div>
           <div class="admin-users-section">
@@ -10207,27 +10192,16 @@
           <div class="pc">
             <div class="sec">
               <div class="sec-title">
-                🔔 Notificaciones
+                🔔 Notificaciones Ultra-Inteligentes
               </div>
               <div class="sec-desc">
-                Permite las notificaciones, objetivos de hábitos y recordatorios.
+                Sistema predictivo de recordatorios y alertas personalizadas
               </div>
             </div>
 
-            <div class="ss-group" style="margin-top: 8px;" id="notifs-content"></div>
-
-            <button class="plan-btn" style="margin-top: 12px;" onclick="toggleNotifs(); updateNotifIcon()">
-              Activar / Desactivar notificaciones
-            </button>
-            <div style="margin-top: 8px; color: var(--m); font-size:12px;">
-              Las notificaciones generales se manejan aquí. Para notificaciones inteligentes y avisos de hábitos, el área inferior muestra el motor IA.
+            <div id="ai-chat-container">
+              <!-- Smart Notifications interface will be rendered here -->
             </div>
-
-            <div class="sec-head" style="margin-top: 14px;">
-              <div class="sec-title">🔮 Modo Smart Notifications</div>
-              <div class="sec-desc">Ajustes avanzados y eventos in-app</div>
-            </div>
-            <div id="ai-chat-container"></div>
           </div>
         </div>
 
@@ -10963,8 +10937,13 @@
             📖 Diario <span class="sec-count" id="journal-count">0</span>
           </div>
           <div class="sec-desc">
-            Reflexiona sobre tu día, registra tus pensamientos y emociones.
-            Mantén un historial claro y coche rápido de tu estado mental.
+            Reflexiona sobre tu día, registra tus pensamientos y emociones
+          </div>
+        </div>
+
+        <div id="journal-overview">
+          <div class="journal-stats">
+            <div class="stat-card">
               <div class="stat-icon">📊</div>
               <div class="stat-info">
                 <div class="stat-value" id="journal-streak">0</div>
@@ -11088,22 +11067,124 @@
         </div>
       </div>
       <!-- /pc -->
-    </div>
 
-    <nav class="bnav">
-      <button class="nt active" onclick="gp('dashboard')" id="tab-dashboard"><div class="ni">⊞</div><div class="nl">Inicio</div></button>
-      <button class="nt" onclick="gp('diario')" id="tab-diario"><div class="ni">📖</div><div class="nl">Diario</div></button>
-      <button class="nt" onclick="gp('habitos')" id="tab-habitos"><div class="ni">🔥</div><div class="nl">Hábitos</div></button>
-      <button class="nt" onclick="gp('tareas')" id="tab-tareas"><div class="ni">✅</div><div class="nl">Tareas</div></button>
-      <button class="nt" onclick="gp('notificaciones')" id="tab-notificaciones"><div class="ni">🔔</div><div class="nl">Notifs</div></button>
-      <button class="nt" onclick="gp('comunidad')" id="tab-comunidad"><div class="ni">🌍</div><div class="nl">Comunidad</div></button>
-      <button class="nt" onclick="gp('actualizaciones')" id="tab-actualizaciones"><div class="ni">📢</div><div class="nl">Actualiz.</div></button>
-      <button class="nt" onclick="gp('todolist')" id="tab-todolist"><div class="ni">📝</div><div class="nl">Todo</div></button>
-      <button class="nt" onclick="gp('ajustes')" id="tab-ajustes"><div class="ni">⚙</div><div class="nl">Ajustes</div></button>
-      <button class="nt" id="tab-admin" onclick="gp('admin')" style="display:none"><div class="ni">👑</div><div class="nl">Admin</div></button>
-    </nav>
-    <button class="fab" onclick="openHabit()" title="Agregar hábito">＋</button>
-    <button class="updates-fab" onclick="gp('actualizaciones')" title="Centro de actualizaciones">✨ Evento</button>
+      <nav class="bnav">
+        <button class="nt active" onclick="gp('dashboard')" id="tab-dashboard">
+          <div class="ni">⊞</div>
+          <div class="nl">Inicio</div>
+        </button>
+        <button class="nt" onclick="gp('habitos')" id="tab-habitos">
+          <div class="ni">🔥</div>
+          <div class="nl">Hábitos</div>
+        </button>
+        <button class="nt" onclick="gp('tareas')" id="tab-tareas">
+          <div class="ni">✅</div>
+          <div class="nl">Tareas</div>
+        </button>
+        <button class="nt" onclick="gp('notas')" id="tab-notas">
+          <div class="ni">📝</div>
+          <div class="nl">Notas</div>
+        </button>
+        <button class="nt" onclick="gp('lectura')" id="tab-lectura">
+          <div class="ni">📚</div>
+          <div class="nl">Lectura</div>
+        </button>
+        <button class="nt" onclick="gp('notifs')" id="tab-notifs">
+          <div class="ni">🔔</div>
+          <div class="nl">Avisos</div>
+        </button>
+        <button class="nt" onclick="gp('logros')" id="tab-logros">
+          <div class="ni">🏆</div>
+          <div class="nl">Logros</div>
+        </button>
+        <button class="nt" onclick="gp('stats')" id="tab-stats">
+          <div class="ni">📊</div>
+          <div class="nl">Stats</div>
+        </button>
+        <button class="nt" onclick="gp('ia')" id="tab-ia">
+          <div class="ni">🤖</div>
+          <div class="nl">IA</div>
+        </button>
+        <button class="nt" onclick="gp('sueno')" id="tab-sueno">
+          <div class="ni">😴</div>
+          <div class="nl">Sueño</div>
+        </button>
+        <button class="nt" onclick="gp('metas')" id="tab-metas">
+          <div class="ni">🎯</div>
+          <div class="nl">Metas</div>
+        </button>
+        <button class="nt" onclick="gp('calendario')" id="tab-calendario">
+          <div class="ni">📅</div>
+          <div class="nl">Cal</div>
+        </button>
+        <button class="nt" onclick="gp('nutricion')" id="tab-nutricion">
+          <div class="ni">💧</div>
+          <div class="nl">Agua</div>
+        </button>
+        <button class="nt" onclick="gp('mood')" id="tab-mood">
+          <div class="ni">😊</div>
+          <div class="nl">Mood</div>
+        </button>
+        <button class="nt" onclick="gp('mindfulness')" id="tab-mindfulness">
+          <div class="ni">🧘</div>
+          <div class="nl">Mente</div>
+        </button>
+        <button class="nt" onclick="gp('pomodoro')" id="tab-pomodoro">
+          <div class="ni">🍅</div>
+          <div class="nl">Foco</div>
+        </button>
+        <button class="nt" onclick="gp('finanzas')" id="tab-finanzas">
+          <div class="ni">💰</div>
+          <div class="nl">Finanzas</div>
+        </button>
+        <button class="nt" onclick="gp('proyectos')" id="tab-proyectos">
+          <div class="ni">📁</div>
+          <div class="nl">Proyectos</div>
+        </button>
+        <button class="nt" onclick="gp('diario')" id="tab-diario">
+          <div class="ni">📖</div>
+          <div class="nl">Diario</div>
+        </button>
+        <button class="nt" onclick="gp('tiempo')" id="tab-tiempo">
+          <div class="ni">⏱️</div>
+          <div class="nl">Tiempo</div>
+        </button>
+        <button class="nt" onclick="gp('buscar')" id="tab-buscar">
+          <div class="ni">🔍</div>
+          <div class="nl">Buscar</div>
+        </button>
+        <button class="nt" onclick="gp('ia')" id="tab-ia">
+          <div class="ni">🧠</div>
+          <div class="nl">IA</div>
+        </button>
+        <button class="nt" onclick="gp('notificaciones')" id="tab-notificaciones">
+          <div class="ni">🔔</div>
+          <div class="nl">Notif</div>
+        </button>
+        <button class="nt" onclick="gp('comunidad')" id="tab-comunidad">
+          <div class="ni">🌍</div>
+          <div class="nl">Comunidad</div>
+        </button>
+        <button class="nt" onclick="gp('actualizaciones')" id="tab-actualizaciones">
+          <div class="ni">📢</div>
+          <div class="nl">Actualizaciones</div>
+        </button>
+        <button class="nt" onclick="gp('todolist')" id="tab-todolist">
+          <div class="ni">📝</div>
+          <div class="nl">Todo List</div>
+        </button>
+        <button
+          class="nt"
+          id="tab-admin"
+          onclick="gp('admin')"
+          style="display: none"
+        >
+          <div class="ni">👑</div>
+          <div class="nl">Admin</div>
+        </button>
+      </nav>
+      <button class="fab" onclick="openHabit()">＋</button>
+    </div>
 
     <!-- SHEET TAREA -->
     <div class="shov" id="sh-task" onclick="csh('sh-task', event)">
