@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Gestión de PINs</title>
+    <link href="https://cdn.jsdelivr.net/npm/fontsource@4.5.0/inter/400.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fontsource@4.5.0/inter/600.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fontsource@4.5.0/inter/700.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(120, 80, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(255, 100, 80, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(80, 200, 255, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 520px;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(22, 22, 38, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 40px 32px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(120, 80, 255, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(120, 80, 255, 0.6); }
+        }
+
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.4s ease; }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #7850ff, #50c8ff);
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 28px;
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c4b5fd, #93c5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo p {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #999;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #7850ff;
+            box-shadow: 0 0 0 3px rgba(120, 80, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-group input::placeholder {
+            color: #555;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7850ff, #5088ff);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(120, 80, 255, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #aaa;
+            margin-top: 12px;
+        }
+
+        .btn-outline:hover {
+            border-color: #7850ff;
+            color: #7850ff;
+            background: rgba(120, 80, 255, 0.05);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #30c870, #50c8ff);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff5050, #ff8050);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .pin-display {
+            text-align: center;
+            padding: 24px;
+            background: rgba(120, 80, 255, 0.08);
+            border: 1px solid rgba(120, 80, 255, 0.2);
+            border-radius: 16px;
+            margin: 20px 0;
+            animation: glow 2s ease infinite;
+        }
+
+        .pin-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .pin-value {
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: 12px;
+            background: linear-gradient(135deg, #c4b5fd, #93c5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .pin-expire {
+            font-size: 11px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .alert {
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        .alert.show { display: flex; align-items: center; gap: 10px; }
+
+        .alert-error { background: rgba(255, 80, 80, 0.1); border: 1px solid rgba(255, 80, 80, 0.2); color: #ff8080; }
+        .alert-success { background: rgba(48, 200, 112, 0.1); border: 1px solid rgba(48, 200, 112, 0.2); color: #60d890; }
+        .alert-warning { background: rgba(255, 180, 50, 0.1); border: 1px solid rgba(255, 180, 50, 0.2); color: #ffc060; }
+        .alert-info { background: rgba(120, 80, 255, 0.1); border: 1px solid rgba(120, 80, 255, 0.2); color: #a090ff; }
+
+        .input-pin-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .input-pin-digit {
+            width: 56px;
+            height: 64px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-pin-digit:focus {
+            border-color: #7850ff;
+            box-shadow: 0 0 0 3px rgba(120, 80, 255, 0.2);
+        }
+
+        .input-pin-digit.filled {
+            border-color: #7850ff;
+            background: rgba(120, 80, 255, 0.1);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .top-bar h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(120, 80, 255, 0.15);
+            border: 1px solid rgba(120, 80, 255, 0.3);
+            border-radius: 8px;
+            color: #a090ff;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #555;
+        }
+
+        .empty-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .card { padding: 28px 22px; }
+            .pin-value { font-size: 36px; }
+            .input-pin-digit { width: 48px; height: 56px; font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <div id="screenLogin" class="screen active">
+            <div class="card">
+                <div class="logo">
+                    <div class="logo-icon">🔐</div>
+                    <h1>Panel Admin</h1>
+                    <p>Ingresa tu usuario y PIN para acceder</p>
+                </div>
+
+                <div id="alertLogin" class="alert"></div>
+
+                <div id="loginStep1">
+                    <div class="form-group">
+                        <label>Usuario</label>
+                        <input type="text" id="loginUser" placeholder="Escribe tu usuario..." autocomplete="off">
+                    </div>
+                    <button class="btn btn-primary" onclick="goToPinStep()">Siguiente →</button>
+                    <button class="btn btn-outline" style="margin-top:12px;" onclick="showForgotPin()">🔑 Olvidé mi PIN</button>
+                </div>
+
+                <div id="loginStep2" style="display:none;">
+                    <div class="form-group">
+                        <label>PIN de 4 dígitos</label>
+                        <div class="input-pin-group">
+                            <input type="text" class="input-pin-digit" maxlength="1" id="pinDigit1" oninput="pinNext(this, 'pinDigit2')" onkeydown="pinBack(event, null, 'pinDigit1')">
+                            <input type="text" class="input-pin-digit" maxlength="1" id="pinDigit2" oninput="pinNext(this, 'pinDigit3')" onkeydown="pinBack(event, 'pinDigit1', 'pinDigit2')">
+                            <input type="text" class="input-pin-digit" maxlength="1" id="pinDigit3" oninput="pinNext(this, 'pinDigit4')" onkeydown="pinBack(event, 'pinDigit2', 'pinDigit3')">
+                            <input type="text" class="input-pin-digit" maxlength="1" id="pinDigit4" oninput="pinNext(this, null)" onkeydown="pinBack(event, 'pinDigit3', 'pinDigit4')">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="btnLogin" onclick="attemptLogin()">Iniciar Sesión</button>
+                    <button class="btn btn-outline" onclick="backToUserStep()">← Cambiar usuario</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="screenForgot" class="screen">
+            <div class="card">
+                <div class="logo">
+                    <div class="logo-icon">🔑</div>
+                    <h1>Olvidé mi PIN</h1>
+                    <p>Ingresa tu usuario y recibe un PIN temporal</p>
+                </div>
+
+                <div id="alertForgot" class="alert"></div>
+
+                <div id="forgotStep1">
+                    <div class="form-group">
+                        <label>¿Cuál es tu usuario?</label>
+                        <input type="text" id="forgotUser" placeholder="Escribe tu usuario..." autocomplete="off">
+                    </div>
+                    <button class="btn btn-primary" onclick="searchTempPin()">Buscar PIN Temporal</button>
+                    <button class="btn btn-outline" onclick="goBack('screenForgot', 'screenLogin')">← Volver al inicio</button>
+                </div>
+
+                <div id="forgotStep2" style="display:none;">
+                    <p style="text-align:center; color:#999; font-size:13px; margin-bottom:16px;">
+                        El PIN temporal para <strong id="forgotUserName" style="color:#e0e0e0;"></strong> es:
+                    </p>
+                    <div class="pin-display">
+                        <div class="pin-label">PIN Temporal</div>
+                        <div class="pin-value" id="tempPinDisplay">----</div>
+                        <div class="pin-expire" id="tempPinExpire"></div>
+                    </div>
+                    <button class="copy-btn" onclick="copyTempPin()">📋 Copiar PIN</button>
+                    <button class="btn btn-primary" style="margin-top:16px;" onclick="goBack('screenForgot', 'screenLogin')">Ya tengo mi PIN</button>
+                </div>
+
+                <div id="forgotStep3" style="display:none;">
+                    <div class="empty-state">
+                        <div class="empty-icon">😕</div>
+                        <p>No se encontró ningún usuario con ese nombre.<br>Verifica e intenta nuevamente.</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="resetForgot()">← Intentar de nuevo</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="screenChangeTempPin" class="screen">
+            <div class="card">
+                <div class="logo">
+                    <div class="logo-icon">⚠️</div>
+                    <h1>PIN Temporal Usado</h1>
+                    <p>Debes cambiar tu PIN antes de continuar</p>
+                </div>
+                <div class="pin-display">
+                    <div class="pin-label">Usuario</div>
+                    <div class="pin-value" id="changeUserName">----</div>
+                </div>
+                <button class="btn btn-primary" onclick="goChangePin()">Cambiar mi PIN</button>
+                <button class="btn btn-outline" onclick="adminLogout()">Cerrar sesión</button>
+            </div>
+        </div>
+
+        <div id="screenChangePin" class="screen">
+            <div class="card">
+                <div class="logo">
+                    <div class="logo-icon">🔄</div>
+                    <h1>Cambiar PIN</h1>
+                    <p>Define un nuevo PIN de 4 dígitos</p>
+                </div>
+
+                <div id="alertChangePin" class="alert"></div>
+
+                <div class="form-group">
+                    <label>Nuevo PIN</label>
+                    <div class="input-pin-group">
+                        <input type="text" class="input-pin-digit" maxlength="1" id="newPin1" oninput="pinNext(this, 'newPin2')" onkeydown="pinBack(event, null, 'newPin1')">
+                        <input type="text" class="input-pin-digit" maxlength="1" id="newPin2" oninput="pinNext(this, 'newPin3')" onkeydown="pinBack(event, 'newPin1', 'newPin2')">
+                        <input type="text" class="input-pin-digit" maxlength="1" id="newPin3" oninput="pinNext(this, 'newPin4')" onkeydown="pinBack(event, 'newPin2', 'newPin3')">
+                        <input type="text" class="input-pin-digit" maxlength="1" id="newPin4" oninput="pinNext(this, null)" onkeydown="pinBack(event, 'newPin3', 'newPin4')">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Confirmar PIN</label>
+                    <div class="input-pin-group">
+                        <input type="text" class="input-pin-digit" maxlength="1" id="confirmPin1" oninput="pinNext(this, 'confirmPin2')" onkeydown="pinBack(event, null, 'confirmPin1')">
+                        <input type="text" class="input-pin-digit" maxlength="1" id="confirmPin2" oninput="pinNext(this, 'confirmPin3')" onkeydown="pinBack(event, 'confirmPin1', 'confirmPin2')">
+                        <input type="text" class="input-pin-digit" maxlength="1" id="confirmPin3" oninput="pinNext(this, 'confirmPin4')" onkeydown="pinBack(event, 'confirmPin2', 'confirmPin3')">
+                        <input type="text" class="input-pin-digit" maxlength="1" id="confirmPin4" oninput="pinNext(this, null)" onkeydown="pinBack(event, 'confirmPin3', 'confirmPin4')">
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="saveNewPin()">Guardar Nuevo PIN</button>
+                <button class="btn btn-outline" onclick="adminLogout()">Salir</button>
+            </div>
+        </div>
+
+        <div id="screenSuccess" class="screen">
+            <div class="card">
+                <div class="logo">
+                    <div class="logo-icon">✅</div>
+                    <h1>PIN actualizado</h1>
+                    <p>Tu cuenta ahora usa un PIN permanente seguro.</p>
+                </div>
+                <button class="btn btn-primary" onclick="adminLogout()">Volver al inicio</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjU04ggwkWLrM5-ZS9167ixsPY9agv_kg",
+            authDomain: "flowex-app-cf0ae.firebaseapp.com",
+            projectId: "flowex-app-cf0ae",
+            storageBucket: "flowex-app-cf0ae.appspot.com",
+            messagingSenderId: "317866469877",
+            appId: "1:317866469877:web:c6075e8f5ddd1fe36458bc"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        let currentUser = null;
+        let currentTempPin = '';
+
+        const TempCodeGenerator = {
+            generate() {
+                if (window.crypto && window.crypto.getRandomValues) {
+                    const values = new Uint32Array(1);
+                    window.crypto.getRandomValues(values);
+                    return String(1000 + (values[0] % 9000));
+                }
+                return String(1000 + Math.floor(Math.random() * 9000));
+            }
+        };
+
+        function setActiveScreen(id) {
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            clearAlerts();
+        }
+
+        function showAlert(containerId, message, type = 'error') {
+            const alert = document.getElementById(containerId);
+            const icons = { error: '❌', success: '✅', warning: '⚠️', info: 'ℹ️' };
+            alert.className = `alert alert-${type} show`;
+            alert.innerHTML = `<span>${icons[type] || ''}</span><span>${message}</span>`;
+            setTimeout(() => alert.classList.remove('show'), 5000);
+        }
+
+        function clearAlerts() {
+            document.querySelectorAll('.alert').forEach(el => el.classList.remove('show'));
+        }
+
+        function pinNext(current, nextId) {
+            if (current.value.length === 1) {
+                current.classList.add('filled');
+                if (nextId) document.getElementById(nextId).focus();
+            }
+        }
+
+        function pinBack(event, prevId, currentId) {
+            if (event.key === 'Backspace' && !event.target.value && prevId) {
+                const prev = document.getElementById(prevId);
+                prev.focus();
+                prev.value = '';
+                prev.classList.remove('filled');
+            }
+        }
+
+        function getPinValue(prefix) {
+            return Array.from({ length: 4 }, (_, i) => document.getElementById(`${prefix}${i + 1}`).value || '').join('');
+        }
+
+        function clearPinInputs(prefix) {
+            Array.from({ length: 4 }, (_, i) => document.getElementById(`${prefix}${i + 1}`)).forEach(el => {
+                if (el) {
+                    el.value = '';
+                    el.classList.remove('filled');
+                }
+            });
+        }
+
+        async function goToPinStep() {
+            const user = document.getElementById('loginUser').value.trim().toLowerCase();
+            if (!user) {
+                showAlert('alertLogin', 'Ingresa tu usuario antes de continuar.', 'warning');
+                return;
+            }
+
+            const userDoc = await db.collection('users').doc(user).get();
+            if (!userDoc.exists) {
+                showAlert('alertLogin', 'Usuario no encontrado.', 'error');
+                return;
+            }
+
+            currentUser = user;
+            document.getElementById('loginStep1').style.display = 'none';
+            document.getElementById('loginStep2').style.display = 'block';
+            clearPinInputs('pinDigit');
+            document.getElementById('pinDigit1').focus();
+        }
+
+        function backToUserStep() {
+            document.getElementById('loginStep1').style.display = 'block';
+            document.getElementById('loginStep2').style.display = 'none';
+            clearPinInputs('pinDigit');
+            currentUser = null;
+            clearAlerts();
+        }
+
+        async function attemptLogin() {
+            const pin = getPinValue('pinDigit');
+            if (pin.length !== 4) {
+                showAlert('alertLogin', 'Completa los 4 dígitos del PIN.', 'warning');
+                return;
+            }
+            if (!currentUser) {
+                showAlert('alertLogin', 'Primero selecciona un usuario.', 'warning');
+                return;
+            }
+
+            const button = document.getElementById('btnLogin');
+            button.disabled = true;
+            button.textContent = 'Validando...';
+
+            try {
+                const snapshot = await db.collection('users').doc(currentUser).get();
+                if (!snapshot.exists) {
+                    showAlert('alertLogin', 'Usuario no existe.', 'error');
+                    button.disabled = false;
+                    button.textContent = 'Iniciar Sesión';
+                    return;
+                }
+
+                const userData = snapshot.data();
+                const now = Date.now();
+
+                if (userData.pin === pin) {
+                    showAlert('alertLogin', 'Acceso permitido. Bienvenido.', 'success');
+                    setTimeout(() => {
+                        setActiveScreen('screenSuccess');
+                    }, 800);
+                    button.disabled = false;
+                    button.textContent = 'Iniciar Sesión';
+                    return;
+                }
+
+                if (userData.tempPin && userData.tempPin.code === pin) {
+                    if (userData.tempPin.used) {
+                        showAlert('alertLogin', 'Este PIN temporal ya se usó.', 'error');
+                    } else if (now > userData.tempPin.expiry) {
+                        showAlert('alertLogin', 'El PIN temporal expiró. Genera uno nuevo.', 'error');
+                    } else {
+                        await db.collection('users').doc(currentUser).update({
+                            'tempPin.used': true
+                        });
+                        document.getElementById('changeUserName').textContent = currentUser;
+                        setActiveScreen('screenChangeTempPin');
+                    }
+                } else {
+                    showAlert('alertLogin', 'PIN incorrecto.', 'error');
+                }
+            } catch (error) {
+                console.error('Error iniciando sesión:', error);
+                showAlert('alertLogin', 'Error de conexión con Firebase.', 'error');
+            }
+
+            button.disabled = false;
+            button.textContent = 'Iniciar Sesión';
+        }
+
+        function showForgotPin() {
+            setActiveScreen('screenForgot');
+            document.getElementById('forgotStep1').style.display = 'block';
+            document.getElementById('forgotStep2').style.display = 'none';
+            document.getElementById('forgotStep3').style.display = 'none';
+            document.getElementById('forgotUser').value = '';
+        }
+
+        async function searchTempPin() {
+            const username = document.getElementById('forgotUser').value.trim().toLowerCase();
+            if (!username) {
+                showAlert('alertForgot', 'Ingresa el usuario para generar el PIN temporal.', 'warning');
+                return;
+            }
+
+            const userDoc = await db.collection('users').doc(username).get();
+            if (!userDoc.exists) {
+                document.getElementById('forgotStep1').style.display = 'none';
+                document.getElementById('forgotStep3').style.display = 'block';
+                return;
+            }
+
+            const userData = userDoc.data();
+            const now = Date.now();
+            let tempPin = userData.tempPin;
+
+            if (tempPin && !tempPin.used && tempPin.expiry > now) {
+                currentTempPin = tempPin.code;
+            } else {
+                currentTempPin = TempCodeGenerator.generate();
+                const expiry = now + 15 * 60 * 1000;
+                tempPin = { code: currentTempPin, expiry, used: false };
+                await db.collection('users').doc(username).update({ tempPin });
+            }
+
+            document.getElementById('forgotUserName').textContent = username;
+            document.getElementById('tempPinDisplay').textContent = currentTempPin;
+            document.getElementById('tempPinExpire').textContent = 'Expira en 15 minutos';
+            document.getElementById('forgotStep1').style.display = 'none';
+            document.getElementById('forgotStep2').style.display = 'block';
+        }
+
+        function resetForgot() {
+            document.getElementById('forgotStep1').style.display = 'block';
+            document.getElementById('forgotStep2').style.display = 'none';
+            document.getElementById('forgotStep3').style.display = 'none';
+            document.getElementById('forgotUser').value = '';
+        }
+
+        function copyTempPin() {
+            navigator.clipboard.writeText(currentTempPin).then(() => {
+                showAlert('alertForgot', 'PIN temporal copiado.', 'success');
+            }).catch(() => {
+                showAlert('alertForgot', 'No se pudo copiar el PIN.', 'error');
+            });
+        }
+
+        function goChangePin() {
+            clearPinInputs('newPin');
+            clearPinInputs('confirmPin');
+            setActiveScreen('screenChangePin');
+        }
+
+        async function saveNewPin() {
+            const newPin = getPinValue('newPin');
+            const confirmPin = getPinValue('confirmPin');
+
+            if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
+                showAlert('alertChangePin', 'Ingresa un PIN válido de 4 dígitos.', 'warning');
+                return;
+            }
+            if (newPin !== confirmPin) {
+                showAlert('alertChangePin', 'Los PINs no coinciden.', 'error');
+                return;
+            }
+            if (!currentUser) {
+                showAlert('alertChangePin', 'No hay usuario activo.', 'error');
+                return;
+            }
+
+            try {
+                await db.collection('users').doc(currentUser).update({
+                    pin: newPin,
+                    tempPin: null
+                });
+                setActiveScreen('screenSuccess');
+            } catch (error) {
+                console.error('Error guardando PIN:', error);
+                showAlert('alertChangePin', 'Error de conexión. Intenta de nuevo.', 'error');
+            }
+        }
+
+        function adminLogout() {
+            currentUser = null;
+            currentTempPin = '';
+            document.getElementById('loginUser').value = '';
+            clearPinInputs('pinDigit');
+            clearPinInputs('newPin');
+            clearPinInputs('confirmPin');
+            clearAlerts();
+            setActiveScreen('screenLogin');
+            document.getElementById('loginStep1').style.display = 'block';
+            document.getElementById('loginStep2').style.display = 'none';
+        }
+
+        document.getElementById('loginUser').addEventListener('keypress', event => {
+            if (event.key === 'Enter') goToPinStep();
+        });
+    </script>
+</body>
+</html>
