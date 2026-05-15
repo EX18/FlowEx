@@ -7901,14 +7901,10 @@
               <div class="module-icon">💰</div>
               <div class="module-name">Finanzas</div>
             </button>
-            <button type="button" class="module-card" onclick="gp('proyectos')">
-              <div class="module-icon">📁</div>
-              <div class="module-name">Proyectos</div>
-            </button>
             <button type="button" class="module-card" onclick="gp('tiempo')">
               <div class="module-icon">⏱️</div>
               <div class="module-name">Tiempo</div>
-            </button>
+            </button
             <button type="button" class="module-card" onclick="gp('buscar')">
               <div class="module-icon">🔍</div>
               <div class="module-name">Buscar</div>
@@ -10885,45 +10881,6 @@
       <!-- /pc -->
     </div>
 
-    <!-- PAGE PROYECTOS -->
-    <div class="page" id="page-proyectos">
-      <div class="topnav">
-        <div class="logo">FlowEX</div>
-        <div class="sync-indicator" id="sync-proyectos">●</div>
-      </div>
-
-      <div class="pc">
-        <div class="sec">
-          <div class="sec-title">
-            📁 Proyectos <span class="sec-count" id="projects-count">0</span>
-          </div>
-          <div class="sec-desc">
-            Gestiona tus proyectos con milestones y seguimiento de progreso
-          </div>
-        </div>
-
-        <div id="projects-overview">
-          <div class="projects-grid" id="projects-list">
-            <!-- Projects will be rendered here -->
-          </div>
-
-          <div class="projects-actions">
-            <button class="btn-primary" onclick="projectManager.showCreateProject()">
-              + Crear Proyecto
-            </button>
-          </div>
-        </div>
-
-        <div id="project-details" style="display: none;">
-          <div class="project-nav">
-            <button class="btn-secondary" onclick="projectManager.backToProjects()">← Volver</button>
-          </div>
-          <!-- Project details will be rendered here -->
-        </div>
-      </div>
-      <!-- /pc -->
-    </div>
-
     <!-- PAGE DIARIO -->
     <div class="page" id="page-diario">
       <div class="topnav">
@@ -11101,14 +11058,10 @@
           <div class="ni">📊</div>
           <div class="nl">Stats</div>
         </button>
-        <button class="nt" onclick="gp('ia')" id="tab-ia">
-          <div class="ni">🤖</div>
-          <div class="nl">IA</div>
-        </button>
         <button class="nt" onclick="gp('sueno')" id="tab-sueno">
           <div class="ni">😴</div>
           <div class="nl">Sueño</div>
-        </button>
+        </button
         <button class="nt" onclick="gp('metas')" id="tab-metas">
           <div class="ni">🎯</div>
           <div class="nl">Metas</div>
@@ -11136,10 +11089,6 @@
         <button class="nt" onclick="gp('finanzas')" id="tab-finanzas">
           <div class="ni">💰</div>
           <div class="nl">Finanzas</div>
-        </button>
-        <button class="nt" onclick="gp('proyectos')" id="tab-proyectos">
-          <div class="ni">📁</div>
-          <div class="nl">Proyectos</div>
         </button>
         <button class="nt" onclick="gp('diario')" id="tab-diario">
           <div class="ni">📖</div>
@@ -11653,15 +11602,6 @@
     <!-- ═══════════════════════════════════════════
      FIREBASE + APP LOGIC
 ═══════════════════════════════════════════ -->
-    <script src="js/core/ProjectManager.js"></script>
-    <script src="js/core/JournalManager.js"></script>
-    <script src="js/core/TimeTrackerManager.js"></script>
-    <script src="js/core/SearchManager.js"></script>
-    <script src="js/core/AIMentor.js"></script>
-    <script src="js/core/SmartNotificationsManager.js"></script>
-    <script src="js/core/CommunityManager.js"></script>
-    <script src="js/core/UpdatesManager.js"></script>
-    <script src="js/core/TodoListManager.js"></script>
     <script type="module" src="app.js"></script>
 
     <!-- Updates Notifications Container -->
