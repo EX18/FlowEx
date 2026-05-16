@@ -30,6 +30,7 @@
         .alert.show { display: flex; align-items: center; gap: 10px; }
         .alert-error { background: rgba(255, 80, 80, 0.1); border: 1px solid rgba(255, 80, 80, 0.2); color: #ff8080; }
         .alert-success { background: rgba(48, 200, 112, 0.1); border: 1px solid rgba(48, 200, 112, 0.2); color: #60d890; }
+        .alert-warning { background: rgba(255, 180, 50, 0.1); border: 1px solid rgba(255, 180, 50, 0.2); color: #ffd080; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 0 20px; }
         .admin-title h1 { font-size: 24px; margin-bottom: 4px; }
         .admin-title p { color: #999; font-size: 13px; }
@@ -43,24 +44,40 @@
         .section.active { display: block; }
         .section-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #e0e0e0; }
         .user-list { max-height: 400px; overflow-y: auto; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.06); }
-        .user-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); transition: background 0.2s ease; }
+        .user-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); transition: background 0.2s ease; gap: 8px; }
         .user-item:last-child { border-bottom: none; }
         .user-item:hover { background: rgba(255, 255, 255, 0.03); }
-        .user-info { flex: 1; }
+        .user-info { flex: 1; min-width: 0; }
         .user-name { font-size: 14px; font-weight: 600; color: #ddd; margin-bottom: 2px; }
         .user-username { font-size: 11px; color: #666; }
-        .user-actions { display: flex; gap: 8px; }
-        .btn-small { padding: 6px 12px; background: rgba(120, 80, 255, 0.15); border: 1px solid rgba(120, 80, 255, 0.3); border-radius: 8px; color: #a090ff; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .user-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; flex-wrap: wrap; }
+        .btn-small { padding: 6px 12px; background: rgba(120, 80, 255, 0.15); border: 1px solid rgba(120, 80, 255, 0.3); border-radius: 8px; color: #a090ff; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; white-space: nowrap; }
         .btn-small:hover { background: rgba(120, 80, 255, 0.3); }
         .btn-danger { background: rgba(255, 80, 80, 0.15); border-color: rgba(255, 80, 80, 0.3); color: #ff8080; }
         .btn-danger:hover { background: rgba(255, 80, 80, 0.3); }
         .empty-state { text-align: center; padding: 40px 20px; color: #555; }
         .empty-icon { font-size: 40px; margin-bottom: 12px; }
-        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(48, 200, 112, 0.15); color: #60d890; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(48, 200, 112, 0.15); color: #60d890; border: 1px solid rgba(48, 200, 112, 0.25); }
+        .status-badge.expired { background: rgba(255, 80, 80, 0.12); color: #ff8080; border-color: rgba(255, 80, 80, 0.2); }
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; }
         .history-item:last-child { border-bottom: none; }
-        .history-code { font-weight: 700; color: #a090ff; letter-spacing: 2px; }
-        .history-time { color: #555; font-size: 11px; }
+        .history-code { font-weight: 700; color: #a090ff; letter-spacing: 3px; font-family: monospace; font-size: 16px; }
+        .history-time { color: #555; font-size: 11px; margin-top: 2px; }
+
+        /* PIN modal */
+        .pin-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; animation: fadeIn 0.2s ease; }
+        .pin-modal { background: #161626; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 36px 32px; width: 340px; text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,0.7); }
+        .pin-modal h2 { font-size: 18px; margin-bottom: 6px; }
+        .pin-modal .pin-user { color: #a090ff; font-size: 13px; margin-bottom: 20px; }
+        .pin-display { font-size: 52px; font-weight: 800; letter-spacing: 8px; font-family: monospace; color: #fff; background: rgba(120,80,255,0.1); border: 2px solid rgba(120,80,255,0.3); border-radius: 14px; padding: 20px 16px; margin-bottom: 12px; }
+        .pin-expiry { font-size: 12px; color: #888; margin-bottom: 24px; }
+        .pin-expiry span { color: #ffd080; font-weight: 600; }
+        .pin-modal-actions { display: flex; gap: 10px; }
+        .pin-modal-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s ease; }
+        .pin-modal-btn.copy { background: rgba(120,80,255,0.2); border: 1px solid rgba(120,80,255,0.3); color: #a090ff; }
+        .pin-modal-btn.copy:hover { background: rgba(120,80,255,0.35); }
+        .pin-modal-btn.close { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #888; }
+        .pin-modal-btn.close:hover { background: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
@@ -120,7 +137,7 @@
                     </div>
                     <div class="form-group">
                         <label>PIN inicial (4 dígitos)</label>
-                        <input type="text" id="createPin" placeholder="1234" maxlength="4">
+                        <input type="text" id="createPin" placeholder="1234" maxlength="4" inputmode="numeric">
                     </div>
                     <button class="btn btn-primary" onclick="createUser()" style="margin-bottom: 10px;">Crear Usuario</button>
                     <button class="btn btn-primary" style="background: rgba(255, 255, 255, 0.1); color: #aaa; margin-bottom: 0;" onclick="generateRandomPin()">🎲 PIN Aleatorio</button>
@@ -155,207 +172,315 @@
         const db = firebase.firestore();
         let allUsers = {};
 
-        const TempCodeGenerator = {
-            generate() {
-                if (window.crypto && window.crypto.getRandomValues) {
-                    const v = new Uint32Array(1);
-                    window.crypto.getRandomValues(v);
-                    return String(1000 + (v[0] % 9000));
-                }
-                return String(1000 + Math.floor(Math.random() * 9000));
+        // ── Generador de PIN seguro ──────────────────────────────
+        function generatePin() {
+            if (window.crypto && window.crypto.getRandomValues) {
+                const arr = new Uint32Array(1);
+                window.crypto.getRandomValues(arr);
+                return String(1000 + (arr[0] % 9000));
             }
-        };
+            return String(1000 + Math.floor(Math.random() * 9000));
+        }
 
-        function showAlert(id, msg, type = "error") {
+        // ── UI helpers ───────────────────────────────────────────
+        function showAlert(id, msg, type = 'error') {
             const a = document.getElementById(id);
-            const icons = { error: "❌", success: "✅", warning: "⚠️" };
+            const icons = { error: '❌', success: '✅', warning: '⚠️' };
             a.className = `alert alert-${type} show`;
-            a.innerHTML = `<span>${icons[type] || ""}</span><span>${msg}</span>`;
-            setTimeout(() => a.classList.remove("show"), 5000);
+            a.innerHTML = `<span>${icons[type] || ''}</span><span>${msg}</span>`;
+            setTimeout(() => a.classList.remove('show'), 6000);
         }
 
         function clearAlerts() {
-            document.querySelectorAll(".alert").forEach(el => el.classList.remove("show"));
+            document.querySelectorAll('.alert').forEach(el => el.classList.remove('show'));
         }
 
         function setScreen(id) {
-            document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-            document.getElementById(id).classList.add("active");
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
             clearAlerts();
         }
 
+        // ── Auth ─────────────────────────────────────────────────
         function login() {
-            const u = document.getElementById("username").value.trim().toUpperCase();
-            if (u !== "NULVEC") {
-                showAlert("alertLogin", "Solo NULVEC puede acceder al panel.", "error");
+            const u = document.getElementById('username').value.trim().toUpperCase();
+            if (u !== 'NULVEC') {
+                showAlert('alertLogin', 'Solo NULVEC puede acceder al panel.', 'error');
                 return;
             }
-            setScreen("adminScreen");
+            setScreen('adminScreen');
             loadUsers();
             loadHistory();
         }
 
         function logout() {
-            setScreen("loginScreen");
-            clearAlerts();
+            setScreen('loginScreen');
         }
 
         function switchTab(tabId, btn) {
-            document.querySelectorAll(".tabs .tab").forEach(t => t.classList.remove("active"));
-            btn.classList.add("active");
-            document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-            document.getElementById(tabId).classList.add("active");
-            if (tabId === "tabHistory") loadHistory();
+            document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if (tabId === 'tabHistory') loadHistory();
         }
 
+        // ── Cargar usuarios ──────────────────────────────────────
         async function loadUsers() {
             try {
-                const snap = await db.collection("users").get();
+                const snap = await db.collection('users').get();
                 allUsers = {};
-                snap.forEach(d => allUsers[d.id] = d.data());
+                snap.forEach(d => { allUsers[d.id] = d.data(); });
                 renderUsers();
             } catch (e) {
-                console.error("Error en loadUsers:", e);
-                const msg = e.message || "Error desconocido";
-                const c = document.getElementById("userList");
-                c.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Error cargando usuarios:<br><small>${msg}</small></p></div>`;
+                console.error('loadUsers error:', e);
+                document.getElementById('userList').innerHTML =
+                    `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Error: ${e.message}</p></div>`;
             }
         }
 
         function renderUsers() {
-            const c = document.getElementById("userList");
+            const c = document.getElementById('userList');
             const keys = Object.keys(allUsers);
             if (!keys.length) {
                 c.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>No hay usuarios creados aún.</p></div>';
                 return;
             }
-            let html = "";
+
+            const now = Date.now();
+            let html = '';
             keys.forEach(k => {
                 const u = allUsers[k];
-                const hasTmp = u.tempPin && !u.tempPin.used;
-                html += `<div class="user-item"><div class="user-info"><div class="user-name">${u.name || k}</div><div class="user-username">@${k}</div></div><div class="user-actions">${hasTmp ? '<span class="status-badge">PIN Temp</span>' : ""}<button class="btn-small" onclick="genTempPin('${k}')">🔑 Gen Temp</button><button class="btn-small btn-danger" onclick="delUser('${k}')">🗑️</button></div></div>`;
+                let badgeHtml = '';
+
+                if (u.tempPin && typeof u.tempPin === 'object') {
+                    const isUsed    = u.tempPin.used === true;
+                    const expiry    = Number(u.tempPin.expiry || 0);
+                    const isExpired = expiry > 0 && now > expiry;
+
+                    if (!isUsed && !isExpired) {
+                        const mins = Math.max(0, Math.round((expiry - now) / 60000));
+                        badgeHtml = `<span class="status-badge">🔑 Temp (${mins}min)</span>`;
+                    } else if (isUsed) {
+                        badgeHtml = `<span class="status-badge expired">✅ Temp usado</span>`;
+                    } else if (isExpired) {
+                        badgeHtml = `<span class="status-badge expired">⏱ Expirado</span>`;
+                    }
+                }
+
+                html += `
+                    <div class="user-item">
+                        <div class="user-info">
+                            <div class="user-name">${u.name || k}</div>
+                            <div class="user-username">@${k} · Lv${u.level || 1} · ${u.xp || 0}XP</div>
+                        </div>
+                        <div class="user-actions">
+                            ${badgeHtml}
+                            <button class="btn-small" onclick="genTempPin('${k}')">🔑 Temp PIN</button>
+                            <button class="btn-small btn-danger" onclick="delUser('${k}')">🗑️</button>
+                        </div>
+                    </div>`;
             });
             c.innerHTML = html;
         }
 
+        // ── Crear usuario ────────────────────────────────────────
         function generateRandomPin() {
-            const p = TempCodeGenerator.generate();
-            document.getElementById("createPin").value = p;
+            document.getElementById('createPin').value = generatePin();
         }
 
         async function createUser() {
-            const n = document.getElementById("createName").value.trim();
-            const u = document.getElementById("createUsername").value.trim().toLowerCase();
-            const p = document.getElementById("createPin").value.trim();
-            if (!n || !u || !p) {
-                showAlert("alertAdmin", "Completa todos los campos.", "warning");
+            const name     = document.getElementById('createName').value.trim();
+            const username = document.getElementById('createUsername').value.trim().toLowerCase();
+            const pin      = document.getElementById('createPin').value.trim();
+
+            if (!name || !username || !pin) {
+                showAlert('alertAdmin', 'Completá todos los campos.', 'warning');
                 return;
             }
-            if (!/^[a-z0-9_]+$/.test(u)) {
-                showAlert("alertAdmin", "Usuario solo letras, números y guiones bajos.", "error");
+            if (!/^[a-z0-9_]+$/.test(username)) {
+                showAlert('alertAdmin', 'Usuario: solo letras minúsculas, números y guiones bajos.', 'error');
                 return;
             }
-            if (!/^\d{4}$/.test(p)) {
-                showAlert("alertAdmin", "PIN debe ser 4 dígitos.", "error");
+            if (!/^\d{4}$/.test(pin)) {
+                showAlert('alertAdmin', 'El PIN debe ser exactamente 4 dígitos numéricos.', 'error');
                 return;
             }
+
             try {
-                const e = await db.collection("users").doc(u).get();
-                if (e.exists) {
-                    showAlert("alertAdmin", "Usuario ya existe.", "error");
+                const existing = await db.collection('users').doc(username).get();
+                if (existing.exists) {
+                    showAlert('alertAdmin', `El usuario @${username} ya existe.`, 'error');
                     return;
                 }
-                await db.collection("users").doc(u).set({
-                    name: n,
-                    pin: p,
-                    tempPin: null,
-                    createdAt: new Date()
+
+                // Guardar pin como STRING siempre
+                await db.collection('users').doc(username).set({
+                    username: username,
+                    name:     name,
+                    pin:      String(pin),   // ← campo plain para login directo
+                    tempPin:  null,
+                    xp:       0,
+                    level:    1,
+                    habits:   [],
+                    notes:    [],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                showAlert("alertAdmin", `✅ Usuario ${n} (@${u}) creado exitosamente.`, "success");
-                document.getElementById("createName").value = "";
-                document.getElementById("createUsername").value = "";
-                document.getElementById("createPin").value = "";
+
+                showAlert('alertAdmin', `✅ Usuario @${username} creado. PIN inicial: ${pin}`, 'success');
+                document.getElementById('createName').value     = '';
+                document.getElementById('createUsername').value = '';
+                document.getElementById('createPin').value      = '';
                 loadUsers();
+
             } catch (e) {
-                console.error("Error en createUser:", e);
-                const msg = e.message || "Error desconocido";
-                showAlert("alertAdmin", `Error: ${msg}`, "error");
+                console.error('createUser error:', e);
+                showAlert('alertAdmin', `Error: ${e.message}`, 'error');
             }
         }
 
-        async function genTempPin(u) {
+        // ── Generar PIN temporal ─────────────────────────────────
+        async function genTempPin(username) {
             try {
-                const tmp = TempCodeGenerator.generate();
-                const exp = Date.now() + 15 * 60 * 1000;
-                
-                // Verificar que el usuario existe
-                const userDoc = await db.collection("users").doc(u).get();
+                const tmp    = String(generatePin()).trim();  // siempre string limpio "XXXX"
+                const expiry = Date.now() + 15 * 60 * 1000; // 15 minutos
+
+                console.log('genTempPin: usuario=', username, 'codigo=', tmp, 'expiry=', expiry);
+
+                // Verificar que el usuario exista
+                const userDoc = await db.collection('users').doc(username).get();
                 if (!userDoc.exists) {
-                    showAlert("alertAdmin", `Usuario @${u} no existe en la base de datos.`, "error");
+                    showAlert('alertAdmin', `El usuario @${username} no existe.`, 'error');
                     return;
                 }
-                
-                // Actualizar con tempPin
-                await db.collection("users").doc(u).update({
+
+                // Guardar tempPin con code siempre como STRING
+                await db.collection('users').doc(username).update({
                     tempPin: {
-                        code: tmp,
-                        expiry: exp,
-                        used: false,
-                        createdAt: new Date()
+                        code:      tmp,
+                        expiry:    expiry,
+                        used:      false,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     }
                 });
-                
+
+                console.log('genTempPin: tempPin guardado para', username);
+
                 // Registrar en historial
-                await db.collection("tempPinHistory").add({
-                    username: u,
-                    code: tmp,
-                    action: "generated",
-                    timestamp: new Date()
+                await db.collection('tempPinHistory').add({
+                    username:  username,
+                    code:      tmp,
+                    action:    'generated',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                
-                alert(`PIN Temporal para @${u}:\n\n${tmp}\n\nExpira en 15 minutos`);
+
+                // Actualizar lista local
+                if (allUsers[username]) {
+                    allUsers[username].tempPin = { code: tmp, expiry, used: false };
+                }
+                renderUsers();
+
+                // Mostrar modal con el PIN
+                showPinModal(username, tmp, expiry);
+
+            } catch (e) {
+                console.error('genTempPin error:', e);
+                showAlert('alertAdmin', `Error generando PIN: ${e.message}`, 'error');
+            }
+        }
+
+        // ── Modal PIN ────────────────────────────────────────────
+        function showPinModal(username, pin, expiry) {
+            const mins = Math.round((expiry - Date.now()) / 60000);
+
+            const overlay = document.createElement('div');
+            overlay.className = 'pin-modal-overlay';
+            overlay.innerHTML = `
+                <div class="pin-modal">
+                    <h2>🔑 PIN Temporal generado</h2>
+                    <p class="pin-user">para @${username}</p>
+                    <div class="pin-display">${pin}</div>
+                    <div class="pin-expiry">Expira en <span>${mins} minutos</span></div>
+                    <div class="pin-modal-actions">
+                        <button class="pin-modal-btn copy" onclick="copyPin('${pin}', this)">📋 Copiar PIN</button>
+                        <button class="pin-modal-btn close" onclick="this.closest('.pin-modal-overlay').remove()">Cerrar</button>
+                    </div>
+                </div>`;
+
+            document.body.appendChild(overlay);
+            overlay.addEventListener('click', e => {
+                if (e.target === overlay) overlay.remove();
+            });
+        }
+
+        function copyPin(pin, btn) {
+            navigator.clipboard.writeText(pin).then(() => {
+                btn.textContent = '✅ Copiado';
+                setTimeout(() => { btn.textContent = '📋 Copiar PIN'; }, 2000);
+            }).catch(() => {
+                // Fallback
+                const ta = document.createElement('textarea');
+                ta.value = pin;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                ta.remove();
+                btn.textContent = '✅ Copiado';
+                setTimeout(() => { btn.textContent = '📋 Copiar PIN'; }, 2000);
+            });
+        }
+
+        // ── Eliminar usuario ─────────────────────────────────────
+        async function delUser(username) {
+            if (!confirm(`¿Eliminar usuario @${username}? Esta acción no se puede deshacer.`)) return;
+            try {
+                await db.collection('users').doc(username).delete();
+                showAlert('alertAdmin', `✅ Usuario @${username} eliminado.`, 'success');
                 loadUsers();
             } catch (e) {
-                console.error("Error en genTempPin:", e);
-                const msg = e.message || "Error desconocido al generar PIN";
-                showAlert("alertAdmin", `Error: ${msg}`, "error");
+                console.error('delUser error:', e);
+                showAlert('alertAdmin', `Error: ${e.message}`, 'error');
             }
         }
 
-        async function delUser(u) {
-            if (confirm(`¿Eliminar usuario @${u}? Esta acción no se puede deshacer.`)) {
-                try {
-                    await db.collection("users").doc(u).delete();
-                    showAlert("alertAdmin", `✅ Usuario @${u} eliminado.`, "success");
-                    loadUsers();
-                } catch (e) {
-                    console.error("Error en delUser:", e);
-                    const msg = e.message || "Error desconocido";
-                    showAlert("alertAdmin", `Error: ${msg}`, "error");
-                }
-            }
-        }
-
+        // ── Historial ────────────────────────────────────────────
         async function loadHistory() {
+            const c = document.getElementById('historyList');
             try {
-                const snap = await db.collection("tempPinHistory").orderBy("timestamp", "desc").limit(20).get();
-                const c = document.getElementById("historyList");
+                const snap = await db.collection('tempPinHistory')
+                    .orderBy('timestamp', 'desc')
+                    .limit(30)
+                    .get();
+
                 if (snap.empty) {
-                    c.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><p>No hay registros</p></div>';
+                    c.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><p>No hay registros aún</p></div>';
                     return;
                 }
-                let html = "";
+
+                let html = '';
                 snap.forEach(d => {
                     const data = d.data();
-                    const t = new Date(data.timestamp?.toDate() || 0).toLocaleString("es-ES");
-                    html += `<div class="history-item"><div><strong>@${data.username}</strong> ${data.action === "generated" ? "Generó" : "Usó"}</div><div><span class="history-code">${data.code}</span><div class="history-time">${t}</div></div></div>`;
+                    const t = data.timestamp?.toDate
+                        ? data.timestamp.toDate().toLocaleString('es-ES')
+                        : 'Fecha desconocida';
+                    const actionLabel = data.action === 'generated' ? '🔑 Generado' : '✅ Usado';
+                    html += `
+                        <div class="history-item">
+                            <div>
+                                <strong>@${data.username}</strong>
+                                <div style="font-size:11px;color:#666;margin-top:2px">${actionLabel}</div>
+                            </div>
+                            <div style="text-align:right">
+                                <div class="history-code">${data.code}</div>
+                                <div class="history-time">${t}</div>
+                            </div>
+                        </div>`;
                 });
                 c.innerHTML = html;
+
             } catch (e) {
-                console.error("Error en loadHistory:", e);
-                const msg = e.message || "Error desconocido";
-                const c = document.getElementById("historyList");
-                c.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Error cargando historial:<br><small>${msg}</small></p></div>`;
+                console.error('loadHistory error:', e);
+                c.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Error: ${e.message}</p></div>`;
             }
         }
     </script>

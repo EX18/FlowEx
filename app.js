@@ -334,33 +334,46 @@ window.doLogin = async () => {
         }
         const data = snap.data();
         
-        // Validar PIN: primero tempPin, luego pinHash
+        // Validar PIN: primero tempPin, luego pinHash, luego pin plano
         let pinValid = false;
-        
-        // Verificar PIN temporal si existe
-        if (data.tempPin && !data.tempPin.used) {
-            const now = Date.now();
-            if (data.tempPin.expiry && now <= data.tempPin.expiry) {
-                if (loginPin === data.tempPin.code) {
-                    pinValid = true;
-                    // Marcar tempPin como usado
-                    try {
-                        await setDoc(userRef(username), { tempPin: { ...data.tempPin, used: true } }, { merge: true });
-                    } catch (e) {
-                        console.error('Error marcando tempPin como usado:', e);
-                    }
+
+        // 1. Verificar PIN temporal
+        if (data.tempPin && typeof data.tempPin === 'object') {
+            const isUsed      = data.tempPin.used === true;
+            const expiry      = Number(data.tempPin.expiry || 0);
+            const notExpired  = expiry === 0 || Date.now() <= expiry;
+            const storedCode  = String(data.tempPin.code || '').trim();
+            const enteredCode = String(loginPin || '').trim();
+
+            if (!isUsed && notExpired && storedCode === enteredCode) {
+                pinValid = true;
+                // Marcar como usado
+                try {
+                    await setDoc(userRef(username), {
+                        tempPin: {
+                            code:      data.tempPin.code,
+                            expiry:    data.tempPin.expiry,
+                            used:      true,
+                            createdAt: data.tempPin.createdAt || null
+                        }
+                    }, { merge: true });
+                } catch (e) {
+                    console.error('Error marcando tempPin como usado:', e);
                 }
             }
         }
-        
-        // Si no validó con tempPin, intentar con pinHash
+
+        // 2. PIN hasheado (registro desde la app)
         if (!pinValid && data.pinHash) {
             const hash = await hashPIN(loginPin);
-            if (data.pinHash === hash) {
-                pinValid = true;
-            }
+            if (data.pinHash === hash) pinValid = true;
         }
-        
+
+        // 3. PIN plano (usuarios creados por admin)
+        if (!pinValid && data.pin) {
+            if (String(data.pin).trim() === String(loginPin).trim()) pinValid = true;
+        }
+
         if (!pinValid) {
             err.textContent = 'PIN incorrecto.';
             loginPin = '';
