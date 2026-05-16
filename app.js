@@ -333,8 +333,35 @@ window.doLogin = async () => {
             return;
         }
         const data = snap.data();
-        const hash = await hashPIN(loginPin);
-        if (data.pinHash !== hash) {
+        
+        // Validar PIN: primero tempPin, luego pinHash
+        let pinValid = false;
+        
+        // Verificar PIN temporal si existe
+        if (data.tempPin && !data.tempPin.used) {
+            const now = Date.now();
+            if (data.tempPin.expiry && now <= data.tempPin.expiry) {
+                if (loginPin === data.tempPin.code) {
+                    pinValid = true;
+                    // Marcar tempPin como usado
+                    try {
+                        await setDoc(userRef(username), { tempPin: { ...data.tempPin, used: true } }, { merge: true });
+                    } catch (e) {
+                        console.error('Error marcando tempPin como usado:', e);
+                    }
+                }
+            }
+        }
+        
+        // Si no validó con tempPin, intentar con pinHash
+        if (!pinValid && data.pinHash) {
+            const hash = await hashPIN(loginPin);
+            if (data.pinHash === hash) {
+                pinValid = true;
+            }
+        }
+        
+        if (!pinValid) {
             err.textContent = 'PIN incorrecto.';
             loginPin = '';
             updatePinDisplay('login', '');
@@ -349,6 +376,7 @@ window.doLogin = async () => {
             ...data
         };
         delete S.pinHash;
+        delete S.tempPin;
         delete S.updatedAt;
         saveSession();
         startApp();

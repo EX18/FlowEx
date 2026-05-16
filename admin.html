@@ -3,458 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admin - Gestión de PINs</title>
-    <link href="https://cdn.jsdelivr.net/npm/fontsource@4.5.0/inter/400.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/fontsource@4.5.0/inter/600.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/fontsource@4.5.0/inter/700.css" rel="stylesheet">
+    <title>Panel Admin FlowEX - NULVEC</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0f0f1a;
-            color: #e0e0e0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-        }
-
-        .bg-pattern {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background:
-                radial-gradient(ellipse at 20% 50%, rgba(120, 80, 255, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(255, 100, 80, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 80%, rgba(80, 200, 255, 0.06) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 520px;
-            padding: 20px;
-        }
-
-        .card {
-            background: rgba(22, 22, 38, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 40px 32px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            animation: slideUp 0.5s ease;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(120, 80, 255, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(120, 80, 255, 0.6); }
-        }
-
-        .screen { display: none; }
-        .screen.active { display: block; animation: fadeIn 0.4s ease; }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .logo-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #7850ff, #50c8ff);
-            border-radius: 18px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            font-size: 28px;
-        }
-
-        .logo h1 {
-            font-size: 22px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #c4b5fd, #93c5fd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .logo p {
-            font-size: 13px;
-            color: #666;
-            margin-top: 4px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #999;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: #fff;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        .form-group input:focus {
-            border-color: #7850ff;
-            box-shadow: 0 0 0 3px rgba(120, 80, 255, 0.2);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .form-group input::placeholder {
-            color: #555;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #7850ff, #5088ff);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(120, 80, 255, 0.4);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #aaa;
-            margin-top: 12px;
-        }
-
-        .btn-outline:hover {
-            border-color: #7850ff;
-            color: #7850ff;
-            background: rgba(120, 80, 255, 0.05);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #30c870, #50c8ff);
-            color: white;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #ff5050, #ff8050);
-            color: white;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        .pin-display {
-            text-align: center;
-            padding: 24px;
-            background: rgba(120, 80, 255, 0.08);
-            border: 1px solid rgba(120, 80, 255, 0.2);
-            border-radius: 16px;
-            margin: 20px 0;
-            animation: glow 2s ease infinite;
-        }
-
-        .pin-label {
-            font-size: 12px;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .pin-value {
-            font-size: 42px;
-            font-weight: 700;
-            letter-spacing: 12px;
-            background: linear-gradient(135deg, #c4b5fd, #93c5fd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .pin-expire {
-            font-size: 11px;
-            color: #666;
-            margin-top: 8px;
-        }
-
-        .alert {
-            padding: 14px 16px;
-            border-radius: 12px;
-            font-size: 13px;
-            margin-bottom: 20px;
-            display: none;
-            animation: slideUp 0.3s ease;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; overflow-x: hidden; }
+        .bg-pattern { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse at 20% 50%, rgba(120, 80, 255, 0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(255, 100, 80, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(80, 200, 255, 0.06) 0%, transparent 50%); pointer-events: none; z-index: 0; }
+        .container { position: relative; z-index: 1; width: 100%; max-width: 960px; padding: 20px; margin: 0 auto; }
+        .screen { display: none; animation: fadeIn 0.4s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background: rgba(22, 22, 38, 0.95); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 40px; backdrop-filter: blur(20px); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); animation: slideUp 0.5s ease; max-width: 420px; margin: 60px auto; }
+        .logo { text-align: center; margin-bottom: 32px; }
+        .logo-icon { width: 64px; height: 64px; background: linear-gradient(135deg, #7850ff, #50c8ff); border-radius: 18px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 28px; }
+        .logo h1 { font-size: 22px; font-weight: 700; background: linear-gradient(135deg, #c4b5fd, #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo p { font-size: 13px; color: #666; margin-top: 4px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #999; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input { width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #fff; font-size: 15px; transition: all 0.3s ease; outline: none; }
+        .form-group input:focus { border-color: #7850ff; box-shadow: 0 0 0 3px rgba(120, 80, 255, 0.2); background: rgba(255, 255, 255, 0.08); }
+        .btn { padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; }
+        .btn-primary { background: linear-gradient(135deg, #7850ff, #5088ff); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(120, 80, 255, 0.4); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .alert { padding: 14px 16px; border-radius: 12px; font-size: 13px; margin-bottom: 20px; display: none; animation: slideUp 0.3s ease; }
         .alert.show { display: flex; align-items: center; gap: 10px; }
-
         .alert-error { background: rgba(255, 80, 80, 0.1); border: 1px solid rgba(255, 80, 80, 0.2); color: #ff8080; }
         .alert-success { background: rgba(48, 200, 112, 0.1); border: 1px solid rgba(48, 200, 112, 0.2); color: #60d890; }
-        .alert-warning { background: rgba(255, 180, 50, 0.1); border: 1px solid rgba(255, 180, 50, 0.2); color: #ffc060; }
-        .alert-info { background: rgba(120, 80, 255, 0.1); border: 1px solid rgba(120, 80, 255, 0.2); color: #a090ff; }
-
-        .input-pin-group {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
-        .input-pin-digit {
-            width: 56px;
-            height: 64px;
-            text-align: center;
-            font-size: 28px;
-            font-weight: 700;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: #fff;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .input-pin-digit:focus {
-            border-color: #7850ff;
-            box-shadow: 0 0 0 3px rgba(120, 80, 255, 0.2);
-        }
-
-        .input-pin-digit.filled {
-            border-color: #7850ff;
-            background: rgba(120, 80, 255, 0.1);
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .top-bar h2 {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .copy-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            background: rgba(120, 80, 255, 0.15);
-            border: 1px solid rgba(120, 80, 255, 0.3);
-            border-radius: 8px;
-            color: #a090ff;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #555;
-        }
-
-        .empty-icon {
-            font-size: 40px;
-            margin-bottom: 12px;
-        }
-
-        @media (max-width: 480px) {
-            .card { padding: 28px 22px; }
-            .pin-value { font-size: 36px; }
-            .input-pin-digit { width: 48px; height: 56px; font-size: 24px; }
-        }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 0 20px; }
+        .admin-title h1 { font-size: 24px; margin-bottom: 4px; }
+        .admin-title p { color: #999; font-size: 13px; }
+        .btn-logout { padding: 8px 16px; background: rgba(255, 80, 80, 0.1); border: 1px solid rgba(255, 80, 80, 0.2); border-radius: 8px; color: #ff8080; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .btn-logout:hover { background: rgba(255, 80, 80, 0.2); }
+        .admin-card { background: rgba(22, 22, 38, 0.95); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; backdrop-filter: blur(20px); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); padding: 32px; animation: slideUp 0.5s ease; }
+        .tabs { display: flex; gap: 4px; background: rgba(255, 255, 255, 0.03); border-radius: 12px; padding: 4px; margin-bottom: 24px; }
+        .tab { flex: 1; padding: 10px; text-align: center; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; color: #666; border: none; background: none; font-family: inherit; text-transform: uppercase; letter-spacing: 0.5px; }
+        .tab.active { background: rgba(120, 80, 255, 0.15); color: #a090ff; }
+        .section { margin-bottom: 24px; display: none; }
+        .section.active { display: block; }
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #e0e0e0; }
+        .user-list { max-height: 400px; overflow-y: auto; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.06); }
+        .user-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); transition: background 0.2s ease; }
+        .user-item:last-child { border-bottom: none; }
+        .user-item:hover { background: rgba(255, 255, 255, 0.03); }
+        .user-info { flex: 1; }
+        .user-name { font-size: 14px; font-weight: 600; color: #ddd; margin-bottom: 2px; }
+        .user-username { font-size: 11px; color: #666; }
+        .user-actions { display: flex; gap: 8px; }
+        .btn-small { padding: 6px 12px; background: rgba(120, 80, 255, 0.15); border: 1px solid rgba(120, 80, 255, 0.3); border-radius: 8px; color: #a090ff; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .btn-small:hover { background: rgba(120, 80, 255, 0.3); }
+        .btn-danger { background: rgba(255, 80, 80, 0.15); border-color: rgba(255, 80, 80, 0.3); color: #ff8080; }
+        .btn-danger:hover { background: rgba(255, 80, 80, 0.3); }
+        .empty-state { text-align: center; padding: 40px 20px; color: #555; }
+        .empty-icon { font-size: 40px; margin-bottom: 12px; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(48, 200, 112, 0.15); color: #60d890; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; }
+        .history-item:last-child { border-bottom: none; }
+        .history-code { font-weight: 700; color: #a090ff; letter-spacing: 2px; }
+        .history-time { color: #555; font-size: 11px; }
     </style>
 </head>
 <body>
     <div class="bg-pattern"></div>
-
     <div class="container">
-        <div id="screenLogin" class="screen active">
+        <div id="loginScreen" class="screen active">
             <div class="card">
                 <div class="logo">
                     <div class="logo-icon">🔐</div>
                     <h1>Panel Admin</h1>
-                    <p>Ingresa tu usuario y PIN para acceder</p>
+                    <p>Acceso exclusivo - NULVEC</p>
                 </div>
-
                 <div id="alertLogin" class="alert"></div>
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="username" placeholder="NULVEC" autocomplete="off" value="NULVEC" readonly>
+                </div>
+                <button class="btn btn-primary" onclick="login()">Acceder al Panel</button>
+            </div>
+        </div>
 
-                <div id="loginStep1">
-                    <div class="form-group">
-                        <label>Usuario</label>
-                        <input type="text" id="loginUser" placeholder="Escribe tu usuario..." autocomplete="off">
-                    </div>
-                    <button class="btn btn-primary" onclick="goToPinStep()">Siguiente →</button>
-                    <button class="btn btn-outline" style="margin-top:12px;" onclick="showForgotPin()">🔑 Olvidé mi PIN</button>
+        <div id="adminScreen" class="screen">
+            <div class="admin-header">
+                <div class="admin-title">
+                    <h1>🛡️ Panel de Administración</h1>
+                    <p>Bienvenido NULVEC - Permisos de Creador</p>
+                </div>
+                <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+            </div>
+            <div class="admin-card">
+                <div id="alertAdmin" class="alert"></div>
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('tabUsers', this)">👥 Usuarios</button>
+                    <button class="tab" onclick="switchTab('tabCreate', this)">➕ Crear</button>
+                    <button class="tab" onclick="switchTab('tabHistory', this)">📋 Historial</button>
                 </div>
 
-                <div id="loginStep2" style="display:none;">
-                    <div class="form-group">
-                        <label>PIN de 4 dígitos</label>
-                        <div class="input-pin-group">
-                            <input type="text" class="input-pin-digit" maxlength="1" id="pinDigit1" oninput="pinNext(this, 'pinDigit2')" onkeydown="pinBack(event, null, 'pinDigit1')">
-                            <input type="text" class="input-pin-digit" maxlength="1" id="pinDigit2" oninput="pinNext(this, 'pinDigit3')" onkeydown="pinBack(event, 'pinDigit1', 'pinDigit2')">
-                            <input type="text" class="input-pin-digit" maxlength="1" id="pinDigit3" oninput="pinNext(this, 'pinDigit4')" onkeydown="pinBack(event, 'pinDigit2', 'pinDigit3')">
-                            <input type="text" class="input-pin-digit" maxlength="1" id="pinDigit4" oninput="pinNext(this, null)" onkeydown="pinBack(event, 'pinDigit3', 'pinDigit4')">
+                <div id="tabUsers" class="section active">
+                    <div class="section-title">Gestión de Usuarios</div>
+                    <div class="user-list" id="userList">
+                        <div class="empty-state">
+                            <div class="empty-icon">📂</div>
+                            <p>Cargando usuarios...</p>
                         </div>
                     </div>
-                    <button class="btn btn-primary" id="btnLogin" onclick="attemptLogin()">Iniciar Sesión</button>
-                    <button class="btn btn-outline" onclick="backToUserStep()">← Cambiar usuario</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="screenForgot" class="screen">
-            <div class="card">
-                <div class="logo">
-                    <div class="logo-icon">🔑</div>
-                    <h1>Olvidé mi PIN</h1>
-                    <p>Ingresa tu usuario y recibe un PIN temporal</p>
                 </div>
 
-                <div id="alertForgot" class="alert"></div>
-
-                <div id="forgotStep1">
+                <div id="tabCreate" class="section">
+                    <div class="section-title">Crear Nuevo Usuario</div>
                     <div class="form-group">
-                        <label>¿Cuál es tu usuario?</label>
-                        <input type="text" id="forgotUser" placeholder="Escribe tu usuario..." autocomplete="off">
+                        <label>Nombre completo</label>
+                        <input type="text" id="createName" placeholder="Ej: Juan Pérez">
                     </div>
-                    <button class="btn btn-primary" onclick="searchTempPin()">Buscar PIN Temporal</button>
-                    <button class="btn btn-outline" onclick="goBack('screenForgot', 'screenLogin')">← Volver al inicio</button>
-                </div>
-
-                <div id="forgotStep2" style="display:none;">
-                    <p style="text-align:center; color:#999; font-size:13px; margin-bottom:16px;">
-                        El PIN temporal para <strong id="forgotUserName" style="color:#e0e0e0;"></strong> es:
-                    </p>
-                    <div class="pin-display">
-                        <div class="pin-label">PIN Temporal</div>
-                        <div class="pin-value" id="tempPinDisplay">----</div>
-                        <div class="pin-expire" id="tempPinExpire"></div>
+                    <div class="form-group">
+                        <label>Usuario</label>
+                        <input type="text" id="createUsername" placeholder="Ej: juanperez" autocomplete="off">
                     </div>
-                    <button class="copy-btn" onclick="copyTempPin()">📋 Copiar PIN</button>
-                    <button class="btn btn-primary" style="margin-top:16px;" onclick="goBack('screenForgot', 'screenLogin')">Ya tengo mi PIN</button>
-                </div>
-
-                <div id="forgotStep3" style="display:none;">
-                    <div class="empty-state">
-                        <div class="empty-icon">😕</div>
-                        <p>No se encontró ningún usuario con ese nombre.<br>Verifica e intenta nuevamente.</p>
+                    <div class="form-group">
+                        <label>PIN inicial (4 dígitos)</label>
+                        <input type="text" id="createPin" placeholder="1234" maxlength="4">
                     </div>
-                    <button class="btn btn-outline" onclick="resetForgot()">← Intentar de nuevo</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="screenChangeTempPin" class="screen">
-            <div class="card">
-                <div class="logo">
-                    <div class="logo-icon">⚠️</div>
-                    <h1>PIN Temporal Usado</h1>
-                    <p>Debes cambiar tu PIN antes de continuar</p>
-                </div>
-                <div class="pin-display">
-                    <div class="pin-label">Usuario</div>
-                    <div class="pin-value" id="changeUserName">----</div>
-                </div>
-                <button class="btn btn-primary" onclick="goChangePin()">Cambiar mi PIN</button>
-                <button class="btn btn-outline" onclick="adminLogout()">Cerrar sesión</button>
-            </div>
-        </div>
-
-        <div id="screenChangePin" class="screen">
-            <div class="card">
-                <div class="logo">
-                    <div class="logo-icon">🔄</div>
-                    <h1>Cambiar PIN</h1>
-                    <p>Define un nuevo PIN de 4 dígitos</p>
+                    <button class="btn btn-primary" onclick="createUser()" style="margin-bottom: 10px;">Crear Usuario</button>
+                    <button class="btn btn-primary" style="background: rgba(255, 255, 255, 0.1); color: #aaa; margin-bottom: 0;" onclick="generateRandomPin()">🎲 PIN Aleatorio</button>
                 </div>
 
-                <div id="alertChangePin" class="alert"></div>
-
-                <div class="form-group">
-                    <label>Nuevo PIN</label>
-                    <div class="input-pin-group">
-                        <input type="text" class="input-pin-digit" maxlength="1" id="newPin1" oninput="pinNext(this, 'newPin2')" onkeydown="pinBack(event, null, 'newPin1')">
-                        <input type="text" class="input-pin-digit" maxlength="1" id="newPin2" oninput="pinNext(this, 'newPin3')" onkeydown="pinBack(event, 'newPin1', 'newPin2')">
-                        <input type="text" class="input-pin-digit" maxlength="1" id="newPin3" oninput="pinNext(this, 'newPin4')" onkeydown="pinBack(event, 'newPin2', 'newPin3')">
-                        <input type="text" class="input-pin-digit" maxlength="1" id="newPin4" oninput="pinNext(this, null)" onkeydown="pinBack(event, 'newPin3', 'newPin4')">
+                <div id="tabHistory" class="section">
+                    <div class="section-title">Historial de PINs Temporales</div>
+                    <div id="historyList" style="border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px;">
+                        <div class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <p>No hay registros aún</p>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Confirmar PIN</label>
-                    <div class="input-pin-group">
-                        <input type="text" class="input-pin-digit" maxlength="1" id="confirmPin1" oninput="pinNext(this, 'confirmPin2')" onkeydown="pinBack(event, null, 'confirmPin1')">
-                        <input type="text" class="input-pin-digit" maxlength="1" id="confirmPin2" oninput="pinNext(this, 'confirmPin3')" onkeydown="pinBack(event, 'confirmPin1', 'confirmPin2')">
-                        <input type="text" class="input-pin-digit" maxlength="1" id="confirmPin3" oninput="pinNext(this, 'confirmPin4')" onkeydown="pinBack(event, 'confirmPin2', 'confirmPin3')">
-                        <input type="text" class="input-pin-digit" maxlength="1" id="confirmPin4" oninput="pinNext(this, null)" onkeydown="pinBack(event, 'confirmPin3', 'confirmPin4')">
-                    </div>
-                </div>
-                <button class="btn btn-success" onclick="saveNewPin()">Guardar Nuevo PIN</button>
-                <button class="btn btn-outline" onclick="adminLogout()">Salir</button>
-            </div>
-        </div>
-
-        <div id="screenSuccess" class="screen">
-            <div class="card">
-                <div class="logo">
-                    <div class="logo-icon">✅</div>
-                    <h1>PIN actualizado</h1>
-                    <p>Tu cuenta ahora usa un PIN permanente seguro.</p>
-                </div>
-                <button class="btn btn-primary" onclick="adminLogout()">Volver al inicio</button>
             </div>
         </div>
     </div>
@@ -473,264 +153,211 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        let currentUser = null;
-        let currentTempPin = '';
+        let allUsers = {};
 
         const TempCodeGenerator = {
             generate() {
                 if (window.crypto && window.crypto.getRandomValues) {
-                    const values = new Uint32Array(1);
-                    window.crypto.getRandomValues(values);
-                    return String(1000 + (values[0] % 9000));
+                    const v = new Uint32Array(1);
+                    window.crypto.getRandomValues(v);
+                    return String(1000 + (v[0] % 9000));
                 }
                 return String(1000 + Math.floor(Math.random() * 9000));
             }
         };
 
-        function setActiveScreen(id) {
-            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            clearAlerts();
-        }
-
-        function showAlert(containerId, message, type = 'error') {
-            const alert = document.getElementById(containerId);
-            const icons = { error: '❌', success: '✅', warning: '⚠️', info: 'ℹ️' };
-            alert.className = `alert alert-${type} show`;
-            alert.innerHTML = `<span>${icons[type] || ''}</span><span>${message}</span>`;
-            setTimeout(() => alert.classList.remove('show'), 5000);
+        function showAlert(id, msg, type = "error") {
+            const a = document.getElementById(id);
+            const icons = { error: "❌", success: "✅", warning: "⚠️" };
+            a.className = `alert alert-${type} show`;
+            a.innerHTML = `<span>${icons[type] || ""}</span><span>${msg}</span>`;
+            setTimeout(() => a.classList.remove("show"), 5000);
         }
 
         function clearAlerts() {
-            document.querySelectorAll('.alert').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll(".alert").forEach(el => el.classList.remove("show"));
         }
 
-        function pinNext(current, nextId) {
-            if (current.value.length === 1) {
-                current.classList.add('filled');
-                if (nextId) document.getElementById(nextId).focus();
-            }
-        }
-
-        function pinBack(event, prevId, currentId) {
-            if (event.key === 'Backspace' && !event.target.value && prevId) {
-                const prev = document.getElementById(prevId);
-                prev.focus();
-                prev.value = '';
-                prev.classList.remove('filled');
-            }
-        }
-
-        function getPinValue(prefix) {
-            return Array.from({ length: 4 }, (_, i) => document.getElementById(`${prefix}${i + 1}`).value || '').join('');
-        }
-
-        function clearPinInputs(prefix) {
-            Array.from({ length: 4 }, (_, i) => document.getElementById(`${prefix}${i + 1}`)).forEach(el => {
-                if (el) {
-                    el.value = '';
-                    el.classList.remove('filled');
-                }
-            });
-        }
-
-        async function goToPinStep() {
-            const user = document.getElementById('loginUser').value.trim().toLowerCase();
-            if (!user) {
-                showAlert('alertLogin', 'Ingresa tu usuario antes de continuar.', 'warning');
-                return;
-            }
-
-            const userDoc = await db.collection('users').doc(user).get();
-            if (!userDoc.exists) {
-                showAlert('alertLogin', 'Usuario no encontrado.', 'error');
-                return;
-            }
-
-            currentUser = user;
-            document.getElementById('loginStep1').style.display = 'none';
-            document.getElementById('loginStep2').style.display = 'block';
-            clearPinInputs('pinDigit');
-            document.getElementById('pinDigit1').focus();
-        }
-
-        function backToUserStep() {
-            document.getElementById('loginStep1').style.display = 'block';
-            document.getElementById('loginStep2').style.display = 'none';
-            clearPinInputs('pinDigit');
-            currentUser = null;
+        function setScreen(id) {
+            document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+            document.getElementById(id).classList.add("active");
             clearAlerts();
         }
 
-        async function attemptLogin() {
-            const pin = getPinValue('pinDigit');
-            if (pin.length !== 4) {
-                showAlert('alertLogin', 'Completa los 4 dígitos del PIN.', 'warning');
+        function login() {
+            const u = document.getElementById("username").value.trim().toUpperCase();
+            if (u !== "NULVEC") {
+                showAlert("alertLogin", "Solo NULVEC puede acceder al panel.", "error");
                 return;
             }
-            if (!currentUser) {
-                showAlert('alertLogin', 'Primero selecciona un usuario.', 'warning');
-                return;
-            }
+            setScreen("adminScreen");
+            loadUsers();
+            loadHistory();
+        }
 
-            const button = document.getElementById('btnLogin');
-            button.disabled = true;
-            button.textContent = 'Validando...';
+        function logout() {
+            setScreen("loginScreen");
+            clearAlerts();
+        }
 
+        function switchTab(tabId, btn) {
+            document.querySelectorAll(".tabs .tab").forEach(t => t.classList.remove("active"));
+            btn.classList.add("active");
+            document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+            document.getElementById(tabId).classList.add("active");
+            if (tabId === "tabHistory") loadHistory();
+        }
+
+        async function loadUsers() {
             try {
-                const snapshot = await db.collection('users').doc(currentUser).get();
-                if (!snapshot.exists) {
-                    showAlert('alertLogin', 'Usuario no existe.', 'error');
-                    button.disabled = false;
-                    button.textContent = 'Iniciar Sesión';
-                    return;
-                }
-
-                const userData = snapshot.data();
-                const now = Date.now();
-
-                if (userData.pin === pin) {
-                    showAlert('alertLogin', 'Acceso permitido. Bienvenido.', 'success');
-                    setTimeout(() => {
-                        setActiveScreen('screenSuccess');
-                    }, 800);
-                    button.disabled = false;
-                    button.textContent = 'Iniciar Sesión';
-                    return;
-                }
-
-                if (userData.tempPin && userData.tempPin.code === pin) {
-                    if (userData.tempPin.used) {
-                        showAlert('alertLogin', 'Este PIN temporal ya se usó.', 'error');
-                    } else if (now > userData.tempPin.expiry) {
-                        showAlert('alertLogin', 'El PIN temporal expiró. Genera uno nuevo.', 'error');
-                    } else {
-                        await db.collection('users').doc(currentUser).update({
-                            'tempPin.used': true
-                        });
-                        document.getElementById('changeUserName').textContent = currentUser;
-                        setActiveScreen('screenChangeTempPin');
-                    }
-                } else {
-                    showAlert('alertLogin', 'PIN incorrecto.', 'error');
-                }
-            } catch (error) {
-                console.error('Error iniciando sesión:', error);
-                showAlert('alertLogin', 'Error de conexión con Firebase.', 'error');
+                const snap = await db.collection("users").get();
+                allUsers = {};
+                snap.forEach(d => allUsers[d.id] = d.data());
+                renderUsers();
+            } catch (e) {
+                console.error("Error en loadUsers:", e);
+                const msg = e.message || "Error desconocido";
+                const c = document.getElementById("userList");
+                c.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Error cargando usuarios:<br><small>${msg}</small></p></div>`;
             }
-
-            button.disabled = false;
-            button.textContent = 'Iniciar Sesión';
         }
 
-        function showForgotPin() {
-            setActiveScreen('screenForgot');
-            document.getElementById('forgotStep1').style.display = 'block';
-            document.getElementById('forgotStep2').style.display = 'none';
-            document.getElementById('forgotStep3').style.display = 'none';
-            document.getElementById('forgotUser').value = '';
-        }
-
-        async function searchTempPin() {
-            const username = document.getElementById('forgotUser').value.trim().toLowerCase();
-            if (!username) {
-                showAlert('alertForgot', 'Ingresa el usuario para generar el PIN temporal.', 'warning');
+        function renderUsers() {
+            const c = document.getElementById("userList");
+            const keys = Object.keys(allUsers);
+            if (!keys.length) {
+                c.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>No hay usuarios creados aún.</p></div>';
                 return;
             }
-
-            const userDoc = await db.collection('users').doc(username).get();
-            if (!userDoc.exists) {
-                document.getElementById('forgotStep1').style.display = 'none';
-                document.getElementById('forgotStep3').style.display = 'block';
-                return;
-            }
-
-            const userData = userDoc.data();
-            const now = Date.now();
-            let tempPin = userData.tempPin;
-
-            if (tempPin && !tempPin.used && tempPin.expiry > now) {
-                currentTempPin = tempPin.code;
-            } else {
-                currentTempPin = TempCodeGenerator.generate();
-                const expiry = now + 15 * 60 * 1000;
-                tempPin = { code: currentTempPin, expiry, used: false };
-                await db.collection('users').doc(username).update({ tempPin });
-            }
-
-            document.getElementById('forgotUserName').textContent = username;
-            document.getElementById('tempPinDisplay').textContent = currentTempPin;
-            document.getElementById('tempPinExpire').textContent = 'Expira en 15 minutos';
-            document.getElementById('forgotStep1').style.display = 'none';
-            document.getElementById('forgotStep2').style.display = 'block';
-        }
-
-        function resetForgot() {
-            document.getElementById('forgotStep1').style.display = 'block';
-            document.getElementById('forgotStep2').style.display = 'none';
-            document.getElementById('forgotStep3').style.display = 'none';
-            document.getElementById('forgotUser').value = '';
-        }
-
-        function copyTempPin() {
-            navigator.clipboard.writeText(currentTempPin).then(() => {
-                showAlert('alertForgot', 'PIN temporal copiado.', 'success');
-            }).catch(() => {
-                showAlert('alertForgot', 'No se pudo copiar el PIN.', 'error');
+            let html = "";
+            keys.forEach(k => {
+                const u = allUsers[k];
+                const hasTmp = u.tempPin && !u.tempPin.used;
+                html += `<div class="user-item"><div class="user-info"><div class="user-name">${u.name || k}</div><div class="user-username">@${k}</div></div><div class="user-actions">${hasTmp ? '<span class="status-badge">PIN Temp</span>' : ""}<button class="btn-small" onclick="genTempPin('${k}')">🔑 Gen Temp</button><button class="btn-small btn-danger" onclick="delUser('${k}')">🗑️</button></div></div>`;
             });
+            c.innerHTML = html;
         }
 
-        function goChangePin() {
-            clearPinInputs('newPin');
-            clearPinInputs('confirmPin');
-            setActiveScreen('screenChangePin');
+        function generateRandomPin() {
+            const p = TempCodeGenerator.generate();
+            document.getElementById("createPin").value = p;
         }
 
-        async function saveNewPin() {
-            const newPin = getPinValue('newPin');
-            const confirmPin = getPinValue('confirmPin');
-
-            if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
-                showAlert('alertChangePin', 'Ingresa un PIN válido de 4 dígitos.', 'warning');
+        async function createUser() {
+            const n = document.getElementById("createName").value.trim();
+            const u = document.getElementById("createUsername").value.trim().toLowerCase();
+            const p = document.getElementById("createPin").value.trim();
+            if (!n || !u || !p) {
+                showAlert("alertAdmin", "Completa todos los campos.", "warning");
                 return;
             }
-            if (newPin !== confirmPin) {
-                showAlert('alertChangePin', 'Los PINs no coinciden.', 'error');
+            if (!/^[a-z0-9_]+$/.test(u)) {
+                showAlert("alertAdmin", "Usuario solo letras, números y guiones bajos.", "error");
                 return;
             }
-            if (!currentUser) {
-                showAlert('alertChangePin', 'No hay usuario activo.', 'error');
+            if (!/^\d{4}$/.test(p)) {
+                showAlert("alertAdmin", "PIN debe ser 4 dígitos.", "error");
                 return;
             }
-
             try {
-                await db.collection('users').doc(currentUser).update({
-                    pin: newPin,
-                    tempPin: null
+                const e = await db.collection("users").doc(u).get();
+                if (e.exists) {
+                    showAlert("alertAdmin", "Usuario ya existe.", "error");
+                    return;
+                }
+                await db.collection("users").doc(u).set({
+                    name: n,
+                    pin: p,
+                    tempPin: null,
+                    createdAt: new Date()
                 });
-                setActiveScreen('screenSuccess');
-            } catch (error) {
-                console.error('Error guardando PIN:', error);
-                showAlert('alertChangePin', 'Error de conexión. Intenta de nuevo.', 'error');
+                showAlert("alertAdmin", `✅ Usuario ${n} (@${u}) creado exitosamente.`, "success");
+                document.getElementById("createName").value = "";
+                document.getElementById("createUsername").value = "";
+                document.getElementById("createPin").value = "";
+                loadUsers();
+            } catch (e) {
+                console.error("Error en createUser:", e);
+                const msg = e.message || "Error desconocido";
+                showAlert("alertAdmin", `Error: ${msg}`, "error");
             }
         }
 
-        function adminLogout() {
-            currentUser = null;
-            currentTempPin = '';
-            document.getElementById('loginUser').value = '';
-            clearPinInputs('pinDigit');
-            clearPinInputs('newPin');
-            clearPinInputs('confirmPin');
-            clearAlerts();
-            setActiveScreen('screenLogin');
-            document.getElementById('loginStep1').style.display = 'block';
-            document.getElementById('loginStep2').style.display = 'none';
+        async function genTempPin(u) {
+            try {
+                const tmp = TempCodeGenerator.generate();
+                const exp = Date.now() + 15 * 60 * 1000;
+                
+                // Verificar que el usuario existe
+                const userDoc = await db.collection("users").doc(u).get();
+                if (!userDoc.exists) {
+                    showAlert("alertAdmin", `Usuario @${u} no existe en la base de datos.`, "error");
+                    return;
+                }
+                
+                // Actualizar con tempPin
+                await db.collection("users").doc(u).update({
+                    tempPin: {
+                        code: tmp,
+                        expiry: exp,
+                        used: false,
+                        createdAt: new Date()
+                    }
+                });
+                
+                // Registrar en historial
+                await db.collection("tempPinHistory").add({
+                    username: u,
+                    code: tmp,
+                    action: "generated",
+                    timestamp: new Date()
+                });
+                
+                alert(`PIN Temporal para @${u}:\n\n${tmp}\n\nExpira en 15 minutos`);
+                loadUsers();
+            } catch (e) {
+                console.error("Error en genTempPin:", e);
+                const msg = e.message || "Error desconocido al generar PIN";
+                showAlert("alertAdmin", `Error: ${msg}`, "error");
+            }
         }
 
-        document.getElementById('loginUser').addEventListener('keypress', event => {
-            if (event.key === 'Enter') goToPinStep();
-        });
+        async function delUser(u) {
+            if (confirm(`¿Eliminar usuario @${u}? Esta acción no se puede deshacer.`)) {
+                try {
+                    await db.collection("users").doc(u).delete();
+                    showAlert("alertAdmin", `✅ Usuario @${u} eliminado.`, "success");
+                    loadUsers();
+                } catch (e) {
+                    console.error("Error en delUser:", e);
+                    const msg = e.message || "Error desconocido";
+                    showAlert("alertAdmin", `Error: ${msg}`, "error");
+                }
+            }
+        }
+
+        async function loadHistory() {
+            try {
+                const snap = await db.collection("tempPinHistory").orderBy("timestamp", "desc").limit(20).get();
+                const c = document.getElementById("historyList");
+                if (snap.empty) {
+                    c.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><p>No hay registros</p></div>';
+                    return;
+                }
+                let html = "";
+                snap.forEach(d => {
+                    const data = d.data();
+                    const t = new Date(data.timestamp?.toDate() || 0).toLocaleString("es-ES");
+                    html += `<div class="history-item"><div><strong>@${data.username}</strong> ${data.action === "generated" ? "Generó" : "Usó"}</div><div><span class="history-code">${data.code}</span><div class="history-time">${t}</div></div></div>`;
+                });
+                c.innerHTML = html;
+            } catch (e) {
+                console.error("Error en loadHistory:", e);
+                const msg = e.message || "Error desconocido";
+                const c = document.getElementById("historyList");
+                c.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Error cargando historial:<br><small>${msg}</small></p></div>`;
+            }
+        }
     </script>
 </body>
 </html>
