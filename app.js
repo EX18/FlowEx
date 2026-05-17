@@ -1595,19 +1595,109 @@ window.deleteFolder = (name) => {
 };
 
 // ── STATS ─────────────────────────────────────────
-const renderStats = () => {
+const formatNumber = (value) => {
+    if (typeof value !== 'number') return '0';
+    if (value >= 1000000) return Math.round(value / 100000) / 10 + 'M';
+    if (value >= 1000) return Math.round(value / 100) / 10 + 'k';
+    return value.toString();
+};
+
+const fetchGlobalStats = async () => {
+    const result = {
+        users: [],
+        totalUsers: 0,
+        totalHabits: 0,
+        totalXP: 0,
+        rank: null
+    };
+    try {
+        const snap = await getDocs(collection(db, 'users'));
+        const users = [];
+        snap.forEach(doc => {
+            const data = doc.data() || {};
+            const username = data.username || doc.id;
+            const habitsCount = Array.isArray(data.habits) ? data.habits.length : 0;
+            users.push({
+                username,
+                name: data.name || username,
+                xp: data.xp || 0,
+                level: data.level || 1,
+                habits: habitsCount
+            });
+            result.totalHabits += habitsCount;
+            result.totalXP += data.xp || 0;
+        });
+        users.sort((a, b) => b.xp - a.xp || b.level - a.level);
+        result.users = users.slice(0, 10);
+        result.totalUsers = users.length;
+        const rankIndex = users.findIndex(u => u.username === CUR_USER);
+        result.rank = rankIndex >= 0 ? rankIndex + 1 : null;
+    } catch (e) {
+        console.warn('Error cargando estadísticas globales', e);
+    }
+    return result;
+};
+
+const renderStats = async () => {
     const td = today();
-    const done = S.habits.filter(h => h.logs && h.logs[td]).length;
-    const allLogs = S.habits.flatMap(h => Object.values(h.logs || {}).filter(Boolean));
-    const best = S.habits.reduce((a, h) => Math.max(a, getBest(h)), 0);
+    const done = (S.habits || []).filter(h => h.logs && h.logs[td]).length;
+    const allLogs = (S.habits || []).flatMap(h => Object.values(h.logs || {}).filter(Boolean));
+    const best = (S.habits || []).reduce((a, h) => Math.max(a, getBest(h)), 0);
+
     const top = document.getElementById('stats-top');
     if (top) top.innerHTML = `
-          <div class="hs-cell"><div class="hs-val">${done}/${S.habits.length}</div><div class="hs-lbl">Hoy</div></div>
-          <div class="hs-cell"><div class="hs-val">${allLogs.length}</div><div class="hs-lbl">Total logs</div></div>
-          <div class="hs-cell"><div class="hs-val">${best}🔥</div><div class="hs-lbl">Mejor racha</div></div>`;
+          <div class="hs-cell"><div class="hs-val">${done}/${(S.habits || []).length}</div><div class="hs-lbl">Hoy</div></div>
+          <div class="hs-cell"><div class="hs-val">${formatNumber(allLogs.length)}</div><div class="hs-lbl">Logs totales</div></div>
+          <div class="hs-cell"><div class="hs-val">${best}🔥</div><div class="hs-lbl">Mejor racha</div></div>
+          <div class="hs-cell"><div class="hs-val">${S.level||1}</div><div class="hs-lbl">Nivel</div></div>`;
+
+    const globalRow = document.getElementById('global-stats-row');
+    if (globalRow) globalRow.innerHTML = `
+          <div class="hs-cell"><div class="hs-val">--</div><div class="hs-lbl">Ranking global</div></div>
+          <div class="hs-cell"><div class="hs-val">--</div><div class="hs-lbl">Usuarios</div></div>
+          <div class="hs-cell"><div class="hs-val">--</div><div class="hs-lbl">Hábitos</div></div>
+          <div class="hs-cell"><div class="hs-val">--</div><div class="hs-lbl">XP total</div></div>`;
+
+    const leaderboardCard = document.getElementById('leaderboard-card');
+    if (leaderboardCard) leaderboardCard.innerHTML = `
+          <div style="font-family:var(--fb);font-size:14px;font-weight:700;margin-bottom:14px">Ranking FlowEX</div>
+          <div class="empty" style="padding:14px">Cargando ranking global...</div>`;
+
+    const global = await fetchGlobalStats();
+
+    if (globalRow) globalRow.innerHTML = `
+          <div class="hs-cell"><div class="hs-val">${global.rank || '—'}</div><div class="hs-lbl">Tu puesto</div></div>
+          <div class="hs-cell"><div class="hs-val">${formatNumber(global.totalUsers)}</div><div class="hs-lbl">Usuarios</div></div>
+          <div class="hs-cell"><div class="hs-val">${formatNumber(global.totalHabits)}</div><div class="hs-lbl">Hábitos</div></div>
+          <div class="hs-cell"><div class="hs-val">${formatNumber(global.totalXP)}</div><div class="hs-lbl">XP global</div></div>`;
+
+    if (leaderboardCard) {
+        if (!global.users.length) {
+            leaderboardCard.innerHTML = `<div class="empty" style="padding:14px">No hay datos globales disponibles.</div>`;
+        } else {
+            leaderboardCard.innerHTML = `
+              <div style="font-family:var(--fb);font-size:14px;font-weight:700;margin-bottom:14px">Top FlowEX</div>
+              ${global.users.slice(0, 5).map((u, index) => `
+                <div class="hr" style="justify-content: space-between; margin-bottom: 8px; padding: 12px 14px;">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div class="hem" style="font-size:18px">${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '⚡'}</div>
+                    <div class="hinfo">
+                      <div class="hnm">${u.name}</div>
+                      <div class="hsub">@${u.username} · Nivel ${u.level}</div>
+                    </div>
+                  </div>
+                  <div style="text-align:right">
+                    <div class="hs-val" style="margin-bottom:4px">${formatNumber(u.xp)} XP</div>
+                    <div class="hs-lbl" style="white-space: nowrap">Hábitos ${u.habits}</div>
+                  </div>
+                </div>
+              `).join('')}`;
+        }
+    }
+
     const wk = getWeekKeys();
     const labs = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-    const tots = wk.map(k => S.habits.filter(h => h.logs && h.logs[k]).length);
+    const tots = wk.map(k => (S.habits || []).filter(h => h.logs && h.logs[k]).length);
     const maxV = Math.max(...tots, 1);
     const wc = document.getElementById('week-chart');
     if (wc) wc.innerHTML = `<div style="font-family:var(--fd);font-size:14px;font-weight:700;margin-bottom:14px">Hábitos por día</div>
@@ -1620,7 +1710,7 @@ const renderStats = () => {
           </div>`;
     const sl = document.getElementById('streaks-list');
     if (sl) {
-        const sorted = [...S.habits].map(h => ({
+        const sorted = [...(S.habits || [])].map(h => ({
             ...h,
             streak: getStreak(h),
             best: getBest(h)
@@ -1642,14 +1732,14 @@ const renderStats = () => {
         const cells = [];
         for (let i = 27; i >= 0; i--) {
             const k = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
-            const cnt = S.habits.filter(h => h.logs && h.logs[k]).length;
-            const pct = cnt / (S.habits.length || 1);
+            const cnt = (S.habits || []).filter(h => h.logs && h.logs[k]).length;
+            const pct = cnt / ((S.habits || []).length || 1);
             let cls = 'hm';
             if (pct > 0.75) cls += ' d4';
             else if (pct > 0.5) cls += ' d3';
             else if (pct > 0.25) cls += ' d2';
             else if (cnt > 0) cls += ' d1';
-            cells.push(`<div class="${cls}" title="${k}: ${cnt}/${S.habits.length}"></div>`);
+            cells.push(`<div class="${cls}" title="${k}: ${cnt}/${(S.habits || []).length}"></div>`);
         }
         hm.innerHTML = cells.join('');
     }
@@ -1722,6 +1812,7 @@ window.updateNotifIcon = () => {
 // ── LOGROS ─────────────────────────────────────────
 const renderLogros = () => {
     const al = document.getElementById('achievements-list');
+    const summaryEl = document.getElementById('logros-summary');
     if (!al) return;
     const achievements = [
         {
@@ -1729,140 +1820,140 @@ const renderLogros = () => {
             name: 'Primer hábito',
             desc: 'Creaste tu primer hábito',
             icon: '🎯',
-            unlocked: S.habits.length > 0
+            unlocked: (S.habits || []).length > 0
         },
         {
             id: 'ten_habits',
             name: 'Hábitos múltiples',
             desc: 'Creaste 10 hábitos',
             icon: '🔥',
-            unlocked: S.habits.length >= 10
+            unlocked: (S.habits || []).length >= 10
         },
         {
             id: 'fifty_habits',
             name: 'Maestro de hábitos',
             desc: 'Creaste 50 hábitos',
             icon: '🏅',
-            unlocked: S.habits.length >= 50
+            unlocked: (S.habits || []).length >= 50
         },
         {
             id: 'week_streak',
             name: 'Semana perfecta',
             desc: 'Completaste todos los hábitos por 7 días',
             icon: '🔥',
-            unlocked: S.habits.some(h => getStreak(h) >= 7)
+            unlocked: (S.habits || []).some(h => getStreak(h) >= 7)
         },
         {
             id: 'month_streak',
             name: 'Mes de consistencia',
             desc: 'Mantuviste una racha de 30 días',
             icon: '🏆',
-            unlocked: S.habits.some(h => getStreak(h) >= 30)
+            unlocked: (S.habits || []).some(h => getStreak(h) >= 30)
         },
         {
             id: 'hundred_streak',
             name: 'Leyenda',
             desc: '100 días de racha en un hábito',
             icon: '👑',
-            unlocked: S.habits.some(h => getStreak(h) >= 100)
+            unlocked: (S.habits || []).some(h => getStreak(h) >= 100)
         },
         {
             id: 'year_streak',
             name: 'Inmortal',
             desc: '365 días de racha',
             icon: '🌟',
-            unlocked: S.habits.some(h => getStreak(h) >= 365)
+            unlocked: (S.habits || []).some(h => getStreak(h) >= 365)
         },
         {
             id: 'book_finished',
             name: 'Lector voraz',
             desc: 'Terminaste tu primer libro',
             icon: '📚',
-            unlocked: S.books && S.books.some(b => b.status === 'terminado')
+            unlocked: (S.books || []).some(b => b.status === 'terminado')
         },
         {
             id: 'five_books',
             name: 'Bibliófilo',
             desc: 'Terminaste 5 libros',
             icon: '📖',
-            unlocked: S.books && S.books.filter(b => b.status === 'terminado').length >= 5
+            unlocked: (S.books || []).filter(b => b.status === 'terminado').length >= 5
         },
         {
             id: 'ten_books',
             name: 'Erudito',
             desc: 'Terminaste 10 libros',
             icon: '🎓',
-            unlocked: S.books && S.books.filter(b => b.status === 'terminado').length >= 10
+            unlocked: (S.books || []).filter(b => b.status === 'terminado').length >= 10
         },
         {
             id: 'first_note',
             name: 'Primer apunte',
             desc: 'Creaste tu primera nota',
             icon: '📝',
-            unlocked: S.notes && S.notes.length > 0
+            unlocked: (S.notes || []).length > 0
         },
         {
             id: 'note_master',
             name: 'Escritor prolífico',
             desc: 'Creaste 50 notas',
             icon: '✍️',
-            unlocked: S.notes && S.notes.length >= 50
+            unlocked: (S.notes || []).length >= 50
         },
         {
             id: 'first_task',
             name: 'Productivo',
             desc: 'Completaste tu primera tarea',
             icon: '✅',
-            unlocked: S.tasks && S.tasks.some(t => t.done)
+            unlocked: (S.tasks || []).some(t => t.done)
         },
         {
             id: 'hundred_tasks',
             name: 'Máquina de tareas',
             desc: 'Completaste 100 tareas',
             icon: '🚀',
-            unlocked: S.tasks && S.tasks.filter(t => t.done).length >= 100
+            unlocked: (S.tasks || []).filter(t => t.done).length >= 100
         },
         {
             id: 'first_goal',
             name: 'Ambicioso',
             desc: 'Creaste tu primera meta',
             icon: '🎯',
-            unlocked: S.goals && S.goals.length > 0
+            unlocked: (S.goals || []).length > 0
         },
         {
             id: 'ten_goals',
             name: 'Visionario',
             desc: 'Completaste 10 metas',
             icon: '🏔️',
-            unlocked: S.goals && S.goals.filter(g => g.done).length >= 10
+            unlocked: (S.goals || []).filter(g => g.done).length >= 10
         },
         {
             id: 'first_sleep',
             name: 'Descansado',
             desc: 'Registraste tu primera noche de sueño',
             icon: '😴',
-            unlocked: S.sleep && S.sleep.length > 0
+            unlocked: (S.sleep || []).length > 0
         },
         {
             id: 'thirty_sleep',
             name: 'Experto en sueño',
             desc: 'Registraste 30 noches de sueño',
             icon: '🌙',
-            unlocked: S.sleep && S.sleep.length >= 30
+            unlocked: (S.sleep || []).length >= 30
         },
         {
             id: 'first_mood',
             name: 'Consciente',
             desc: 'Registraste tu primer estado de ánimo',
             icon: '😊',
-            unlocked: S.moods && S.moods.length > 0
+            unlocked: (S.moods || []).length > 0
         },
         {
             id: 'thirty_mood',
             name: 'Psicólogo',
             desc: 'Registraste 30 estados de ánimo',
             icon: '🧠',
-            unlocked: S.moods && S.moods.length >= 30
+            unlocked: (S.moods || []).length >= 30
         },
         {
             id: 'first_water',
@@ -1911,28 +2002,28 @@ const renderLogros = () => {
             name: 'Organizado',
             desc: 'Creaste tu primer evento',
             icon: '📅',
-            unlocked: S.events && S.events.length > 0
+            unlocked: (S.events || []).length > 0
         },
         {
             id: 'fifty_events',
             name: 'Planificador',
             desc: 'Creaste 50 eventos',
             icon: '🗓️',
-            unlocked: S.events && S.events.length >= 50
+            unlocked: (S.events || []).length >= 50
         },
         {
             id: 'first_meal',
             name: 'Nutricionista',
             desc: 'Registraste tu primera comida',
             icon: '🍽️',
-            unlocked: S.meals && S.meals.length > 0
+            unlocked: (S.meals || []).length > 0
         },
         {
             id: 'thirty_meals',
             name: 'Chef',
             desc: 'Registraste 30 comidas',
             icon: '👨‍🍳',
-            unlocked: S.meals && S.meals.length >= 30
+            unlocked: (S.meals || []).length >= 30
         },
         {
             id: 'level_five',
@@ -1963,13 +2054,22 @@ const renderLogros = () => {
             unlocked: S.xp >= 5000
         }
     ];
+    const unlockedCount = achievements.filter(a => a.unlocked).length;
+    if (summaryEl) summaryEl.innerHTML = `
+          <div class="hs-cell"><div class="hs-val">${unlockedCount}</div><div class="hs-lbl">Desbloqueados</div></div>
+          <div class="hs-cell"><div class="hs-val">${achievements.length - unlockedCount}</div><div class="hs-lbl">Restantes</div></div>
+          <div class="hs-cell"><div class="hs-val">${S.xp || 0}</div><div class="hs-lbl">XP actual</div></div>
+          <div class="hs-cell"><div class="hs-val">${S.level || 1}</div><div class="hs-lbl">Nivel</div></div>`;
     al.innerHTML = achievements.map(a => `
-          <div class="hr" style="opacity:${a.unlocked ? 1 : 0.5}">
+          <div class="hr" style="opacity:${a.unlocked ? 1 : 0.55}; border-color:${a.unlocked ? 'rgba(109,250,196,.35)' : 'var(--b)'}; background:${a.unlocked ? 'rgba(109,250,196,.08)' : 'var(--surface)'}">
             <div class="hem" style="font-size:24px">${a.icon}</div>
             <div class="hinfo">
               <div class="hnm">${a.name}</div>
               <div class="hsub">${a.desc}</div>
-              ${a.unlocked ? '<span class="streak-badge">✅ Desbloqueado</span>' : '<span class="streak-badge" style="background:var(--b);color:var(--m)">🔒 Bloqueado</span>'}
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+              <span class="streak-badge" style="background:${a.unlocked ? 'rgba(109,250,196,.15)' : 'rgba(255,255,255,.08)'};color:${a.unlocked ? 'var(--a)' : 'var(--m)'};border-color:${a.unlocked ? 'rgba(109,250,196,.3)' : 'var(--b)'}">${a.unlocked ? 'Desbloqueado' : 'Bloqueado'}</span>
+              <span style="font-size:10px;color:var(--m)">${a.unlocked ? '¡Genial!' : 'Sigue avanzando'}</span>
             </div>
           </div>`).join('');
 };

@@ -1589,6 +1589,462 @@
         }
       }
 
+      /* NOVEDADES */
+      .news-toggle {
+        position: relative;
+      }
+      .news-badge {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--a4), var(--a2));
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 12px rgba(250, 196, 109, 0.35);
+      }
+      .news-badge.hidden {
+        display: none;
+      }
+      .news-popup-overlay,
+      .news-center-overlay,
+      .news-detail-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9500;
+        background: rgba(7, 7, 15, 0.94);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+      .news-popup-overlay.active,
+      .news-center-overlay.active,
+      .news-detail-overlay.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+      .news-popup-card,
+      .news-detail-card,
+      .news-center-panel {
+        width: 100%;
+        max-width: 480px;
+        border-radius: 24px;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--surface), var(--s2));
+        border: 1px solid var(--b);
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+      }
+      .news-popup-banner,
+      .news-detail-banner {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 180px;
+        overflow: hidden;
+      }
+      .news-popup-banner::before,
+      .news-detail-banner::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.12;
+        background: radial-gradient(circle at top, rgba(124, 109, 250, 0.14), transparent 55%);
+      }
+      .news-popup-banner::after,
+      .news-detail-banner::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0;
+        height: 70px;
+        background: linear-gradient(transparent, rgba(13, 13, 28, 0.92));
+      }
+      .news-popup-cards,
+      .news-featured-cards {
+        display: flex;
+        gap: 8px;
+        z-index: 1;
+        transform: perspective(600px) rotateX(5deg);
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .news-popup-float-card,
+      .news-featured-card {
+        width: 60px;
+        min-width: 60px;
+        height: 78px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        background: var(--s2);
+        border: 2px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+      }
+      .news-popup-float-card.rarity-legendary,
+      .news-featured-card.rarity-legendary {
+        border-color: rgba(250, 196, 109, 0.5);
+        box-shadow: 0 0 18px rgba(250, 196, 109, 0.25);
+      }
+      .news-popup-float-card.rarity-epic,
+      .news-featured-card.rarity-epic {
+        border-color: rgba(168, 85, 247, 0.5);
+        box-shadow: 0 0 18px rgba(168, 85, 247, 0.25);
+      }
+      .news-popup-float-card.rarity-rare,
+      .news-featured-card.rarity-rare {
+        border-color: rgba(96, 165, 250, 0.5);
+        box-shadow: 0 0 18px rgba(96, 165, 250, 0.25);
+      }
+      .news-popup-float-card.rarity-common,
+      .news-featured-card.rarity-common {
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+      .news-popup-btn,
+      .news-featured-cta,
+      .news-detail-btn,
+      .news-show-more {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: none;
+        cursor: pointer;
+        font-family: var(--fd);
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+      }
+      .news-popup-btn,
+      .news-featured-cta,
+      .news-detail-btn,
+      .news-show-more {
+        background: linear-gradient(135deg, var(--a4), var(--a2));
+        color: var(--bg);
+        box-shadow: 0 4px 20px rgba(250, 196, 109, 0.35);
+      }
+      .news-popup-btn:hover,
+      .news-featured-cta:hover,
+      .news-detail-btn:hover,
+      .news-show-more:hover {
+        transform: translateY(-1px);
+      }
+      .news-popup-close,
+      .news-close-btn {
+        border: none;
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.28);
+        color: white;
+        transition: all 0.2s ease;
+      }
+      .news-popup-close:hover,
+      .news-close-btn:hover {
+        background: rgba(0, 0, 0, 0.45);
+      }
+      .news-popup-body,
+      .news-detail-body {
+        padding: 24px;
+        text-align: center;
+      }
+      .news-popup-tag,
+      .news-detail-cat,
+      .news-featured-label {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .news-popup-title,
+      .news-featured-title,
+      .news-detail-title {
+        font-family: var(--fd);
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1.3;
+        margin-bottom: 10px;
+      }
+      .news-popup-desc,
+      .news-featured-subtitle,
+      .news-detail-text {
+        font-size: 13px;
+        color: var(--m);
+        line-height: 1.75;
+        margin-bottom: 18px;
+      }
+      .news-featured {
+        position: relative;
+        padding: 0 18px 18px;
+        margin-bottom: 6px;
+      }
+      .news-featured-bg {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(124, 109, 250, 0.12), rgba(250, 109, 143, 0.08));
+        border-radius: 0 0 26px 26px;
+        pointer-events: none;
+      }
+      .news-featured-slider {
+        position: relative;
+        z-index: 1;
+      }
+      .news-featured-slide {
+        display: none;
+        text-align: center;
+        animation: slideIn 0.35s ease both;
+      }
+      .news-featured-slide.active {
+        display: block;
+      }
+      .news-featured-dots {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .news-featured-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--b2);
+        cursor: pointer;
+        transition: transform 0.25s ease, background 0.25s ease;
+      }
+      .news-featured-dot.active {
+        background: var(--a);
+        transform: scale(1.3);
+        box-shadow: 0 0 10px rgba(124, 109, 250, 0.35);
+      }
+      .news-tabs {
+        display: flex;
+        gap: 6px;
+        margin: 0 18px 14px;
+        background: var(--s2);
+        border: 1px solid var(--b);
+        border-radius: 18px;
+        padding: 6px;
+        overflow-x: auto;
+      }
+      .news-tab {
+        flex: 0 0 auto;
+        padding: 10px 14px;
+        border-radius: 14px;
+        border: none;
+        background: transparent;
+        color: var(--m);
+        font-family: var(--fd);
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+      }
+      .news-tab.active {
+        background: var(--surface);
+        color: var(--txt);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+      }
+      .news-feed {
+        max-height: min(56vh, 480px);
+        overflow-y: auto;
+        padding: 0 18px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .news-feed::-webkit-scrollbar {
+        width: 4px;
+      }
+      .news-feed::-webkit-scrollbar-thumb {
+        background: var(--b);
+        border-radius: 999px;
+      }
+      .news-item {
+        background: linear-gradient(135deg, rgba(19, 19, 38, 0.96), rgba(13, 13, 28, 0.95));
+        border: 1px solid var(--b);
+        border-radius: 20px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+      .news-item:hover {
+        transform: translateY(-1px);
+      }
+      .news-item.unread {
+        border-left: 4px solid var(--a);
+      }
+      .news-item.unread::after {
+        content: "";
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--a);
+        box-shadow: 0 0 10px rgba(124, 109, 250, 0.25);
+      }
+      .news-item-inner {
+        display: flex;
+        gap: 14px;
+        padding: 14px;
+        align-items: center;
+      }
+      .news-item-img {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        border: 1px solid var(--b2);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+      }
+      .img-bg-1 { background: linear-gradient(135deg, rgba(124, 109, 250, 0.22), rgba(124, 109, 250, 0.06)); }
+      .img-bg-2 { background: linear-gradient(135deg, rgba(250, 109, 143, 0.22), rgba(250, 109, 143, 0.06)); }
+      .img-bg-3 { background: linear-gradient(135deg, rgba(109, 250, 196, 0.22), rgba(109, 250, 196, 0.06)); }
+      .img-bg-5 { background: linear-gradient(135deg, rgba(96, 165, 250, 0.22), rgba(96, 165, 250, 0.06)); }
+      .img-bg-6 { background: linear-gradient(135deg, rgba(168, 85, 247, 0.22), rgba(168, 85, 247, 0.06)); }
+      .news-item-content {
+        flex: 1;
+        min-width: 0;
+      }
+      .bg-anuncio { background: linear-gradient(135deg, rgba(124, 109, 250, 0.3), rgba(124, 109, 250, 0.08)); }
+      .bg-evento { background: linear-gradient(135deg, rgba(250, 196, 109, 0.3), rgba(250, 196, 109, 0.08)); }
+      .bg-actualizacion { background: linear-gradient(135deg, rgba(109, 250, 196, 0.3), rgba(109, 250, 196, 0.08)); }
+      .bg-tip { background: linear-gradient(135deg, rgba(96, 165, 250, 0.3), rgba(96, 165, 250, 0.08)); }
+      .bg-mantenimiento { background: linear-gradient(135deg, rgba(250, 109, 143, 0.3), rgba(250, 109, 143, 0.08)); }
+      .bg-comunidad { background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.08)); }
+      .news-item-category {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 4px;
+      }
+      .news-item-title {
+        font-family: var(--fd);
+        font-size: 14px;
+        font-weight: 800;
+        margin-bottom: 6px;
+        line-height: 1.35;
+      }
+      .news-item-preview {
+        font-size: 12px;
+        color: var(--m);
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+      .news-item-date {
+        font-size: 11px;
+        color: var(--m2);
+      }
+      .news-date-header {
+        font-family: var(--fd);
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--m);
+        padding: 10px 18px 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .news-empty {
+        text-align: center;
+        padding: 40px 20px;
+      }
+      .news-empty-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+        opacity: 0.45;
+      }
+      .news-empty-title {
+        font-family: var(--fd);
+        font-size: 17px;
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+      .news-empty-desc {
+        font-size: 13px;
+        color: var(--m);
+        line-height: 1.6;
+      }
+      .news-center-panel {
+        width: 100%;
+        max-width: 980px;
+        max-height: 94vh;
+        background: linear-gradient(135deg, rgba(7, 7, 15, 0.95), rgba(13, 13, 28, 0.98));
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 26px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .news-center-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        background: rgba(7, 7, 15, 0.92);
+        backdrop-filter: blur(18px);
+      }
+      .news-center-title {
+        font-family: var(--fd);
+        font-size: 19px;
+        font-weight: 800;
+      }
+      .news-close-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--a2), #e5466a);
+        color: white;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 16px rgba(250, 109, 143, 0.3);
+      }
+      .news-featured {
+        flex-shrink: 0;
+      }
+      .news-feed {
+        flex: 1;
+      }
+      .news-show-more {
+        margin: 0 18px 18px;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
       /* CONFETTI */
       .confetti-wrap {
         position: fixed;
@@ -7756,6 +8212,7 @@
           </div>
           <button class="icon-btn" onclick="gp('stats')">📊</button>
           <button class="icon-btn" onclick="gp('ajustes')">⚙</button>
+          <button class="icon-btn news-toggle" onclick="openNews()" aria-label="Novedades">📢<span class="news-badge" id="news-badge">5</span></button>
         </div>
       </div>
 
@@ -10001,6 +10458,14 @@
           <div class="ph2">📊 Estadísticas</div>
           <div class="ph-sub">Tu progreso semanal, rachas y actividad.</div>
           <div class="hs-grid" id="stats-top"></div>
+
+          <div class="sec-head">
+            <div class="sec-title">🌍 FlowEX Global</div>
+            <button class="sec-more" onclick="renderStats()">Actualizar</button>
+          </div>
+          <div class="hs-grid" id="global-stats-row"></div>
+          <div class="stat-card" id="leaderboard-card"></div>
+
           <div class="sec-head">
             <div class="sec-title">📅 Esta semana</div>
           </div>
@@ -10087,6 +10552,7 @@
         <div class="page" id="page-logros">
           <div class="ph2">🏆 Logros</div>
           <div class="ph-sub">Tus hitos y recompensas.</div>
+          <div class="hs-grid" id="logros-summary"></div>
           <div id="achievements-list" class="stg"></div>
         </div>
 
@@ -10927,12 +11393,407 @@
 
     <div id="tc"></div>
 
+    <div class="news-popup-overlay" id="newsPopup">
+      <div class="news-popup-card">
+        <button class="news-popup-close" onclick="closePopup()">✕</button>
+        <div class="news-popup-banner" id="popup-banner">
+          <div class="news-popup-cards" id="popup-cards"></div>
+        </div>
+        <div class="news-popup-body">
+          <div class="news-popup-tag" id="popup-tag">✨ ¡NUEVO!</div>
+          <div class="news-popup-title" id="popup-title">FlowEX v2.5: Sistema de Metas</div>
+          <div class="news-popup-desc" id="popup-desc">¡Ahora podés crear metas a largo plazo con hitos intermedios!</div>
+          <button class="news-popup-btn" onclick="closePopup()">¡Genial, empezar!</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="news-center-overlay" id="newsCenter">
+      <div class="news-center-panel">
+        <div class="news-center-header">
+          <div class="news-center-title">📢 Novedades</div>
+          <button class="news-close-btn" onclick="closeNews()">✕</button>
+        </div>
+
+        <div class="news-featured">
+          <div class="news-featured-bg"></div>
+          <div class="news-featured-slider" id="featuredSlider"></div>
+        </div>
+
+        <div class="news-tabs" id="newsTabs">
+          <button class="news-tab active" data-cat="all">📋 Todo</button>
+          <button class="news-tab" data-cat="anuncio">📢 Anuncios</button>
+          <button class="news-tab" data-cat="evento">🎉 Eventos</button>
+          <button class="news-tab" data-cat="actualizacion">⚡ Actualizaciones</button>
+          <button class="news-tab" data-cat="tip">💡 Tips</button>
+          <button class="news-tab" data-cat="comunidad">👥 Comunidad</button>
+        </div>
+
+        <div class="news-feed" id="newsFeed"></div>
+        <button class="news-show-more" id="showMoreBtn" onclick="loadMore()">Mostrar más</button>
+      </div>
+    </div>
+
+    <div class="news-detail-overlay" id="newsDetail">
+      <div class="news-detail-card" id="newsDetailCard"></div>
+    </div>
+
     <!-- ═══════════════════════════════════════════
      FIREBASE + APP LOGIC
 ═══════════════════════════════════════════ -->
     <script type="module" src="app.js"></script>
+    <script type="module">
+      const featuredNews = [
+        {
+          label: '✨ NUEVO',
+          title: 'Sistema de Metas 🎯',
+          subtitle: 'Ahora podés crear metas a largo plazo con hitos intermedios. ¡Seguí tu progreso día a día!',
+          cards: ['🎯', '📈', '🏆', '⭐', '🎯'],
+          cta: '¡Saber más!',
+        },
+        {
+          label: '🔥 RETO',
+          isLive: true,
+          title: 'Reto Semanal: 7 Días de Foco',
+          subtitle: 'Completá 7 pomodoros esta semana y desbloqueá una insignia exclusiva.',
+          cards: ['🍅', '⏱', '💪', '🏆', '🔥'],
+          cta: '¡Participar!',
+        },
+        {
+          label: '⚡ ACTUALIZACIÓN',
+          title: 'Mejoras en Hábitos',
+          subtitle: 'Nuevos recordatorios, frecuencias personalizadas y estadísticas mejoradas.',
+          cards: ['✅', '📊', '✨', '🔥', '⚡'],
+          cta: '¡Ver cambios!',
+        },
+      ];
+
+      const dailyTips = [
+        { icon: '💡', title: 'Tip del día: Pomodoro', desc: 'Hacé sesiones de 25 min de foco + 5 min de descanso. Es la técnica más efectiva para mantener la concentración.', banner: 'bg-tip' },
+        { icon: '', title: 'Tip del día: Rachas', desc: 'Marcá tus hábitos todos los días sin fallar. Cada día suma a tu racha y te acerca más a tu mejor versión.', banner: 'bg-tip' },
+        { icon: '📝', title: 'Tip del día: Notas rápidas', desc: 'Usá las notas rápidas del dashboard para capturar ideas al instante. Todo se guarda automáticamente.', banner: 'bg-tip' },
+        { icon: '🎯', title: 'Tip del día: Metas grandes', desc: 'Dividí tus metas en hitos pequeños. Es más fácil alcanzar 25% que el 100% de golpe.', banner: 'bg-tip' },
+        { icon: '📅', title: 'Tip del día: Calendario', desc: 'Revisá tu calendario cada mañana para saber qué eventos y tareas tenés hoy.', banner: 'bg-tip' },
+      ];
+
+      const allNews = [
+        {
+          id: 1,
+          cat: 'anuncio',
+          catLabel: 'Anuncio',
+          title: 'Sistema de Metas 🎯',
+          subtitle: 'Ahora podés crear metas a largo plazo con hitos intermedios.',
+          icon: '🎯',
+          bg: 'img-bg-1',
+          date: 'Hoy',
+          banner: 'bg-anuncio',
+          cards: ['🎯', '📈', '🏆'],
+          rarity: 'legendary',
+          text: '¡Grandes cambios en el sistema de Metas! Ahora cada meta tiene niveles de colección que se desbloquean al alcanzar ciertos hitos. Además, mejoramos la visualización del progreso con barras animadas y estadísticas detalladas.\n\nLos cambios incluyen:\n• Niveles de colección por meta\n• Hitos intermedios personalizables\n• Estadísticas de progreso mejoradas\n• Nuevas animaciones de celebración',
+        },
+        {
+          id: 2,
+          cat: 'evento',
+          catLabel: 'Evento',
+          title: 'Reto Semanal: 7 Días de Foco',
+          subtitle: 'Completá 7 pomodoros esta semana y desbloqueá una insignia exclusiva.',
+          icon: '🍅',
+          bg: 'img-bg-2',
+          date: 'Ayer',
+          banner: 'bg-evento',
+          cards: ['🍅', '⏱', '🏆'],
+          rarity: 'epic',
+          text: '¡Tenemos un nuevo badge exclusivo para vos! Completá el reto semanal de 7 pomodoros y desbloqueá el badge "Lanzarrocas". Solo estará disponible durante esta semana.',
+        },
+        {
+          id: 3,
+          cat: 'actualizacion',
+          catLabel: 'Actualización',
+          title: 'Mejoras en Hábitos ✅',
+          subtitle: 'Ahora podés personalizar los recordatorios y la frecuencia de tus hábitos.',
+          icon: '✨',
+          bg: 'img-bg-3',
+          date: 'Hace 2 días',
+          banner: 'bg-actualizacion',
+          cards: ['✅', '📊', '✨'],
+          rarity: 'rare',
+          text: 'El sistema de hábitos recibió mejoras significativas:\n• Recordatorios personalizables\n• Frecuencias configurables (diario, semanal, personalizado)\n• Nuevas estadísticas de racha\n• Mejor visualización del progreso',
+        },
+        {
+          id: 4,
+          cat: 'tip',
+          catLabel: 'Tip',
+          title: 'Consejo: Usá el Pomodoro para estudiar 📚',
+          subtitle: 'Dividí tu estudio en bloques de 25 min para máxima concentración.',
+          icon: '📚',
+          bg: 'img-bg-5',
+          date: 'Hace 3 días',
+          banner: 'bg-tip',
+          cards: ['📚', '⏱', '✨'],
+          rarity: 'common',
+          text: 'La técnica Pomodoro es una de las más efectivas para estudiar:\n\n1. Elegí una tarea o materia\n2. Configurá 25 minutos\n3. Estudiá sin interrupciones\n4. Descansá 5 minutos\n5. Repetí 4 veces y descansá 15 min\n\n¡Probalo y notá la diferencia!',
+        },
+        {
+          id: 5,
+          cat: 'comunidad',
+          catLabel: 'Comunidad',
+          title: '¡Unite a la comunidad FlowEX!',
+          subtitle: 'Compartí tus logros y consejos con otros usuarios.',
+          icon: '👥',
+          bg: 'img-bg-6',
+          date: 'Hace 4 días',
+          banner: 'bg-comunidad',
+          cards: ['👥', '💬', '✨'],
+          rarity: 'rare',
+          text: '¡Tenemos una comunidad increíble de usuarios! Unite al servidor oficial para:\n\n• Compartir tus logros\n• Recibir consejos y tips\n• Participar en desafíos grupales\n• Dar feedback sobre nuevas funciones\n\n¡Te esperamos!',
+        },
+      ];
+
+      let currentSlide = 0;
+      let displayedCount = 6;
+      let unreadIds = new Set([1, 2, 3, 4, 5]);
+      let currentCategory = 'all';
+
+      const getDailyTip = () => {
+        const today = new Date();
+        const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+        return dailyTips[dayOfYear % dailyTips.length];
+      };
+
+      const initFeatured = () => {
+        const slider = document.getElementById('featuredSlider');
+        if (!slider) return;
+
+        const tip = getDailyTip();
+        const tipCards = ['🧠', '✨', '🌟'];
+
+        let html = `<div class="news-featured-slide active" data-slide="0">
+            <div class="news-featured-label tip">Tip del Día</div>
+            <div class="news-featured-title">${tip.title}</div>
+            <div class="news-featured-subtitle">${tip.desc}</div>
+            <div class="news-featured-cards">${tipCards.map(c => `<div class="news-featured-card rarity-common">${c}</div>`).join('')}</div>
+            <button class="news-featured-cta" onclick="handleFeaturedCTA('tip')">¡Entendido!</button>
+          </div>`;
+
+        featuredNews.forEach((item, index) => {
+          const liveClass = item.isLive ? 'live' : '';
+          const cardsHtml = item.cards
+            .map((c) => {
+              const rarity = item.rarity ? `rarity-${item.rarity}` : 'rarity-common';
+              return `<div class="news-featured-card ${rarity}">${c}</div>`;
+            })
+            .join('');
+
+          html += `<div class="news-featured-slide" data-slide="${index + 1}">
+              <div class="news-featured-label ${liveClass}">${item.label}${item.isLive ? ' EN DIRECTO' : ''}</div>
+              <div class="news-featured-title">${item.title}</div>
+              <div class="news-featured-subtitle">${item.subtitle}</div>
+              <div class="news-featured-cards">${cardsHtml}</div>
+              <button class="news-featured-cta" onclick="handleFeaturedCTA(${index + 1})">${item.cta}</button>
+            </div>`;
+        });
+
+        html += '<div class="news-featured-dots">';
+        for (let i = 0; i <= featuredNews.length; i += 1) {
+          html += `<button class="news-featured-dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})" type="button"></button>`;
+        }
+        html += '</div>';
+        slider.innerHTML = html;
+        startCarousel();
+      };
+
+      const goToSlide = (idx) => {
+        currentSlide = idx;
+        document.querySelectorAll('.news-featured-slide').forEach((slide, index) => {
+          slide.classList.toggle('active', index === idx);
+        });
+        document.querySelectorAll('.news-featured-dot').forEach((dot, index) => {
+          dot.classList.toggle('active', index === idx);
+        });
+      };
+
+      const startCarousel = () => {
+        setInterval(() => {
+          currentSlide = (currentSlide + 1) % (featuredNews.length + 1);
+          goToSlide(currentSlide);
+        }, 5200);
+      };
+
+      const handleFeaturedCTA = (index) => {
+        if (index === 'tip') {
+          toast('💡 Tip del día guardado');
+        } else {
+          toast('🎉 ¡Abriendo detalle!');
+        }
+      };
+
+      const renderNewsList = (filter = 'all') => {
+        const feed = document.getElementById('newsFeed');
+        if (!feed) return;
+        feed.innerHTML = '';
+
+        if (filter === 'all' || filter === 'tip') {
+          const tip = getDailyTip();
+          feed.innerHTML += `<div class="news-date-header">💡 Tip del Día</div>
+            <div class="news-item unread" onclick="showTipDetail()" style="border-left: 3px solid var(--a5)">
+              <div class="news-item-inner">
+                <div class="news-item-img img-bg-5" style="border-color: var(--a5)">${tip.icon}</div>
+                <div class="news-item-content">
+                  <div class="news-item-category cat-tip">💡 Tip del Día</div>
+                  <div class="news-item-title">${tip.title}</div>
+                  <div class="news-item-preview">${tip.desc}</div>
+                  <div class="news-item-date">Hoy</div>
+                </div>
+              </div>
+            </div>`;
+        }
+
+        const filtered = filter === 'all' ? allNews : allNews.filter((item) => item.cat === filter);
+        if (filtered.length === 0 && filter !== 'all' && filter !== 'tip') {
+          feed.innerHTML += `<div class="news-empty"><div class="news-empty-icon">📭</div><div class="news-empty-title">Sin novedades</div><div class="news-empty-desc">No hay publicaciones en esta categoría todavía.</div></div>`;
+          return;
+        }
+
+        let lastDate = '';
+        filtered.forEach((item, index) => {
+          if (index >= displayedCount && filter === 'all') return;
+
+          if (item.date !== lastDate) {
+            lastDate = item.date;
+            feed.innerHTML += `<div class="news-date-header">${item.date}</div>`;
+          }
+
+          const isUnread = unreadIds.has(item.id) ? 'unread' : '';
+          const card = document.createElement('div');
+          card.className = `news-item ${isUnread}`;
+          card.onclick = () => openNewsDetail(item.id);
+          card.innerHTML = `
+            <div class="news-item-inner">
+              <div class="news-item-img ${item.bg}">${item.icon}</div>
+              <div class="news-item-content">
+                <div class="news-item-category cat-${item.cat}">${item.catLabel}</div>
+                <div class="news-item-title">${item.title}</div>
+                <div class="news-item-preview">${item.subtitle}</div>
+                <div class="news-item-date">${item.date}</div>
+              </div>
+            </div>`;
+          feed.appendChild(card);
+        });
+
+        const showMoreBtn = document.getElementById('showMoreBtn');
+        if (showMoreBtn) {
+          showMoreBtn.classList.toggle('hidden', displayedCount >= allNews.length || filter !== 'all');
+        }
+      };
+
+      const showTipDetail = () => {
+        const tip = getDailyTip();
+        const detail = document.getElementById('newsDetail');
+        const card = document.getElementById('newsDetailCard');
+        if (!detail || !card) return;
+
+        card.innerHTML = `
+          <div class="news-detail-banner bg-tip">${tip.icon}</div>
+          <div class="news-detail-body">
+            <div class="news-detail-cat" style="background: rgba(96,165,250,0.15); color: var(--a5)">💡 Tip del Día</div>
+            <div class="news-detail-title">${tip.title}</div>
+            <div class="news-detail-date">Hoy</div>
+            <div class="news-detail-text">${tip.desc}<br><br>Cada día tenemos un nuevo tip para ayudarte a ser más productivo. ¡No te los pierdas!</div>
+            <button class="news-detail-btn" onclick="closeNewsDetail()">¡Entendido! ✓</button>
+          </div>`;
+
+        detail.classList.add('active');
+      };
+
+      const openNewsDetail = (id) => {
+        const item = allNews.find((news) => news.id === id);
+        if (!item) return;
+        if (unreadIds.has(id)) {
+          unreadIds.delete(id);
+          updateBadge();
+        }
+
+        const detail = document.getElementById('newsDetail');
+        const card = document.getElementById('newsDetailCard');
+        if (!detail || !card) return;
+
+        const textHtml = item.text.replace(/\n/g, '<br>');
+        card.innerHTML = `
+          <div class="news-detail-banner ${item.banner}">${item.icon}</div>
+          <div class="news-detail-body">
+            <div class="news-detail-cat" style="background: rgba(109,250,196,0.15); color: var(--a)">${item.catLabel}</div>
+            <div class="news-detail-title">${item.title}</div>
+            <div class="news-detail-date">${item.date}</div>
+            <div class="news-detail-text">${textHtml}</div>
+            <button class="news-detail-btn" onclick="closeNewsDetail()">Entendido ✓</button>
+          </div>`;
+
+        detail.classList.add('active');
+      };
+
+      const closeNewsDetail = () => {
+        document.getElementById('newsDetail')?.classList.remove('active');
+      };
+
+      const openNews = () => {
+        document.getElementById('newsCenter')?.classList.add('active');
+        renderNewsList(currentCategory);
+      };
+
+      const closeNews = () => {
+        document.getElementById('newsCenter')?.classList.remove('active');
+      };
+
+      const closePopup = () => {
+        document.getElementById('newsPopup')?.classList.remove('active');
+        if (unreadIds.size > 0) {
+          const [firstUnread] = unreadIds;
+          unreadIds.delete(firstUnread);
+          updateBadge();
+        }
+        toast('🎉 ¡Bienvenido a FlowEX!');
+      };
+
+      const loadMore = () => {
+        displayedCount = Math.min(displayedCount + 4, allNews.length);
+        renderNewsList(currentCategory);
+      };
+
+      const updateBadge = () => {
+        const badge = document.getElementById('news-badge');
+        if (!badge) return;
+        badge.textContent = unreadIds.size;
+        badge.classList.toggle('hidden', unreadIds.size === 0);
+      };
+
+      document.getElementById('newsTabs')?.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!target.classList.contains('news-tab')) return;
+        document.querySelectorAll('.news-tab').forEach((tab) => tab.classList.remove('active'));
+        target.classList.add('active');
+        currentCategory = target.dataset.cat;
+        displayedCount = 6;
+        renderNewsList(currentCategory);
+      });
+
+      window.openNews = openNews;
+      window.closeNews = closeNews;
+      window.openNewsDetail = openNewsDetail;
+      window.closeNewsDetail = closeNewsDetail;
+      window.closePopup = closePopup;
+      window.loadMore = loadMore;
+      window.handleFeaturedCTA = handleFeaturedCTA;
+      window.showTipDetail = showTipDetail;
+      window.goToSlide = goToSlide;
+
+      window.addEventListener('load', () => {
+        initFeatured();
+        updateBadge();
+        setTimeout(() => document.getElementById('newsPopup')?.classList.add('active'), 1200);
+      });
+    </script>
 
     <!-- Updates Notifications Container -->
     <div id="updates-notifications-container"></div>
   </body>
-/html>
+</html>
