@@ -10555,10 +10555,111 @@
 
         <!-- LOGROS -->
         <div class="page" id="page-logros">
-          <div class="ph2">🏆 Logros</div>
-          <div class="ph-sub">Tus hitos y recompensas.</div>
-          <div class="hs-grid" id="logros-summary"></div>
-          <div id="achievements-list" class="stg"></div>
+          <!-- Scoped styles and markup for Logros page (imported from user design) -->
+          <style>
+            /* Scoped Logros styles (keeps most variables from main CSS) */
+            #page-logros .ach-page-header{padding:8px 0 16px}
+            #page-logros .ach-page-title{font-family:var(--fd);font-size:28px;font-weight:800;letter-spacing:-0.8px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+            #page-logros .ach-page-title .title-icon{font-size:32px;filter:drop-shadow(0 0 12px rgba(250,196,109,0.4));animation:titleFloat 3s ease-in-out infinite}
+            @keyframes titleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+            #page-logros .ach-page-subtitle{font-size:13px;color:var(--m);line-height:1.6;max-width:640px}
+
+            #page-logros .ach-summary-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+            #page-logros .ach-summary-card{background:linear-gradient(135deg,rgba(19,19,38,0.9),rgba(13,13,28,0.8));border:1px solid var(--b);border-radius:var(--r);padding:16px 10px;text-align:center;position:relative;overflow:hidden}
+            #page-logros .ach-summary-icon{font-size:22px;margin-bottom:8px}
+            #page-logros .ach-summary-value{font-family:var(--fd);font-size:24px;font-weight:800;color:var(--txt);margin-bottom:4px;line-height:1}
+            #page-logros .ach-summary-label{font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:0.08em}
+
+            #page-logros .ach-progress-overall{background:var(--surface);border:1px solid var(--b);border-radius:var(--r);padding:16px 18px;margin-bottom:18px;position:relative;overflow:hidden}
+            #page-logros .ach-progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+            #page-logros .ach-progress-title{font-family:var(--fd);font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
+            #page-logros .ach-progress-pct{font-family:var(--fd);font-size:18px;font-weight:800;color:var(--a)}
+            #page-logros .ach-progress-track{height:10px;background:var(--b);border-radius:5px;overflow:hidden;position:relative}
+            #page-logros .ach-progress-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--a),var(--a2),var(--a4));transition:width 1s cubic-bezier(0.34,1.56,0.64,1);position:relative}
+            #page-logros .ach-progress-labels{display:flex;justify-content:space-between;margin-top:6px}
+            #page-logros .ach-progress-lbl{font-size:10px;color:var(--m)}
+
+            #page-logros .ach-filters{display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:0 16px 14px}
+            #page-logros .ach-filter-btn{flex-shrink:0;padding:8px 16px;border-radius:20px;border:1px solid var(--b);background:transparent;color:var(--m);font-family:var(--fb);font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px}
+            #page-logros .ach-filter-btn.active{background:rgba(124,109,250,0.12);border-color:var(--a);color:var(--a)}
+
+            #page-logros .ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:20px}
+            @media(max-width:600px){#page-logros .ach-grid{grid-template-columns:1fr}}@media(min-width:900px){#page-logros .ach-grid{grid-template-columns:repeat(2,1fr)}}
+
+            #page-logros .ach-card{background:linear-gradient(135deg,rgba(19,19,38,0.95),rgba(13,13,28,0.9));border:1px solid var(--b);border-radius:var(--r);padding:18px;position:relative;overflow:hidden;cursor:pointer;transition:all 0.3s}
+            #page-logros .ach-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.25)}
+            #page-logros .ach-card.locked{opacity:0.55;filter:grayscale(0.3)}
+            #page-logros .ach-card.unlocked{border-color:rgba(109,250,196,0.25)}
+
+            #page-logros .ach-card-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+            #page-logros .ach-icon-box{width:56px;height:56px;border-radius:16px;background:var(--s2);border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:28px}
+            #page-logros .ach-info{flex:1;min-width:0}
+            #page-logros .ach-title{font-family:var(--fd);font-size:15px;font-weight:700;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+            #page-logros .ach-desc{font-size:12px;color:var(--m);line-height:1.5}
+
+            #page-logros .ach-progress-section{margin-top:6px}
+            #page-logros .ach-progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+            #page-logros .ach-bar-track{height:6px;background:var(--b);border-radius:3px;overflow:hidden}
+            #page-logros .ach-bar-fill{height:100%;border-radius:3px;transition:width 0.6s}
+            #page-logros .ach-card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--b)}
+
+            #page-logros .ach-empty{text-align:center;padding:40px 20px;display:none}
+            #page-logros .ach-empty.visible{display:block}
+
+            /* small utilities */
+            #page-logros .stg>*{animation:sla 0.32s ease both}
+          </style>
+
+          <div class="ach-page-header">
+            <div class="ach-page-title"><span class="title-icon">🏆</span>Logros</div>
+            <div class="ach-page-subtitle">Desbloqueá insignias y subí de rango completando desafíos. ¡Cada logro te da puntos XP!</div>
+          </div>
+
+          <div class="ach-summary-bar" id="ach-summary-bar"></div>
+
+          <div class="ach-progress-overall">
+            <div class="ach-progress-header">
+              <div class="ach-progress-title">📊 Progreso General</div>
+              <div class="ach-progress-pct" id="ach-progress-pct">0%</div>
+            </div>
+            <div class="ach-progress-track"><div class="ach-progress-fill" id="ach-progress-fill" style="width:0%"></div></div>
+            <div class="ach-progress-labels">
+              <div class="ach-progress-lbl"><span id="ach-unlocked-count">0</span> desbloqueados</div>
+              <div class="ach-progress-lbl"><span id="ach-total-count">0</span> totales</div>
+            </div>
+          </div>
+
+          <div class="ach-filters" id="ach-filters"></div>
+
+          <div class="ach-grid stg" id="achievements-list"></div>
+
+          <div class="ach-empty" id="ach-empty"><div class="ach-empty-icon">🔒</div><div class="ach-empty-title">Sin logros disponibles</div><div class="ach-empty-desc">No hay logros que coincidan con este filtro.</div></div>
+
+          <button class="ach-demo-btn" onclick="simulateAchievementProgress()">⚡ Simular progreso (Demo)</button>
+
+          <script>
+            (function(){
+              const LOCAL = { achievements: [ { id: 'primer-paso', title: 'Primer Paso', desc: 'Completá tu primer hábito para comenzar tu racha.', icon: '👣', rarity: 'comun', req: 1, progress: 0, unlocked: false, xp: 10, category: 'habitos' }, { id: 'racha-3', title: 'Constancia Inicial', desc: 'Mantené una racha de 3 días consecutivos.', icon: '🔥', rarity: 'comun', req: 3, progress: 0, unlocked: false, xp: 15, category: 'habitos' }, { id: 'racha-7', title: 'Semana Perfecta', desc: 'Completá una semana entera sin fallar un solo día.', icon: '⭐', rarity: 'raro', req: 7, progress: 0, unlocked: false, xp: 40, category: 'habitos' }, { id: 'racha-30', title: 'Leyenda Viva', desc: '30 días de racha. Pocos llegan tan lejos.', icon: '👑', rarity: 'legendario', req: 30, progress: 0, unlocked: false, xp: 150, category: 'habitos' }, { id: 'pomodoro-10', title: 'Enfocado', desc: 'Completá 10 sesiones de pomodoro.', icon: '🍅', rarity: 'comun', req: 10, progress: 0, unlocked: false, xp: 20, category: 'pomodoro' }, { id: 'tareas-20', title: 'Productivo', desc: 'Completá 20 tareas.', icon: '✅', rarity: 'comun', req: 20, progress: 0, unlocked: false, xp: 25, category: 'tareas' } ] };
+              window._ACH_PAGE = window._ACH_PAGE || {};
+              const ACH = window._ACH_PAGE.list = window._ACH_PAGE.list || (window.ACHIEVEMENTS ? JSON.parse(JSON.stringify(window.ACHIEVEMENTS)) : LOCAL.achievements);
+              let currentFilter = 'todos';
+              function getRarityLabel(r){return {comun:'Común',raro:'Raro',epico:'Épico',legendario:'Legendario'}[r]||'Común'}
+              function renderSummary(){ const container=document.getElementById('ach-summary-bar'); const unlocked=ACH.filter(a=>a.unlocked).length; const total=ACH.length; const points=ACH.filter(a=>a.unlocked).reduce((s,a)=>s+a.xp,0); let rank='Novato'; if(unlocked>=1)rank='Aprendiz'; if(unlocked>=3)rank='Constante'; if(unlocked>=7)rank='Experto'; if(unlocked>=12)rank='Maestro'; if(unlocked>=15)rank='Leyenda'; container.innerHTML=`<div class="ach-summary-card"><div class="ach-summary-icon">🏆</div><div class="ach-summary-value">${unlocked}</div><div class="ach-summary-label">Desbloqueados</div></div><div class="ach-summary-card"><div class="ach-summary-icon">📋</div><div class="ach-summary-value">${total}</div><div class="ach-summary-label">Totales</div></div><div class="ach-summary-card"><div class="ach-summary-icon">⭐</div><div class="ach-summary-value">${points}</div><div class="ach-summary-label">Puntos XP</div></div><div class="ach-summary-card"><div class="ach-summary-icon">🎖️</div><div class="ach-summary-value">${rank}</div><div class="ach-summary-label">Tu Rango</div></div>`; }
+              function renderProgress(){ const unlocked=ACH.filter(a=>a.unlocked).length; const total=ACH.length; const pct = total>0?Math.round((unlocked/total)*100):0; document.getElementById('ach-progress-pct').textContent=`${pct}%`; document.getElementById('ach-unlocked-count').textContent=unlocked; document.getElementById('ach-total-count').textContent=total; setTimeout(()=>{document.getElementById('ach-progress-fill').style.width=`${pct}%`},100); }
+              function renderFilters(){ const container=document.getElementById('ach-filters'); const rarities=['todos','comun','raro','epico','legendario']; const icons={todos:'📋',comun:'⚪',raro:'🔵',epico:'🟣',legendario:'🟡'}; container.innerHTML = rarities.map(r=>{const count=r==='todos'?ACH.length:ACH.filter(a=>a.rarity===r).length; return `<button class="ach-filter-btn ${currentFilter===r?'active':''}" data-r="${r}">${icons[r]} ${r==='todos'?'Todos':getRarityLabel(r)} <span class="ach-filter-count">${count}</span></button>`}).join(''); Array.from(container.querySelectorAll('.ach-filter-btn')).forEach(b=>b.addEventListener('click',()=>{ filterLocal(b.dataset.r,b); })); }
+              function filterLocal(r, btn){ currentFilter=r; document.querySelectorAll('#page-logros .ach-filter-btn').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); renderGrid(); }
+              window.filterLocal = filterLocal;
+              function renderGrid(){ const container=document.getElementById('achievements-list'); const empty=document.getElementById('ach-empty'); let filtered=ACH; if(currentFilter!=='todos') filtered=ACH.filter(a=>a.rarity===currentFilter); if(filtered.length===0){container.innerHTML=''; empty.classList.add('visible'); return;} empty.classList.remove('visible'); container.innerHTML = filtered.map(ach=>{ const pct=Math.min(100,Math.round((ach.progress/ach.req)*100)); const isUnlocked=ach.unlocked; const statusClass=isUnlocked?'unlocked':'locked'; return `<div class="ach-card ${ach.rarity} ${statusClass}" data-id="${ach.id}"><div class="ach-card-top"><div class="ach-icon-box">${ach.icon}<div class="ach-rarity-dot ${ach.rarity}"></div></div><div class="ach-info"><div class="ach-title">${ach.title}</div><div class="ach-desc">${ach.desc}</div></div></div><div class="ach-progress-section"><div class="ach-progress-header"><span class="ach-progress-text">${isUnlocked?'✅ Completado':`${ach.progress} / ${ach.req}`}</span><span class="ach-progress-pct">${isUnlocked?'100%':pct+'%'}</span></div><div class="ach-bar-track"><div class="ach-bar-fill ${ach.rarity}" style="width: ${isUnlocked?100:pct}%"></div></div></div><div class="ach-card-footer"><div class="ach-xp-badge"><span class="xp-icon">⚡</span>+${ach.xp} XP</div><span class="ach-rarity-label ${ach.rarity}">${getRarityLabel(ach.rarity)}</span></div></div>`; }).join(''); }
+              function simulateAchievementProgress(){ const toAdvance=ACH.filter(a=>!a.unlocked); if(toAdvance.length===0){ showToast('🎉 ¡Ya desbloqueaste todos los logros!'); return;} const ach=toAdvance[Math.floor(Math.random()*toAdvance.length)]; const increment=Math.ceil(ach.req*0.2)+Math.floor(Math.random()*Math.ceil(ach.req*0.15)); ach.progress=Math.min(ach.req, ach.progress+increment); if(ach.progress>=ach.req && !ach.unlocked){ ach.unlocked=true; ach.progress=ach.req; showToast(`🏆 ¡Logro desbloqueado: ${ach.title}!`, 'success'); spawnConfetti(); } else { showToast(`📈 Progreso en ${ach.title}: ${ach.progress}/${ach.req}`); } renderAll(); }
+              window.simulateAchievementProgress = simulateAchievementProgress;
+              function showToast(msg, type){ const container=document.getElementById('toast-container'); const toast=document.createElement('div'); toast.className='toast'; toast.textContent=msg; container.appendChild(toast); setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translateY(10px)'; toast.style.transition='all 0.3s'; setTimeout(()=>toast.remove(),300); },3000); }
+              function spawnConfetti(){ const wrap=document.createElement('div'); wrap.className='confetti-wrap'; document.body.appendChild(wrap); const colors=['var(--a)','var(--a2)','var(--a3)','var(--a4)','var(--a5)']; for(let i=0;i<40;i++){ const p=document.createElement('div'); p.className='cf'; p.style.left=(Math.random()*100)+'vw'; p.style.top='-10px'; p.style.background=colors[Math.floor(Math.random()*colors.length)]; p.style.width=(6+Math.random()*8)+'px'; p.style.height=(6+Math.random()*8)+'px'; p.style.animationDelay=(Math.random()*0.5)+'s'; p.style.animationDuration=(1+Math.random()*1)+'s'; wrap.appendChild(p);} setTimeout(()=>wrap.remove(),3000); }
+              function renderAll(){ renderSummary(); renderProgress(); renderFilters(); renderGrid(); }
+              if(window.S){ try{ const td=(new Date()).toISOString().slice(0,10); const habits=(S.habits||[]); const doneToday=habits.filter(h=>h.logs&&h.logs[td]).length; const pomCount=(S.pom&&S.pom.sessions?S.pom.sessions.length:0); const tasksDone=(S.tasks?S.tasks.filter(t=>t.done).length:0); ACH.forEach(a=>{ if(a.category==='habitos'){ if(a.id==='primer-paso'){ a.progress=Math.min(a.req, doneToday); a.unlocked=a.progress>=a.req; } } if(a.category==='pomodoro'){ if(a.id.startsWith('pomodoro')){ a.progress=Math.min(a.req, pomCount); a.unlocked=a.progress>=a.req; } } if(a.category==='tareas'){ a.progress=Math.min(a.req, tasksDone); a.unlocked=a.progress>=a.req; } }); }catch(e){console.warn('ACH init from S failed',e);} }
+              if(!ACH.some(a=>a.unlocked)){ if(ACH[0]){ACH[0].progress=1;ACH[0].unlocked=true;} if(ACH[1]) ACH[1].progress=2; if(ACH[2]) ACH[2].progress=3; }
+              renderAll();
+            })();
+          </script>
         </div>
 
         <!-- TODO LIST -->
