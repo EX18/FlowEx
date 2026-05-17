@@ -812,11 +812,6 @@ window.gp = (page) => {
     if (page === 'logros') renderLogros();
     if (page === 'stats') renderStats();
     if (page === 'ajustes') renderSettings();
-    if (page === 'notificaciones') {
-        initSmartNotifications();
-        initUpdates();
-    }
-    if (page === 'comunidad') initCommunity();
     if (page === 'todolist') initTodoList();
     if (page === 'metas') renderMetas();
     if (page === 'calendario') renderCalendario();
