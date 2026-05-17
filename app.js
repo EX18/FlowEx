@@ -787,7 +787,6 @@ const renderAll = () => {
     if (pid === 'tareas') renderTasks();
     if (pid === 'notas') renderNotas();
     if (pid === 'lectura') renderLectura();
-    if (pid === 'notifs') renderNotifs();
     if (pid === 'logros') renderLogros();
     if (pid === 'stats') renderStats();
     if (pid === 'metas') renderMetas();
@@ -808,7 +807,6 @@ window.gp = (page) => {
     if (page === 'tareas') renderTasks();
     if (page === 'notas') renderNotas();
     if (page === 'lectura') renderLectura();
-    if (page === 'notifs') renderNotifs();
     if (page === 'logros') renderLogros();
     if (page === 'stats') renderStats();
     if (page === 'ajustes') renderSettings();
@@ -5275,7 +5273,7 @@ class UpdatesManager {
                 date: new Date().toISOString(),
                 important: true,
                 action: 'Descubre',
-                actionLink: 'notificaciones'
+                actionLink: 'dashboard'
             },
             {
                 id: uid(),
@@ -5285,8 +5283,8 @@ class UpdatesManager {
                 icon: '🌍',
                 date: new Date(Date.now() - 86400000).toISOString(),
                 important: true,
-                action: 'Ir a Comunidad',
-                actionLink: 'comunidad'
+                action: 'Volver al inicio',
+                actionLink: 'dashboard'
             }
         ];
 
