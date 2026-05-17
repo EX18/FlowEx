@@ -975,14 +975,15 @@
         bottom: 0;
         left: 0;
         right: 0;
-        height: calc(64px + var(--sb));
+        height: calc(76px + var(--sb));
         background: rgba(7, 7, 15, 0.96);
-        backdrop-filter: blur(24px);
-        -webkit-backdrop-filter: blur(24px);
-        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.18);
         display: flex;
         align-items: flex-start;
-        padding-top: 8px;
+        padding-top: 10px;
         z-index: 100;
         overflow-x: auto;
         overflow-y: hidden;
@@ -1027,29 +1028,28 @@
 
       .fab {
         position: fixed;
-        bottom: calc(76px + var(--sb));
+        bottom: calc(86px + var(--sb));
         right: 18px;
-        width: 52px;
-        height: 52px;
-        border-radius: 16px;
+        width: 56px;
+        height: 56px;
+        border-radius: 18px;
         background: linear-gradient(135deg, var(--a), var(--a2));
         color: white;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 24px 42px rgba(124, 109, 250, 0.28);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         font-size: 26px;
-        border: none;
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 20px rgba(124, 109, 250, 0.45);
         z-index: 90;
-        transition: all 0.2s;
-      }
-      .fab:active {
-        transform: scale(0.88);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
       .fab:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 28px rgba(124, 109, 250, 0.55);
+        box-shadow: 0 28px 48px rgba(124, 109, 250, 0.32);
+      }
+      .fab:active {
+        transform: scale(0.88);
       }
 
       /* ─── COMPONENTS ───────────────────────────── */
@@ -1071,6 +1071,9 @@
         justify-content: space-between;
         align-items: center;
         margin: 18px 0 10px;
+        gap: 12px;
+        padding: 10px 0 4px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       }
       .sec-title {
         font-family: var(--fd);
@@ -1078,15 +1081,17 @@
         font-weight: 700;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
       }
       .sec-more {
         font-size: 11px;
         color: var(--a);
-        background: none;
-        border: none;
+        background: rgba(124, 109, 250, 0.08);
+        border: 1px solid rgba(124, 109, 250, 0.1);
+        border-radius: 999px;
         cursor: pointer;
         font-family: var(--fb);
+        padding: 8px 12px;
       }
 
       .fi {
@@ -8203,7 +8208,7 @@
     <!-- APP SCREEN -->
     <div id="screen-app" class="screen" style="display: none">
       <div class="topnav">
-        <div class="logo"></div>
+        <div class="logo">FlowEX</div>
         <div style="display: flex; gap: 8px; align-items: center">
           <button class="icon-btn" onclick="openSearch()">🔍</button>
           <div class="sync-indicator" id="sync-status">
@@ -10884,50 +10889,54 @@
       </div>
       <!-- /pc -->
 
-      <nav class="bnav">
-        <button class="nt active" onclick="gp('dashboard')" id="tab-dashboard">
-          <div class="ni">⊞</div>
-          <div class="nl">Inicio</div>
-        </button>
-        <button class="nt" onclick="gp('habitos')" id="tab-habitos">
-          <div class="ni">🔥</div>
-          <div class="nl">Hábitos</div>
-        </button>
-        <button class="nt" onclick="gp('tareas')" id="tab-tareas">
-          <div class="ni">✅</div>
-          <div class="nl">Tareas</div>
-        </button>
-        <button class="nt" onclick="gp('notas')" id="tab-notas">
-          <div class="ni">📝</div>
-          <div class="nl">Notas</div>
-        </button>
-        <button class="nt" onclick="gp('lectura')" id="tab-lectura">
-          <div class="ni">📚</div>
-          <div class="nl">Lectura</div>
-        </button>
-        <button class="nt" onclick="gp('logros')" id="tab-logros">
-          <div class="ni">🏆</div>
-          <div class="nl">Logros</div>
-        </button>
-        <button class="nt" onclick="gp('metas')" id="tab-metas">
-          <div class="ni">🎯</div>
-          <div class="nl">Metas</div>
-        </button>
-        <button class="nt" onclick="gp('calendario')" id="tab-calendario">
-          <div class="ni">📅</div>
-          <div class="nl">Cal</div>
-        </button>
-        <button class="nt" onclick="gp('pomodoro')" id="tab-pomodoro">
-          <div class="ni">🍅</div>
-          <div class="nl">Foco</div>
-        </button>
-        <button class="nt" onclick="gp('todolist')" id="tab-todolist">
-          <div class="ni">📝</div>
-          <div class="nl">Todo List</div>
-        </button>
-      </nav>
-      <button class="fab" onclick="openHabit()">＋</button>
     </div>
+    <nav class="bnav">
+      <button class="nt active" onclick="gp('dashboard')" id="tab-dashboard">
+        <div class="ni">⊞</div>
+        <div class="nl">Inicio</div>
+      </button>
+      <button class="nt" onclick="gp('habitos')" id="tab-habitos">
+        <div class="ni">🔥</div>
+        <div class="nl">Hábitos</div>
+      </button>
+      <button class="nt" onclick="gp('tareas')" id="tab-tareas">
+        <div class="ni">✅</div>
+        <div class="nl">Tareas</div>
+      </button>
+      <button class="nt" onclick="gp('notas')" id="tab-notas">
+        <div class="ni">📝</div>
+        <div class="nl">Notas</div>
+      </button>
+      <button class="nt" onclick="gp('lectura')" id="tab-lectura">
+        <div class="ni">📚</div>
+        <div class="nl">Lectura</div>
+      </button>
+      <button class="nt" onclick="gp('stats')" id="tab-stats">
+        <div class="ni">📊</div>
+        <div class="nl">Stats</div>
+      </button>
+      <button class="nt" onclick="gp('logros')" id="tab-logros">
+        <div class="ni">🏆</div>
+        <div class="nl">Logros</div>
+      </button>
+      <button class="nt" onclick="gp('metas')" id="tab-metas">
+        <div class="ni">🎯</div>
+        <div class="nl">Metas</div>
+      </button>
+      <button class="nt" onclick="gp('calendario')" id="tab-calendario">
+        <div class="ni">📅</div>
+        <div class="nl">Cal</div>
+      </button>
+      <button class="nt" onclick="gp('pomodoro')" id="tab-pomodoro">
+        <div class="ni">🍅</div>
+        <div class="nl">Foco</div>
+      </button>
+      <button class="nt" onclick="gp('todolist')" id="tab-todolist">
+        <div class="ni">📝</div>
+        <div class="nl">Todo</div>
+      </button>
+    </nav>
+    <button class="fab" onclick="openHabit()">＋</button>
 
     <!-- SHEET TAREA -->
     <div class="shov" id="sh-task" onclick="csh('sh-task', event)">
