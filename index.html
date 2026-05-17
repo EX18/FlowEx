@@ -7845,10 +7845,6 @@
             <div class="sec-title">🧩 Módulos</div>
           </div>
           <div class="modules-grid">
-            <button type="button" class="module-card" onclick="gp('diario')">
-              <div class="module-icon">📖</div>
-              <div class="module-name">Diario</div>
-            </button>
             <button type="button" class="module-card" onclick="gp('habitos')">
               <div class="module-icon">🔥</div>
               <div class="module-name">Hábitos</div>
@@ -7869,10 +7865,6 @@
               <div class="module-icon">📊</div>
               <div class="module-name">Stats</div>
             </button>
-            <button type="button" class="module-card" onclick="gp('sueno')">
-              <div class="module-icon">😴</div>
-              <div class="module-name">Sueño</div>
-            </button>
             <button type="button" class="module-card" onclick="gp('metas')">
               <div class="module-icon">🎯</div>
               <div class="module-name">Metas</div>
@@ -7881,45 +7873,21 @@
               <div class="module-icon">📅</div>
               <div class="module-name">Calendario</div>
             </button>
-            <button type="button" class="module-card" onclick="gp('nutricion')">
-              <div class="module-icon">🥗</div>
-              <div class="module-name">Nutrición</div>
-            </button>
-            <button type="button" class="module-card" onclick="gp('mood')">
-              <div class="module-icon">😊</div>
-              <div class="module-name">Mood</div>
-            </button>
-            <button type="button" class="module-card" onclick="gp('mindfulness')">
-              <div class="module-icon">🧘</div>
-              <div class="module-name">Mindfulness</div>
-            </button>
             <button type="button" class="module-card" onclick="gp('pomodoro')">
               <div class="module-icon">⏳</div>
               <div class="module-name">Pomodoro</div>
             </button>
-            <button type="button" class="module-card" onclick="gp('finanzas')">
-              <div class="module-icon">💰</div>
-              <div class="module-name">Finanzas</div>
-            </button>
-            <button type="button" class="module-card" onclick="gp('tiempo')">
-              <div class="module-icon">⏱️</div>
-              <div class="module-name">Tiempo</div>
-            </button
             <button type="button" class="module-card" onclick="gp('buscar')">
               <div class="module-icon">🔍</div>
               <div class="module-name">Buscar</div>
             </button>
             <button type="button" class="module-card" onclick="gp('notificaciones')">
               <div class="module-icon">🔔</div>
-              <div class="module-name">Notifs</div>
+              <div class="module-name">Notificaciones</div>
             </button>
             <button type="button" class="module-card" onclick="gp('comunidad')">
               <div class="module-icon">🌍</div>
               <div class="module-name">Comunidad</div>
-            </button>
-            <button type="button" class="module-card" onclick="gp('actualizaciones')">
-              <div class="module-icon">📢</div>
-              <div class="module-name">Actualiz.</div>
             </button>
             <button type="button" class="module-card" onclick="gp('todolist')">
               <div class="module-icon">📝</div>
@@ -7928,10 +7896,6 @@
             <button type="button" class="module-card" onclick="gp('ajustes')">
               <div class="module-icon">⚙️</div>
               <div class="module-name">Ajustes</div>
-            </button>
-            <button type="button" class="module-card" onclick="gp('ia')">
-              <div class="module-icon">🤖</div>
-              <div class="module-name">IA Mentor</div>
             </button>
           </div>
         </div>
@@ -10141,43 +10105,6 @@
           <div id="achievements-list" class="stg"></div>
         </div>
 
-        <!-- ADMIN -->
-        <div class="page" id="page-admin">
-          <div class="ph2">👑 Panel Admin</div>
-          <div class="ph-sub">Solo para el creador.</div>
-          <div class="admin-header">
-            <div class="admin-title">Estadísticas Globales</div>
-          </div>
-          <div class="global-stat-grid" id="admin-globals"></div>
-          <div class="admin-users-section">
-            <div class="admin-title">Usuarios</div>
-            <div id="admin-users-list"></div>
-          </div>
-        </div>
-
-        <!-- IA -->
-        <div class="page" id="page-ia">
-          <div class="topnav">
-            <div class="logo">FlowEX</div>
-            <div class="sync-indicator" id="sync-ia">●</div>
-          </div>
-
-          <div class="pc">
-            <div class="sec">
-              <div class="sec-title">
-                🧠 AI Mentor Avanzado
-              </div>
-              <div class="sec-desc">
-                Asistente inteligente de productividad con análisis personalizado
-              </div>
-            </div>
-
-            <div id="ai-chat-container">
-              <!-- AI interface will be rendered here -->
-            </div>
-          </div>
-        </div>
-
         <!-- NOTIFICACIONES -->
         <div class="page" id="page-notificaciones">
           <div class="topnav">
@@ -10188,15 +10115,18 @@
           <div class="pc">
             <div class="sec">
               <div class="sec-title">
-                🔔 Notificaciones Ultra-Inteligentes
+                🔔 Notificaciones y Actualizaciones
               </div>
               <div class="sec-desc">
-                Sistema predictivo de recordatorios y alertas personalizadas
+                Administrá notificaciones y novedades desde un solo módulo central.
               </div>
             </div>
 
-            <div id="ai-chat-container">
-              <!-- Smart Notifications interface will be rendered here -->
+            <div id="notifs-content"></div>
+            <div class="updates-section">
+              <div class="sec-title">📢 Actualizaciones</div>
+              <div class="sec-desc">Mantente informado de novedades y anuncios importantes aquí.</div>
+              <div id="updates-content">Cargando actualizaciones...</div>
             </div>
           </div>
         </div>
@@ -10220,29 +10150,6 @@
 
             <div id="ai-chat-container">
               <!-- Community interface will be rendered here -->
-            </div>
-          </div>
-        </div>
-
-        <!-- ACTUALIZACIONES -->
-        <div class="page" id="page-actualizaciones">
-          <div class="topnav">
-            <div class="logo">FlowEX</div>
-            <div class="sync-indicator" id="sync-actualizaciones">●</div>
-          </div>
-
-          <div class="pc">
-            <div class="sec">
-              <div class="sec-title">
-                📢 Centro de Actualizaciones
-              </div>
-              <div class="sec-desc">
-                Mantente informado de todas las novedades
-              </div>
-            </div>
-
-            <div id="ai-chat-container">
-              <!-- Updates interface will be rendered here -->
             </div>
           </div>
         </div>
@@ -10277,125 +10184,6 @@
         </div>
 
         <!-- ════════════════════════════════════════════ MÓDULOS ADICIONALES ════════════════════════════════════════════ -->
-
-        <!-- SUEÑO 😴 -->
-        <div class="page" id="page-sueno">
-          <div class="ph2">Sueño 😴</div>
-          <div class="ph-sub">Registrá tu descanso y mejorá tu energía.</div>
-
-          <div class="sleep-hero">
-            <div class="sleep-ring-outer">
-              <svg width="180" height="180" viewBox="0 0 180 180">
-                <circle
-                  cx="90"
-                  cy="90"
-                  r="76"
-                  fill="none"
-                  stroke="var(--b)"
-                  stroke-width="10"
-                />
-                <circle
-                  id="sleep-ring-arc"
-                  cx="90"
-                  cy="90"
-                  r="76"
-                  fill="none"
-                  stroke="var(--a5)"
-                  stroke-width="10"
-                  stroke-linecap="round"
-                  stroke-dasharray="478"
-                  stroke-dashoffset="478"
-                  style="transition: stroke-dashoffset 0.8s ease"
-                />
-              </svg>
-              <div class="sleep-ring-text">
-                <div class="sleep-ring-val" id="sleep-today-hrs">–</div>
-                <div class="sleep-ring-sub">horas</div>
-              </div>
-            </div>
-            <div class="sleep-score-row" id="sleep-quality-badge"></div>
-          </div>
-
-          <div class="sleep-inputs">
-            <div class="sleep-inp-card">
-              <div class="sleep-inp-lbl">🌙 Me dormí</div>
-              <input
-                id="sleep-bedtime"
-                class="sleep-inp"
-                type="time"
-                value="23:00"
-                oninput="previewSleepHours()"
-              />
-            </div>
-            <div class="sleep-inp-card">
-              <div class="sleep-inp-lbl">☀️ Me desperté</div>
-              <input
-                id="sleep-waketime"
-                class="sleep-inp"
-                type="time"
-                value="07:00"
-                oninput="previewSleepHours()"
-              />
-            </div>
-          </div>
-
-          <div class="sleep-quality-wrap">
-            <div class="sleep-quality-title">¿Cómo fue la calidad?</div>
-            <div class="sleep-quality-btns">
-              <button
-                class="sleep-q-btn"
-                data-q="1"
-                onclick="selSleepQ(1, this)"
-                title="Muy mal"
-              >
-                😩
-              </button>
-              <button
-                class="sleep-q-btn"
-                data-q="2"
-                onclick="selSleepQ(2, this)"
-                title="Mal"
-              >
-                😔
-              </button>
-              <button
-                class="sleep-q-btn"
-                data-q="3"
-                onclick="selSleepQ(3, this)"
-                title="Regular"
-              >
-                😐
-              </button>
-              <button
-                class="sleep-q-btn"
-                data-q="4"
-                onclick="selSleepQ(4, this)"
-                title="Bien"
-              >
-                😊
-              </button>
-              <button
-                class="sleep-q-btn"
-                data-q="5"
-                onclick="selSleepQ(5, this)"
-                title="Excelente"
-              >
-                😴
-              </button>
-            </div>
-          </div>
-
-          <button class="sleep-save-btn" onclick="saveSleep()">
-            💾 Guardar sueño de anoche
-          </button>
-
-          <div class="sleep-stats-row" id="sleep-stats-row"></div>
-
-          <div class="sec-head">
-            <div class="sec-title">📅 Últimos 7 días</div>
-          </div>
-          <div id="sleep-history" class="stg"></div>
-        </div>
 
         <!-- METAS 🎯 -->
         <div class="page" id="page-metas">
@@ -10516,159 +10304,6 @@
               <div class="cal-no-events">Tocá un día para ver eventos</div>
             </div>
           </div>
-        </div>
-
-        <!-- AGUA & NUTRICIÓN 💧 -->
-        <div class="page" id="page-nutricion">
-          <div class="ph2">Agua & Nutrición 💧</div>
-          <div class="ph-sub">Hidratación y registro de comidas del día.</div>
-
-          <div class="water-hero">
-            <div class="water-big-display">
-              <div class="water-big-num" id="water-num">0</div>
-              <div class="water-big-denom" id="water-denom">/8</div>
-            </div>
-            <div class="water-big-unit">vasos de agua hoy</div>
-            <div class="water-track" id="water-track">
-              <div class="water-track-bar">
-                <div
-                  class="water-track-fill"
-                  id="water-track-fill"
-                  style="width: 0%"
-                ></div>
-              </div>
-              <div class="water-track-labels">
-                <span id="water-track-lbl">0%</span>
-                <span id="water-track-goal">Meta: 8 vasos</span>
-              </div>
-            </div>
-            <div class="water-glasses-grid" id="water-glasses"></div>
-          </div>
-
-          <div class="water-goal-row">
-            <span class="water-goal-lbl">Meta diaria de agua</span>
-            <input
-              class="water-goal-inp"
-              id="water-goal-inp"
-              type="number"
-              min="1"
-              max="20"
-              value="8"
-              onchange="saveWaterGoal()"
-            />
-            <span class="water-goal-lbl">vasos</span>
-            <button class="water-reset-btn" onclick="resetWater()">
-              ↺ Reiniciar
-            </button>
-          </div>
-
-          <div id="cals-bar-wrap"></div>
-
-          <div class="sec-head">
-            <div class="sec-title">🍽 Comidas de hoy</div>
-            <button class="sec-more" onclick="openMealSheet()">
-              + Agregar
-            </button>
-          </div>
-          <div id="meals-list" class="stg"></div>
-          <button class="meal-add-btn" onclick="openMealSheet()">
-            + Registrar comida
-          </button>
-        </div>
-
-        <!-- ESTADO DE ÁNIMO 😊 -->
-        <div class="page" id="page-mood">
-          <div class="ph2">Estado de Ánimo 😊</div>
-          <div class="ph-sub">¿Cómo te sentís hoy? Registralo en segundos.</div>
-
-          <div class="mood-today-card">
-            <div class="mood-today-label">
-              Tocá para registrar tu ánimo de hoy
-            </div>
-            <div class="mood-selector" id="mood-selector">
-              <button class="mood-btn" data-mood="1" onclick="selMood(1, this)">
-                <div class="mood-btn-em">😞</div>
-                <div class="mood-btn-lbl">Muy mal</div>
-              </button>
-              <button class="mood-btn" data-mood="2" onclick="selMood(2, this)">
-                <div class="mood-btn-em">😕</div>
-                <div class="mood-btn-lbl">Mal</div>
-              </button>
-              <button class="mood-btn" data-mood="3" onclick="selMood(3, this)">
-                <div class="mood-btn-em">😐</div>
-                <div class="mood-btn-lbl">Regular</div>
-              </button>
-              <button class="mood-btn" data-mood="4" onclick="selMood(4, this)">
-                <div class="mood-btn-em">🙂</div>
-                <div class="mood-btn-lbl">Bien</div>
-              </button>
-              <button class="mood-btn" data-mood="5" onclick="selMood(5, this)">
-                <div class="mood-btn-em">😄</div>
-                <div class="mood-btn-lbl">Muy bien</div>
-              </button>
-              <button class="mood-btn" data-mood="6" onclick="selMood(6, this)">
-                <div class="mood-btn-em">🤩</div>
-                <div class="mood-btn-lbl">Increíble</div>
-              </button>
-            </div>
-            <div class="mood-current-label" id="mood-label">
-              ¿Cómo te sentís?
-            </div>
-          </div>
-
-          <textarea
-            class="mood-note-inp"
-            id="mood-note-inp"
-            rows="3"
-            placeholder="¿Por qué te sentís así? Escribí algo (opcional)..."
-          ></textarea>
-          <button class="mood-save-btn" onclick="saveMood()">
-            💾 Guardar estado de hoy
-          </button>
-
-          <div class="sec-head">
-            <div class="sec-title">📈 Esta semana</div>
-          </div>
-          <div class="mood-week-chart" id="mood-week-chart"></div>
-
-          <div class="sec-head">
-            <div class="sec-title">📖 Historial reciente</div>
-          </div>
-          <div id="mood-history" class="stg"></div>
-        </div>
-
-        <!-- MINDFULNESS 🧘 -->
-        <div class="page" id="page-mindfulness">
-          <div class="ph2">Mindfulness 🧘</div>
-          <div class="ph-sub">Ejercicios de respiración y meditación para tu bienestar.</div>
-
-          <div class="breath-hero">
-            <div class="breath-circle" id="breath-circle">
-              <div class="breath-instr" id="breath-instr">Inhalá</div>
-            </div>
-            <div class="breath-controls">
-              <button class="breath-btn" id="breath-start" onclick="startBreath()">Comenzar</button>
-              <button class="breath-btn" id="breath-stop" onclick="stopBreath()" style="display:none">Detener</button>
-            </div>
-            <div class="breath-desc">
-              Respiración 4-7-8: Inhalá 4s, retené 7s, exhalá 8s.
-            </div>
-          </div>
-
-          <div class="sec-head">
-            <div class="sec-title">🧘 Sesiones de Meditación</div>
-          </div>
-          <div class="meditation-sessions" id="meditation-sessions">
-            <button class="med-btn" onclick="startMeditation(5)">5 min</button>
-            <button class="med-btn" onclick="startMeditation(10)">10 min</button>
-            <button class="med-btn" onclick="startMeditation(15)">15 min</button>
-            <button class="med-btn" onclick="startMeditation(20)">20 min</button>
-          </div>
-
-          <div class="sec-head">
-            <div class="sec-title">📊 Tu progreso</div>
-          </div>
-          <div id="mindfulness-stats" class="stg"></div>
         </div>
 
         <!-- POMODORO 🍅 -->
@@ -10824,185 +10459,7 @@
           </div>
         </div>
 
-        <!-- FINANZAS 💰 -->
-        <div class="page" id="page-finanzas">
-          <div class="ph2">Finanzas 💰</div>
-          <div class="ph-sub">Controlá gastos e ingresos del mes.</div>
-
-          <div class="fin-month-nav">
-            <button class="fin-nav-btn" onclick="finPrevMonth()">‹</button>
-            <div class="fin-month-label" id="fin-month-label"></div>
-            <button class="fin-nav-btn" onclick="finNextMonth()">›</button>
-          </div>
-
-          <div class="fin-balance-hero pos" id="fin-balance-hero">
-            <div class="fin-balance-lbl">Balance del mes</div>
-            <div class="fin-balance-amount pos" id="fin-balance-amount">
-              $0.00
-            </div>
-            <div class="fin-balance-detail" id="fin-balance-detail">
-              <span>💵 Ingresos $0</span>
-              <span>💸 Gastos $0</span>
-            </div>
-          </div>
-
-          <div class="fin-summary" id="fin-summary"></div>
-
-          <div class="fin-tab-row">
-            <button class="fin-tab active" onclick="setFinTab('txs', this)">
-              💳 Movimientos
-            </button>
-            <button class="fin-tab" onclick="setFinTab('cats', this)">
-              📊 Categorías
-            </button>
-            <button class="fin-tab" onclick="setFinTab('budget', this)">
-              🎯 Presupuesto
-            </button>
-          </div>
-
-          <div id="fin-tab-content"></div>
-
-          <div class="fin-action-row">
-            <button
-              class="fin-action-btn expense"
-              onclick="openFinSheet('expense')"
-            >
-              ➖ Agregar gasto
-            </button>
-            <button
-              class="fin-action-btn income"
-              onclick="openFinSheet('income')"
-            >
-              ➕ Agregar ingreso
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- /pc -->
-    </div>
-
-    <!-- PAGE DIARIO -->
-    <div class="page" id="page-diario">
-      <div class="topnav">
-        <div class="logo">FlowEX</div>
-        <div class="sync-indicator" id="sync-diario">●</div>
-      </div>
-
-      <div class="pc">
-        <div class="sec">
-          <div class="sec-title">
-            📖 Diario <span class="sec-count" id="journal-count">0</span>
-          </div>
-          <div class="sec-desc">
-            Reflexiona sobre tu día, registra tus pensamientos y emociones
-          </div>
-        </div>
-
-        <div id="journal-overview">
-          <div class="journal-stats">
-            <div class="stat-card">
-              <div class="stat-icon">📊</div>
-              <div class="stat-info">
-                <div class="stat-value" id="journal-streak">0</div>
-                <div class="stat-label">Días de racha</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" id="journal-avg-mood">😐</div>
-              <div class="stat-info">
-                <div class="stat-value" id="journal-avg-mood-text">Neutral</div>
-                <div class="stat-label">Estado promedio</div>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon">📅</div>
-              <div class="stat-info">
-                <div class="stat-value" id="journal-this-month">0</div>
-                <div class="stat-label">Este mes</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="journal-entries" id="journal-list">
-            <!-- Journal entries will be rendered here -->
-          </div>
-
-          <div class="journal-actions">
-            <button class="btn-primary" onclick="journalManager.showNewEntry()">
-              + Nueva entrada
-            </button>
-          </div>
-        </div>
-
-        <div id="journal-detail" style="display: none;">
-          <!-- Journal entry details will be rendered here -->
-        </div>
-      </div>
-      <!-- /pc -->
-    </div>
-
-    <!-- PAGE TIEMPO -->
-    <div class="page" id="page-tiempo">
-      <div class="topnav">
-        <div class="logo">FlowEX</div>
-        <div class="sync-indicator" id="sync-tiempo">●</div>
-      </div>
-
-      <div class="pc">
-        <div class="sec">
-          <div class="sec-title">
-            ⏱️ Time Tracker
-          </div>
-          <div class="sec-desc">
-            Registra el tiempo dedicado a tus tareas y proyectos
-          </div>
-        </div>
-
-        <div class="time-stats">
-          <div class="stat-card">
-            <div class="stat-icon">📊</div>
-            <div class="stat-info">
-              <div class="stat-value" id="time-total">0h 0m</div>
-              <div class="stat-label">Tiempo total</div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">📅</div>
-            <div class="stat-info">
-              <div class="stat-value" id="time-today">0h 0m</div>
-              <div class="stat-label">Hoy</div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">📈</div>
-            <div class="stat-info">
-              <div class="stat-value" id="time-week">0h 0m</div>
-              <div class="stat-label">Esta semana</div>
-            </div>
-          </div>
-        </div>
-
-        <div id="current-session">
-          <!-- Current session will be rendered here -->
-        </div>
-
-        <div class="time-sessions">
-          <h3>Sesiones recientes</h3>
-          <div id="sessions-list">
-            <!-- Sessions will be rendered here -->
-          </div>
-        </div>
-
-        <div class="time-actions">
-          <button class="btn-secondary" onclick="timeTrackerManager.exportData()">
-            📤 Exportar datos
-          </button>
-        </div>
-      </div>
-      <!-- /pc -->
-    </div>
-
-    <!-- PAGE BUSCAR -->
+        <!-- PAGE BUSCAR -->
     <div class="page" id="page-buscar">
       <div class="topnav">
         <div class="logo">FlowEX</div>
@@ -11046,22 +10503,10 @@
           <div class="ni">📚</div>
           <div class="nl">Lectura</div>
         </button>
-        <button class="nt" onclick="gp('notifs')" id="tab-notifs">
-          <div class="ni">🔔</div>
-          <div class="nl">Avisos</div>
-        </button>
         <button class="nt" onclick="gp('logros')" id="tab-logros">
           <div class="ni">🏆</div>
           <div class="nl">Logros</div>
         </button>
-        <button class="nt" onclick="gp('stats')" id="tab-stats">
-          <div class="ni">📊</div>
-          <div class="nl">Stats</div>
-        </button>
-        <button class="nt" onclick="gp('sueno')" id="tab-sueno">
-          <div class="ni">😴</div>
-          <div class="nl">Sueño</div>
-        </button
         <button class="nt" onclick="gp('metas')" id="tab-metas">
           <div class="ni">🎯</div>
           <div class="nl">Metas</div>
@@ -11070,66 +10515,21 @@
           <div class="ni">📅</div>
           <div class="nl">Cal</div>
         </button>
-        <button class="nt" onclick="gp('nutricion')" id="tab-nutricion">
-          <div class="ni">💧</div>
-          <div class="nl">Agua</div>
-        </button>
-        <button class="nt" onclick="gp('mood')" id="tab-mood">
-          <div class="ni">😊</div>
-          <div class="nl">Mood</div>
-        </button>
-        <button class="nt" onclick="gp('mindfulness')" id="tab-mindfulness">
-          <div class="ni">🧘</div>
-          <div class="nl">Mente</div>
-        </button>
         <button class="nt" onclick="gp('pomodoro')" id="tab-pomodoro">
           <div class="ni">🍅</div>
           <div class="nl">Foco</div>
-        </button>
-        <button class="nt" onclick="gp('finanzas')" id="tab-finanzas">
-          <div class="ni">💰</div>
-          <div class="nl">Finanzas</div>
-        </button>
-        <button class="nt" onclick="gp('diario')" id="tab-diario">
-          <div class="ni">📖</div>
-          <div class="nl">Diario</div>
-        </button>
-        <button class="nt" onclick="gp('tiempo')" id="tab-tiempo">
-          <div class="ni">⏱️</div>
-          <div class="nl">Tiempo</div>
-        </button>
-        <button class="nt" onclick="gp('buscar')" id="tab-buscar">
-          <div class="ni">🔍</div>
-          <div class="nl">Buscar</div>
-        </button>
-        <button class="nt" onclick="gp('ia')" id="tab-ia">
-          <div class="ni">🧠</div>
-          <div class="nl">IA</div>
-        </button>
-        <button class="nt" onclick="gp('notificaciones')" id="tab-notificaciones">
-          <div class="ni">🔔</div>
-          <div class="nl">Notif</div>
         </button>
         <button class="nt" onclick="gp('comunidad')" id="tab-comunidad">
           <div class="ni">🌍</div>
           <div class="nl">Comunidad</div>
         </button>
-        <button class="nt" onclick="gp('actualizaciones')" id="tab-actualizaciones">
-          <div class="ni">📢</div>
-          <div class="nl">Actualizaciones</div>
+        <button class="nt" onclick="gp('notificaciones')" id="tab-notificaciones">
+          <div class="ni">🔔</div>
+          <div class="nl">Notif</div>
         </button>
         <button class="nt" onclick="gp('todolist')" id="tab-todolist">
           <div class="ni">📝</div>
           <div class="nl">Todo List</div>
-        </button>
-        <button
-          class="nt"
-          id="tab-admin"
-          onclick="gp('admin')"
-          style="display: none"
-        >
-          <div class="ni">👑</div>
-          <div class="nl">Admin</div>
         </button>
       </nav>
       <button class="fab" onclick="openHabit()">＋</button>

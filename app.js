@@ -91,12 +91,102 @@ let loginPin = '',
 
 // ── Local cache ─────────────────────────────────
 const LC_KEY = 'flowex_session';
+
+// Notify service worker to update cache
+const notifyServiceWorkerOfUpdate = async () => {
+    if (!navigator.serviceWorker?.controller) return;
+    try {
+        navigator.serviceWorker.controller.postMessage({
+            type: 'UPDATE_CACHE',
+            payload: {
+                timestamp: Date.now(),
+                user: CUR_USER,
+                data: S
+            }
+        });
+    } catch (e) {
+        console.warn('SW notification failed:', e);
+    }
+};
+
+// Invalidate server cache by fetching with cache-bust parameter
+const invalidateServerCache = async () => {
+    try {
+        // Fetch main files with no-cache headers to invalidate server cache
+        const files = ['./', './index.html', './manifest.json', './app.js'];
+        const timestamp = Date.now();
+        
+        for (const file of files) {
+            const url = new URL(file, window.location.origin);
+            url.searchParams.set('cache_bust', timestamp);
+            
+            const request = new Request(url.toString(), {
+                method: 'HEAD',
+                headers: {
+                    'Cache-Control': 'no-cache, max-age=0, must-revalidate',
+                    'Pragma': 'no-cache'
+                },
+                cache: 'no-store'
+            });
+            
+            try {
+                await fetch(request);
+            } catch (e) {
+                // Silently fail, not critical
+            }
+        }
+    } catch (e) {
+        console.warn('Server cache invalidation attempt:', e);
+    }
+};
+
+// Update service worker cache with current state
+const updateCacheState = async () => {
+    if (!navigator.serviceWorker?.controller) return;
+    try {
+        const cache = await caches.open('flowex-v2.2');
+        const stateData = {
+            timestamp: Date.now(),
+            user: CUR_USER,
+            data: S
+        };
+        const response = new Response(JSON.stringify(stateData), {
+            headers: { 
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-store'
+            }
+        });
+        await cache.put(new Request('./__flowex-state__'), response);
+        // Also notify the service worker and invalidate server cache
+        notifyServiceWorkerOfUpdate();
+        invalidateServerCache();
+    } catch (e) {
+        console.warn('Cache state update failed:', e);
+    }
+};
+
+// Update IndexedDB cache
+const updateIDBCache = async () => {
+    try {
+        await idbSet('flowex-cache', {
+            timestamp: Date.now(),
+            user: CUR_USER,
+            data: S
+        });
+    } catch (e) {
+        console.warn('IDB cache update failed:', e);
+    }
+};
+
 const saveSession = () => {
     try {
         localStorage.setItem(LC_KEY, JSON.stringify({
             user: CUR_USER,
             data: S
         }));
+        // Update all caches
+        updateCacheState();
+        updateIDBCache();
     } catch (e) {}
 };
 const loadSession = () => {
@@ -106,7 +196,71 @@ const loadSession = () => {
     } catch (e) {}
     return null;
 };
-const clearSession = () => localStorage.removeItem(LC_KEY);
+const clearSession = () => {
+    localStorage.removeItem(LC_KEY);
+    try {
+        caches.delete('flowex-v2.2');
+        idbSet('flowex-cache', null);
+        invalidateServerCache();
+    } catch (e) {}
+};
+
+// Hard reset - eliminates ALL cache
+window.clearAllCache = async () => {
+    console.warn('🧹 Clearing ALL cache...');
+    try {
+        // 1. Clear localStorage and sessionStorage
+        try { localStorage.clear(); } catch (e) {}
+        try { sessionStorage.clear(); } catch (e) {}
+        
+        // 2. Clear all service worker caches
+        if ('caches' in window) {
+            try {
+                const cacheNames = await caches.keys();
+                for (const name of cacheNames) {
+                    await caches.delete(name);
+                }
+            } catch (e) {
+                console.error('Cache deletion error:', e);
+            }
+        }
+        
+        // 3. Clear IndexedDB
+        if ('indexedDB' in window) {
+            try {
+                const dbs = await indexedDB.databases();
+                for (const db of dbs) {
+                    try {
+                        indexedDB.deleteDatabase(db.name);
+                    } catch (e) {}
+                }
+            } catch (e) {
+                console.error('IndexedDB deletion error:', e);
+            }
+        }
+        
+        // 4. Unregister service workers
+        if ('serviceWorker' in navigator) {
+            try {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (const reg of registrations) {
+                    await reg.unregister();
+                }
+            } catch (e) {
+                console.error('SW unregister error:', e);
+            }
+        }
+        
+        console.log('✅ All cache cleared. Reloading...');
+        // Reload after delay
+        setTimeout(() => {
+            window.location.href = './';
+        }, 1000);
+    } catch (e) {
+        console.error('Error clearing cache:', e);
+        window.location.href = './';
+    }
+};
 
 const IDB_NAME = 'flowex-db';
 const IDB_STORE = 'keyval';
@@ -192,6 +346,11 @@ const scheduleSave = () => {
     syncTimer = setTimeout(async () => {
         if (!isDirty) return;
         try {
+            // Update cache immediately
+            saveSession();
+            updateCacheState();
+            updateIDBCache();
+            // Then sync to Firestore
             await pushToFirestore(S);
             isDirty = false;
         } catch (e) {
@@ -596,7 +755,6 @@ const initApp = () => {
     // Hide FAB initially (dashboard active)
     document.querySelector('.fab').style.display = 'none';
     renderSettings();
-    initIA();
 
     // Initialize Smart Notifications and Community (lazy load)
     setTimeout(() => {
@@ -632,14 +790,9 @@ const renderAll = () => {
     if (pid === 'notifs') renderNotifs();
     if (pid === 'logros') renderLogros();
     if (pid === 'stats') renderStats();
-    if (pid === 'sueno') renderSueno();
     if (pid === 'metas') renderMetas();
     if (pid === 'calendario') renderCalendario();
-    if (pid === 'nutricion') renderNutricion();
-    if (pid === 'mood') renderMood();
-    if (pid === 'mindfulness') renderMindfulness();
     if (pid === 'pomodoro') renderPomodoro();
-    if (pid === 'finanzas') renderFinanzas();
 };
 
 // ── NAVIGATION ────────────────────────────────────
@@ -659,21 +812,15 @@ window.gp = (page) => {
     if (page === 'logros') renderLogros();
     if (page === 'stats') renderStats();
     if (page === 'ajustes') renderSettings();
-    if (page === 'ia') initIA();
-    if (page === 'notificaciones') initSmartNotifications();
+    if (page === 'notificaciones') {
+        initSmartNotifications();
+        initUpdates();
+    }
     if (page === 'comunidad') initCommunity();
-    if (page === 'actualizaciones') initUpdates();
     if (page === 'todolist') initTodoList();
-    if (page === 'admin' && isCreator()) window.loadAdminData();
-    if (page === 'sueno') renderSueno();
     if (page === 'metas') renderMetas();
     if (page === 'calendario') renderCalendario();
-    if (page === 'nutricion') renderNutricion();
-    if (page === 'mood') renderMood();
-    if (page === 'mindfulness') renderMindfulness();
     if (page === 'pomodoro') renderPomodoro();
-    if (page === 'finanzas') renderFinanzas();
-    if (page === 'diario') renderDiario();
     if (page === 'tiempo') renderTiempo();
     if (page === 'buscar') renderBuscar();
     const activePc = document.querySelector('.page.active .pc');
@@ -1116,7 +1263,7 @@ const renderDashWidgets = () => {
         const lastSleep = S.sleep && S.sleep.find(s => s.date === ydKey);
         const sleepValue = lastSleep ? `${lastSleep.hours}h ${lastSleep.quality}/5` : 'Sin datos';
         document.getElementById('dash-sleep-value').textContent = sleepValue;
-        sleepEl.onclick = () => gp('sueno');
+        sleepEl.onclick = null;
     }
 
     // Mood widget
@@ -1126,7 +1273,7 @@ const renderDashWidgets = () => {
         const todayMood = S.moods && S.moods.find(m => m.date === td);
         const moodValue = todayMood ? `${todayMood.mood}/5` : 'Sin registrar';
         document.getElementById('dash-mood-value').textContent = moodValue;
-        moodEl.onclick = () => gp('mood');
+        moodEl.onclick = null;
     }
 
     // Goals widget
@@ -1940,7 +2087,6 @@ const renderSettings = () => {
               <div class="ss-ic" style="background:rgba(124,109,250,.12)">👤</div>
               <div class="ss-inf"><div class="ss-lb" style="display:flex;align-items:center;gap:8px">@${CUR_USER||''} ${isCreator()?'<span class="creator-badge"><span class="creator-crown">👑</span> CREADOR</span>':''}</div><div class="ss-ds">${S.name||''} · Nivel ${S.level||1} · ${S.xp||0} XP</div></div>
             </div>
-            ${isCreator()?`<div class="ss-item" onclick="window.gp('admin')"><div class="ss-ic" style="background:linear-gradient(135deg,rgba(250,196,109,.2),rgba(250,109,143,.15))">👑</div><div class="ss-inf"><div class="ss-lb">Panel Admin</div><div class="ss-ds">Ver estadísticas globales</div></div><div class="ss-arr">›</div></div>`:''}
             <div class="ss-item" onclick="window.doLogout()">
               <div class="ss-ic" style="background:rgba(250,109,143,.12)">🚪</div>
               <div class="ss-inf"><div class="ss-lb">Cerrar sesión</div><div class="ss-ds">Salir de esta cuenta</div></div>
@@ -3291,7 +3437,7 @@ class SearchManager {
                         content: this.getPreview(entry.content),
                         category: 'Diario',
                         icon: '📖',
-                        action: `gp('diario'); setTimeout(() => journalManager.selectEntry('${entry.id}'), 100)`
+                        action: "gp('notas')"
                     });
                 }
             });
@@ -6122,6 +6268,24 @@ if ('serviceWorker' in navigator) {
 window.addEventListener('DOMContentLoaded', async () => {
     await new Promise(r => setTimeout(r, 600)); // min splash time
     const session = loadSession();
+    
+    // Validate session integrity
+    const isValidSession = (sess) => {
+        if (!sess || !sess.user || !sess.data) return false;
+        // Check for required fields
+        if (typeof sess.user !== 'string') return false;
+        if (!sess.data || typeof sess.data !== 'object') return false;
+        if (sess.data.level === undefined && sess.data.xp === undefined) return false;
+        return true;
+    };
+    
+    // If session is invalid/corrupted, clear everything
+    if (session && !isValidSession(session)) {
+        console.warn('⚠️ Corrupted session detected, clearing cache...');
+        await window.clearAllCache();
+        return;
+    }
+    
     if (session && session.user && session.data) {
         CUR_USER = session.user;
         S = {
@@ -6142,6 +6306,11 @@ window.addEventListener('DOMContentLoaded', async () => {
                 saveSession();
                 hideSplash();
                 startApp();
+                return;
+            } else {
+                // User deleted from server, clear session
+                console.warn('⚠️ User not found in Firestore, clearing session...');
+                await window.clearAllCache();
                 return;
             }
         } catch (e) {
