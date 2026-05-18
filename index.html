@@ -5557,239 +5557,6 @@
       }
 
       /* ─────────────────────────────────────────
-   METAS 🎯
-───────────────────────────────────────── */
-      .metas-hero {
-        background: linear-gradient(
-          135deg,
-          rgba(124, 109, 250, 0.1),
-          rgba(250, 196, 109, 0.06)
-        );
-        border: 1px solid rgba(124, 109, 250, 0.2);
-        border-radius: var(--r);
-        padding: 18px;
-        margin-bottom: 14px;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-      }
-      .metas-hero-icon {
-        font-size: 44px;
-      }
-      .metas-hero-info {
-        flex: 1;
-      }
-      .metas-hero-title {
-        font-family: var(--fd);
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--m);
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        margin-bottom: 4px;
-      }
-      .metas-hero-vals {
-        display: flex;
-        gap: 16px;
-      }
-      .metas-hero-val {
-        font-family: var(--fd);
-        font-size: 24px;
-        font-weight: 800;
-        color: var(--a);
-      }
-      .metas-hero-lbl {
-        font-size: 10px;
-        color: var(--m);
-      }
-
-      .goal-card {
-        background: var(--surface);
-        border: 1px solid var(--b);
-        border-radius: var(--r);
-        padding: 16px;
-        margin-bottom: 10px;
-        transition: all 0.2s;
-        position: relative;
-        overflow: hidden;
-      }
-      .goal-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        border-radius: 2px 2px 0 0;
-      }
-      .goal-card.cat-salud::before {
-        background: var(--a3);
-      }
-      .goal-card.cat-trabajo::before {
-        background: var(--a);
-      }
-      .goal-card.cat-personal::before {
-        background: var(--a4);
-      }
-      .goal-card.cat-finanzas::before {
-        background: var(--a2);
-      }
-      .goal-card.cat-aprender::before {
-        background: var(--a5);
-      }
-      .goal-card.done-goal {
-        opacity: 0.6;
-      }
-      .goal-header {
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 12px;
-      }
-      .goal-em {
-        font-size: 32px;
-        flex-shrink: 0;
-        line-height: 1;
-      }
-      .goal-info {
-        flex: 1;
-        min-width: 0;
-      }
-      .goal-title {
-        font-family: var(--fd);
-        font-size: 15px;
-        font-weight: 700;
-        margin-bottom: 4px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-      .goal-meta-row {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex-wrap: wrap;
-      }
-      .goal-cat-badge {
-        font-size: 9px;
-        padding: 2px 8px;
-        border-radius: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-      .goal-deadline-badge {
-        font-size: 10px;
-        color: var(--m);
-        display: flex;
-        align-items: center;
-        gap: 3px;
-      }
-      .goal-pct-big {
-        font-family: var(--fd);
-        font-size: 22px;
-        font-weight: 800;
-        flex-shrink: 0;
-      }
-
-      .goal-progress-wrap {
-        margin-bottom: 10px;
-      }
-      .goal-progress-track {
-        height: 10px;
-        background: var(--b);
-        border-radius: 5px;
-        overflow: hidden;
-        margin-bottom: 5px;
-      }
-      .goal-progress-fill {
-        height: 100%;
-        border-radius: 5px;
-        transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-      }
-      .goal-progress-labels {
-        display: flex;
-        justify-content: space-between;
-        font-size: 10px;
-        color: var(--m);
-      }
-
-      .goal-milestones {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        margin-bottom: 10px;
-        padding: 10px;
-        background: var(--s2);
-        border-radius: 10px;
-      }
-      .goal-ms {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 12px;
-        cursor: pointer;
-        padding: 2px 0;
-        transition: opacity 0.2s;
-      }
-      .goal-ms:hover {
-        opacity: 0.8;
-      }
-      .goal-ms-chk {
-        width: 18px;
-        height: 18px;
-        border-radius: 5px;
-        border: 1.5px solid var(--b2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        flex-shrink: 0;
-        transition: all 0.2s;
-      }
-      .goal-ms-chk.done {
-        background: var(--a3);
-        border-color: var(--a3);
-        color: #07070f;
-      }
-      .goal-ms-text {
-        flex: 1;
-      }
-      .goal-ms-text.done {
-        text-decoration: line-through;
-        color: var(--m);
-      }
-
-      .goal-actions {
-        display: flex;
-        gap: 6px;
-        padding-top: 10px;
-        border-top: 1px solid var(--b);
-      }
-      .goal-act-btn {
-        flex: 1;
-        padding: 8px;
-        border-radius: 9px;
-        border: 1px solid var(--b);
-        background: var(--s2);
-        font-family: var(--fd);
-        font-size: 11px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-align: center;
-      }
-      .goal-act-btn:active {
-        transform: scale(0.93);
-      }
-      .goal-act-btn.primary {
-        background: linear-gradient(135deg, var(--a), var(--a2));
-        color: white;
-        border-color: transparent;
-        box-shadow: 0 2px 10px rgba(124, 109, 250, 0.25);
-      }
-
-      /* ─────────────────────────────────────────
    CALENDARIO 📅
 ───────────────────────────────────────── */
       .cal-nav-row {
@@ -8295,13 +8062,6 @@
                 <div class="dw-value" id="dash-mood-value">Sin registrar</div>
               </div>
             </div>
-            <div class="dash-widget" id="dash-goals">
-              <div class="dw-icon">🎯</div>
-              <div class="dw-info">
-                <div class="dw-title">Próximas metas</div>
-                <div class="dw-value" id="dash-goals-value">0 activas</div>
-              </div>
-            </div>
           </div>
           <div class="sec-head">
             <div class="sec-title">🧩 Módulos</div>
@@ -8326,10 +8086,6 @@
             <button type="button" class="module-card" onclick="gp('stats')">
               <div class="module-icon">📊</div>
               <div class="module-name">Stats</div>
-            </button>
-            <button type="button" class="module-card" onclick="gp('metas')">
-              <div class="module-icon">🎯</div>
-              <div class="module-name">Metas</div>
             </button>
             <button type="button" class="module-card" onclick="gp('calendario')">
               <div class="module-icon">📅</div>
@@ -9428,146 +9184,6 @@
             transition: width 0.5s;
           }
 
-          /* ── METAS ── */
-          .meta-card {
-            background: var(--surface);
-            border: 1px solid var(--b);
-            border-radius: var(--rs);
-            padding: 14px;
-            margin-bottom: 8px;
-            transition: all 0.2s;
-          }
-          .meta-card:active {
-            transform: scale(0.99);
-          }
-          .meta-card-top {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-          }
-          .meta-emoji {
-            font-size: 24px;
-            flex-shrink: 0;
-          }
-          .meta-info {
-            flex: 1;
-            min-width: 0;
-          }
-          .meta-title {
-            font-family: var(--fd);
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 2px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-          }
-          .meta-deadline {
-            font-size: 10px;
-            color: var(--m);
-          }
-          .meta-pct-lbl {
-            font-family: var(--fd);
-            font-size: 16px;
-            font-weight: 800;
-            color: var(--a);
-            flex-shrink: 0;
-          }
-          .meta-bar {
-            height: 8px;
-            background: var(--b);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 6px;
-          }
-          .meta-bar-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.6s ease;
-          }
-          .meta-milestones {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            margin-top: 6px;
-          }
-          .meta-milestone {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            font-size: 11px;
-            color: var(--m);
-          }
-          .meta-ms-chk {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            border: 1.5px solid var(--b2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: all 0.2s;
-          }
-          .meta-ms-chk.done {
-            background: var(--a3);
-            border-color: var(--a3);
-            color: #07070f;
-          }
-          .meta-cat-badge {
-            font-size: 9px;
-            padding: 2px 7px;
-            border-radius: 10px;
-            font-weight: 600;
-          }
-          .cat-salud {
-            background: rgba(109, 250, 196, 0.12);
-            color: var(--a3);
-          }
-          .cat-trabajo {
-            background: rgba(124, 109, 250, 0.12);
-            color: var(--a);
-          }
-          .cat-personal {
-            background: rgba(250, 196, 109, 0.12);
-            color: var(--a4);
-          }
-          .cat-finanzas {
-            background: rgba(250, 109, 143, 0.12);
-            color: var(--a2);
-          }
-          .cat-aprender {
-            background: rgba(96, 165, 250, 0.12);
-            color: var(--a5);
-          }
-          .meta-actions {
-            display: flex;
-            gap: 5px;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid var(--b);
-          }
-          .meta-act-btn {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            padding: 5px 10px;
-            border-radius: 7px;
-            border: 1px solid var(--b);
-            background: var(--s2);
-            font-size: 11px;
-            color: var(--m);
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: var(--fb);
-          }
-          .meta-act-btn:active {
-            transform: scale(0.92);
-          }
-
           /* ── CALENDARIO ── */
           .cal-header {
             display: flex;
@@ -9974,45 +9590,6 @@
           }
           .sleep-hist-bar-fill {
             border-radius: 6px;
-          }
-
-          /* METAS */
-          .meta-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 10px;
-            margin-bottom: 14px;
-          }
-          .meta-card {
-            background: linear-gradient(
-              145deg,
-              rgba(25, 29, 70, 0.8),
-              rgba(30, 35, 85, 0.8)
-            );
-            border: 1px solid rgba(124, 109, 250, 0.3);
-            border-radius: 18px;
-            padding: 16px;
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
-          }
-          .meta-card-top {
-            gap: 12px;
-            margin-bottom: 12px;
-          }
-          .meta-title {
-            font-size: 15px;
-            color: var(--txt);
-          }
-          .meta-deadline {
-            font-size: 11px;
-            color: var(--m);
-          }
-          .meta-bar {
-            height: 10px;
-            margin-bottom: 8px;
-          }
-          .meta-ms-chk {
-            width: 18px;
-            height: 18px;
           }
 
           /* AGUA + NUTRICIÓN */
@@ -10693,76 +10270,6 @@
 
         <!-- ════════════════════════════════════════════ MÓDULOS ADICIONALES ════════════════════════════════════════════ -->
 
-        <!-- METAS 🎯 -->
-        <div class="page" id="page-metas">
-          <div class="ph2">Metas 🎯</div>
-          <div class="ph-sub">
-            Objetivos grandes con hitos para llegar paso a paso.
-          </div>
-
-          <div class="metas-hero">
-            <div class="metas-hero-icon">🏔</div>
-            <div class="metas-hero-info">
-              <div class="metas-hero-title">Tu progreso</div>
-              <div class="metas-hero-vals">
-                <div>
-                  <div class="metas-hero-val" id="metas-total-val">0</div>
-                  <div class="metas-hero-lbl">Total</div>
-                </div>
-                <div>
-                  <div
-                    class="metas-hero-val"
-                    id="metas-active-val"
-                    style="color: var(--a4)"
-                  >
-                    0
-                  </div>
-                  <div class="metas-hero-lbl">Activas</div>
-                </div>
-                <div>
-                  <div
-                    class="metas-hero-val"
-                    id="metas-done-val"
-                    style="color: var(--a3)"
-                  >
-                    0
-                  </div>
-                  <div class="metas-hero-lbl">Logradas</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="frow" id="goals-filter-row">
-            <button
-              class="fp active"
-              data-gf="activas"
-              onclick="setGoalFilter('activas', this)"
-            >
-              Activas
-            </button>
-            <button
-              class="fp"
-              data-gf="completadas"
-              onclick="setGoalFilter('completadas', this)"
-            >
-              ✅ Completadas
-            </button>
-            <button
-              class="fp"
-              data-gf="todas"
-              onclick="setGoalFilter('todas', this)"
-            >
-              Todas
-            </button>
-          </div>
-
-          <div id="goals-list" class="stg"></div>
-          <button class="plan-btn" onclick="openGoalSheet()">
-            ➕ Nueva meta
-          </button>
-        </div>
-
         <!-- CALENDARIO 📅 -->
         <div class="page" id="page-calendario">
           <div class="ph2">Calendario 📅</div>
@@ -11020,10 +10527,6 @@
         <div class="ni">🏆</div>
         <div class="nl">Logros</div>
       </button>
-      <button class="nt" onclick="gp('metas')" id="tab-metas">
-        <div class="ni">🎯</div>
-        <div class="nl">Metas</div>
-      </button>
       <button class="nt" onclick="gp('calendario')" id="tab-calendario">
         <div class="ni">📅</div>
         <div class="nl">Cal</div>
@@ -11199,83 +10702,6 @@
     </div>
 
     <!-- ════════════════════════════════════════════ MÓDULOS - SHEETS ════════════════════════════════════════════ -->
-
-    <!-- SHEET META -->
-    <div class="shov" id="sh-goal" onclick="csh('sh-goal', event)">
-      <div class="sh" onclick="event.stopPropagation()">
-        <div class="shh"></div>
-        <div class="sht" id="sh-goal-title">🎯 Nueva meta</div>
-        <div class="fl">Título de la meta</div>
-        <input
-          id="goal-nm"
-          class="fi"
-          placeholder="Ej: Leer 24 libros este año..."
-        />
-        <div class="fr">
-          <div>
-            <div class="fl">Emoji</div>
-            <input id="goal-em" class="fi" placeholder="🎯" maxlength="4" />
-          </div>
-          <div>
-            <div class="fl">Fecha límite</div>
-            <input id="goal-deadline" class="fi" type="date" />
-          </div>
-        </div>
-        <div class="fr">
-          <div>
-            <div class="fl">Valor inicial</div>
-            <input id="goal-cur" class="fi" type="number" min="0" value="0" />
-          </div>
-          <div>
-            <div class="fl">Meta total</div>
-            <input
-              id="goal-target"
-              class="fi"
-              type="number"
-              min="1"
-              value="100"
-            />
-          </div>
-        </div>
-        <div class="fl">Unidad (ej: libros, km, $...)</div>
-        <input id="goal-unit" class="fi" placeholder="%" value="%" />
-        <div class="fl">Hitos (opcional, uno por línea)</div>
-        <textarea
-          id="goal-milestones-inp"
-          class="fi"
-          rows="3"
-          placeholder="Llegar al 25%&#10;Llegar al 50%&#10;Llegar al 75%"
-        ></textarea>
-        <button class="shbtn" onclick="saveGoal()">Guardar meta</button>
-        <button
-          class="del-btn"
-          id="del-goal-btn"
-          onclick="deleteGoal()"
-          style="display: none"
-        >
-          🗑 Eliminar meta
-        </button>
-        <button class="shbtns" onclick="csh('sh-goal')">Cancelar</button>
-      </div>
-    </div>
-
-    <!-- SHEET PROGRESO META -->
-    <div class="shov" id="sh-goal-prog" onclick="csh('sh-goal-prog', event)">
-      <div class="sh" onclick="event.stopPropagation()">
-        <div class="shh"></div>
-        <div class="sht" id="sh-goal-prog-title">📈 Actualizar progreso</div>
-        <div class="fl">Progreso actual</div>
-        <input id="goal-prog-val" class="fi" type="number" min="0" />
-        <div
-          id="goal-prog-hint"
-          style="font-size: 12px; color: var(--m); margin-bottom: 12px"
-        ></div>
-        <button class="shbtn" onclick="updateGoalProgress()">
-          Guardar progreso
-        </button>
-        <button class="shbtns" onclick="csh('sh-goal-prog')">Cancelar</button>
-      </div>
-    </div>
 
     <!-- SHEET EVENTO CALENDARIO -->
     <div class="shov" id="sh-cal-event" onclick="csh('sh-cal-event', event)">
@@ -11495,7 +10921,7 @@
       <div class="sh" onclick="event.stopPropagation()">
         <div class="shh"></div>
         <div class="sht">🔍 Búsqueda global</div>
-        <input id="search-input" class="fi" placeholder="Buscar en hábitos, tareas, notas, metas..." oninput="performSearch()" />
+        <input id="search-input" class="fi" placeholder="Buscar en hábitos, tareas, notas..." oninput="performSearch()" />
         <div id="search-results" class="stg"></div>
         <button class="shbtns" onclick="csh('sh-search')">Cerrar</button>
       </div>
@@ -11511,8 +10937,8 @@
         </div>
         <div class="news-popup-body">
           <div class="news-popup-tag" id="popup-tag">✨ ¡NUEVO!</div>
-          <div class="news-popup-title" id="popup-title">FlowEX v2.5: Sistema de Metas</div>
-          <div class="news-popup-desc" id="popup-desc">¡Ahora podés crear metas a largo plazo con hitos intermedios!</div>
+          <div class="news-popup-title" id="popup-title">FlowEX v2.5: Novedades clave</div>
+          <div class="news-popup-desc" id="popup-desc">Mejoras generales, mayor estabilidad y una experiencia más simple para todos los usuarios.</div>
           <button class="news-popup-btn" onclick="closePopup()">¡Genial, empezar!</button>
         </div>
       </div>
@@ -11556,10 +10982,10 @@
       const featuredNews = [
         {
           label: '✨ NUEVO',
-          title: 'Sistema de Metas 🎯',
-          subtitle: 'Ahora podés crear metas a largo plazo con hitos intermedios. ¡Seguí tu progreso día a día!',
-          cards: ['🎯', '📈', '🏆', '⭐', '🎯'],
-          cta: '¡Saber más!',
+          title: 'Mejoras generales',
+          subtitle: 'Experiencia más sólida y limpia en toda la app.',
+          cards: ['✨', '⚡', '✅', '📲', '🔥'],
+          cta: '¡Ver novedades!',
         },
         {
           label: '🔥 RETO',
@@ -11582,7 +11008,6 @@
         { icon: '💡', title: 'Tip del día: Pomodoro', desc: 'Hacé sesiones de 25 min de foco + 5 min de descanso. Es la técnica más efectiva para mantener la concentración.', banner: 'bg-tip' },
         { icon: '', title: 'Tip del día: Rachas', desc: 'Marcá tus hábitos todos los días sin fallar. Cada día suma a tu racha y te acerca más a tu mejor versión.', banner: 'bg-tip' },
         { icon: '📝', title: 'Tip del día: Notas rápidas', desc: 'Usá las notas rápidas del dashboard para capturar ideas al instante. Todo se guarda automáticamente.', banner: 'bg-tip' },
-        { icon: '🎯', title: 'Tip del día: Metas grandes', desc: 'Dividí tus metas en hitos pequeños. Es más fácil alcanzar 25% que el 100% de golpe.', banner: 'bg-tip' },
         { icon: '📅', title: 'Tip del día: Calendario', desc: 'Revisá tu calendario cada mañana para saber qué eventos y tareas tenés hoy.', banner: 'bg-tip' },
       ];
 
@@ -11591,15 +11016,15 @@
           id: 1,
           cat: 'anuncio',
           catLabel: 'Anuncio',
-          title: 'Sistema de Metas 🎯',
-          subtitle: 'Ahora podés crear metas a largo plazo con hitos intermedios.',
-          icon: '🎯',
+          title: 'Actualización general',
+          subtitle: 'Mejoras de estabilidad y experiencia en toda la app.',
+          icon: '✨',
           bg: 'img-bg-1',
           date: 'Hoy',
           banner: 'bg-anuncio',
-          cards: ['🎯', '📈', '🏆'],
+          cards: ['✨', '⚡', '✅'],
           rarity: 'legendary',
-          text: '¡Grandes cambios en el sistema de Metas! Ahora cada meta tiene niveles de colección que se desbloquean al alcanzar ciertos hitos. Además, mejoramos la visualización del progreso con barras animadas y estadísticas detalladas.\n\nLos cambios incluyen:\n• Niveles de colección por meta\n• Hitos intermedios personalizables\n• Estadísticas de progreso mejoradas\n• Nuevas animaciones de celebración',
+          text: 'FlowEX se vuelve más estable y rápido. Mejoramos la sincronización, pulimos el diseño y afinamos la experiencia de uso en cada módulo.\n\nQué hay de nuevo:\n• Navegación más clara\n• Mejor rendimiento en móviles y escritorio\n• Correcciones visuales y de accesibilidad',
         },
         {
           id: 2,

@@ -789,7 +789,6 @@ const renderAll = () => {
     if (pid === 'lectura') renderLectura();
     if (pid === 'logros') renderLogros();
     if (pid === 'stats') renderStats();
-    if (pid === 'metas') renderMetas();
     if (pid === 'calendario') renderCalendario();
     if (pid === 'pomodoro') renderPomodoro();
 };
@@ -811,7 +810,6 @@ window.gp = (page) => {
     if (page === 'stats') renderStats();
     if (page === 'ajustes') renderSettings();
     if (page === 'todolist') initTodoList();
-    if (page === 'metas') renderMetas();
     if (page === 'calendario') renderCalendario();
     if (page === 'pomodoro') renderPomodoro();
     if (page === 'tiempo') renderTiempo();
@@ -1269,13 +1267,6 @@ const renderDashWidgets = () => {
         moodEl.onclick = null;
     }
 
-    // Goals widget
-    const goalsEl = document.getElementById('dash-goals');
-    if (goalsEl) {
-        const activeGoals = S.goals ? S.goals.filter(g => !g.done).length : 0;
-        document.getElementById('dash-goals-value').textContent = `${activeGoals} activas`;
-        goalsEl.onclick = () => gp('metas');
-    }
 };
 
 // ── NOTES & WIKI MODULE (renderNotas) ───────────────────────────────
@@ -2653,21 +2644,6 @@ window.performSearch = () => {
                         title: n.title,
                         desc: n.body.substring(0, 50) + (n.body.length > 50 ? '...' : ''),
                         action: `gp('notas')`
-                    });
-                }
-            });
-        }
-
-        // Search goals
-        if (S.goals) {
-            S.goals.forEach(g => {
-                if (g.name.toLowerCase().includes(query) || (g.desc && g.desc.toLowerCase().includes(query))) {
-                    results.push({
-                        type: 'meta',
-                        icon: '🎯',
-                        title: g.name,
-                        desc: g.desc || 'Sin descripción',
-                        action: `gp('metas')`
                     });
                 }
             });
@@ -6951,175 +6927,7 @@ window.saveSleep = () => {
     toast(`😴 Sueño guardado: ${hours.toFixed(1)}h · Calidad ${sleepQuality}/5`, 'success');
 };
 
-let goalFilter = 'activas';
-let currentGoalId = null;
 
-// ── Parche: renderMetas con nuevo diseño ──
-window.renderMetas = () => {
-    if (!S.goals) S.goals = [];
-    const filt = ({
-        activas: S.goals.filter(g => !g.done),
-        completadas: S.goals.filter(g => g.done),
-        todas: S.goals
-    })[goalFilter] || S.goals;
-
-    // Update hero counters
-    const tv = document.getElementById('metas-total-val');
-    if (tv) tv.textContent = S.goals.length;
-    const av = document.getElementById('metas-active-val');
-    if (av) av.textContent = S.goals.filter(g => !g.done).length;
-    const dv = document.getElementById('metas-done-val');
-    if (dv) dv.textContent = S.goals.filter(g => g.done).length;
-
-    const el = document.getElementById('goals-list');
-    if (!el) return;
-    if (!filt.length) {
-        el.innerHTML = `<div class="empty"><div class="ei">🎯</div><div class="et">${goalFilter==='completadas'?'Sin metas completadas':'Sin metas activas'}</div><div class="ed">Tocá + para agregar tu primera meta.</div></div>`;
-        return;
-    }
-    const catColors = {
-        'salud': 'var(--a3)',
-        'trabajo': 'var(--a)',
-        'personal': 'var(--a4)',
-        'finanzas': 'var(--a2)',
-        'aprender': 'var(--a5)'
-    };
-    el.innerHTML = filt.map(g => {
-        const pct = g.target > 0 ? Math.min(100, Math.round(g.current / g.target * 100)) : 0;
-        const color = catColors[g.unit === '%' ? 'personal' : Object.keys(catColors)[0]] || 'var(--a)';
-        const barColor = pct >= 100 ? 'var(--a3)' : pct >= 50 ? 'var(--a)' : 'var(--a4)';
-        const ms = (g.milestones || []).slice(0, 4).map((m, i) => `
-            <div class="goal-ms" onclick="toggleMilestone('${g.id}',${i})">
-              <div class="goal-ms-chk ${m.done?'done':''}">${m.done?'✓':''}</div>
-              <span class="goal-ms-text ${m.done?'done':''}">${m.text}</span>
-            </div>`).join('');
-        return `<div class="goal-card cat-${g.unit||'personal'} ${g.done?'done-goal':''}">
-            <div class="goal-header">
-              <div class="goal-em">${g.emoji||'🎯'}</div>
-              <div class="goal-info">
-                <div class="goal-title">${g.name}</div>
-                <div class="goal-meta-row">
-                  ${g.deadline?`<span class="goal-deadline-badge">📅 ${g.deadline}</span>`:''}
-                </div>
-              </div>
-              <div class="goal-pct-big" style="color:${barColor}">${pct}%</div>
-            </div>
-            <div class="goal-progress-wrap">
-              <div class="goal-progress-track"><div class="goal-progress-fill" style="width:${pct}%;background:linear-gradient(90deg,${barColor},var(--a5))"></div></div>
-              <div class="goal-progress-labels"><span>0 ${g.unit||''}</span><span>${g.current} / ${g.target} ${g.unit||''}</span></div>
-            </div>
-            ${ms?`<div class="goal-milestones">${ms}${(g.milestones||[]).length>4?`<div style="font-size:10px;color:var(--m);padding:2px 0">+${g.milestones.length-4} hitos más</div>`:''}</div>`:''}
-            <div class="goal-actions">
-              <button class="goal-act-btn primary" onclick="openGoalProgSheet('${g.id}')">📈 Actualizar</button>
-              <button class="goal-act-btn" onclick="openGoalSheet('${g.id}')">✎ Editar</button>
-              <button class="goal-act-btn" style="color:var(--a2)" onclick="deleteGoal('${g.id}')">🗑</button>
-            </div>
-          </div>`;
-    }).join('');
-};
-window.setGoalFilter = (f, btn) => {
-    goalFilter = f;
-    document.querySelectorAll('#goals-filter-row .fp').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    renderMetas();
-};
-
-window.openGoalSheet = (id) => {
-    if (!S.goals) S.goals = [];
-    currentGoalId = id || null;
-    const goal = id ? S.goals.find(g => g.id === id) : null;
-    document.getElementById('sh-goal-title').textContent = id ? '✏️ Editar meta' : '🎯 Nueva meta';
-    document.getElementById('goal-nm').value = goal?.name || '';
-    document.getElementById('goal-em').value = goal?.emoji || '🎯';
-    document.getElementById('goal-deadline').value = goal?.deadline || '';
-    document.getElementById('goal-cur').value = goal?.current || 0;
-    document.getElementById('goal-target').value = goal?.target || 100;
-    document.getElementById('goal-unit').value = goal?.unit || '%';
-    document.getElementById('goal-milestones-inp').value = (goal?.milestones || []).map(m => m.text).join('\n');
-    document.getElementById('del-goal-btn').style.display = id ? 'flex' : 'none';
-    document.getElementById('sh-goal').classList.add('open');
-};
-
-window.saveGoal = () => {
-    if (!S.goals) S.goals = [];
-    const name = document.getElementById('goal-nm').value.trim();
-    if (!name) {
-        toast('Completá el nombre de la meta', 'warn');
-        return;
-    }
-    const existingMilestones = goal?.milestones || [];
-    const goal = {
-        id: currentGoalId || uid(),
-        name,
-        emoji: document.getElementById('goal-em').value.trim() || '🎯',
-        deadline: document.getElementById('goal-deadline').value || '',
-        current: parseFloat(document.getElementById('goal-cur').value) || 0,
-        target: parseFloat(document.getElementById('goal-target').value) || 100,
-        unit: document.getElementById('goal-unit').value.trim() || '%',
-        milestones: document.getElementById('goal-milestones-inp').value
-            .split('\n')
-            .map(t => t.trim())
-            .filter(Boolean)
-            .map(text => ({ text, done: existingMilestones.find(m => m.text === text)?.done || false })),
-        done: false
-    };
-    goal.done = goal.current >= goal.target;
-    if (currentGoalId) {
-        const existing = S.goals.find(g => g.id === currentGoalId);
-        if (existing) {
-            Object.assign(existing, goal);
-        }
-    } else {
-        S.goals.unshift(goal);
-    }
-    scheduleSave();
-    csh('sh-goal');
-    renderMetas();
-    toast('🎯 Meta guardada', 'success');
-};
-
-window.deleteGoal = (id) => {
-    const gid = id || currentGoalId;
-    if (!gid) return;
-    if (!confirm('¿Eliminar esta meta?')) return;
-    S.goals = (S.goals || []).filter(g => g.id !== gid);
-    currentGoalId = null;
-    scheduleSave();
-    csh('sh-goal');
-    renderMetas();
-    toast('🗑 Meta eliminada', 'info');
-};
-
-window.openGoalProgSheet = (id) => {
-    if (!S.goals) S.goals = [];
-    currentGoalId = id || currentGoalId;
-    const goal = S.goals.find(g => g.id === currentGoalId);
-    if (!goal) return;
-    document.getElementById('sh-goal-prog-title').textContent = `📈 Actualizar “${goal.name}”`;
-    document.getElementById('goal-prog-val').value = goal.current || 0;
-    document.getElementById('goal-prog-hint').textContent = `Meta total: ${goal.target} ${goal.unit || ''}`;
-    document.getElementById('sh-goal-prog').classList.add('open');
-};
-
-window.updateGoalProgress = () => {
-    const goal = S.goals.find(g => g.id === currentGoalId);
-    if (!goal) return;
-    const value = parseFloat(document.getElementById('goal-prog-val').value) || 0;
-    goal.current = value;
-    goal.done = value >= goal.target;
-    scheduleSave();
-    csh('sh-goal-prog');
-    renderMetas();
-    toast('📈 Progreso actualizado', 'success');
-};
-
-window.toggleMilestone = (id, index) => {
-    const goal = (S.goals || []).find(g => g.id === id);
-    if (!goal || !Array.isArray(goal.milestones) || !goal.milestones[index]) return;
-    goal.milestones[index].done = !goal.milestones[index].done;
-    scheduleSave();
-    renderMetas();
-};
 
 // ── Parche: renderCalendario mejorado ──
 window.renderCalendario = () => {
