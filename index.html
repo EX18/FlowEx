@@ -1419,6 +1419,53 @@
         margin-top: 4px;
       }
 
+      /* DASHBOARD HERO - Futuristic layout */
+      .dashboard-hero {
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 18px;
+        align-items: start;
+        margin-bottom: 16px;
+      }
+      .hero-score {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        background: linear-gradient(180deg, rgba(12,12,24,0.88), rgba(18,18,36,0.78));
+        border: 1px solid rgba(124,109,250,0.12);
+        padding: 18px;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(124,109,250,0.06), 0 4px 20px rgba(0,0,0,0.6);
+      }
+      .hero-score .ring {
+        width: 110px;
+        height: 110px;
+        position: relative;
+        flex-shrink: 0;
+      }
+      .hero-score .ring svg { transform: rotate(-90deg); }
+      .hero-score .ring .center {
+        position: absolute; inset: 0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:2px;
+        font-family: var(--fd);
+      }
+      .hero-stats {
+        display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      }
+      .hero-stat {
+        min-width: 110px;
+        background: linear-gradient(135deg, rgba(124,109,250,0.06), rgba(109,250,196,0.02));
+        border: 1px solid rgba(255,255,255,0.03);
+        padding: 12px; border-radius: 14px; text-align:left;
+      }
+      .hero-stat .val { font-family:var(--fd); font-weight:800; font-size:20px; color:var(--a); }
+
+      .dashboard-side {
+        display:flex; flex-direction:column; gap:12px;
+      }
+      .side-card { background:var(--surface); border:1px solid var(--b); padding:12px; border-radius:14px; }
+      .heatmap-mini { display:grid; grid-template-columns: repeat(7, 1fr); gap:4px; }
+      .heatmap-mini .hm { height:14px; border-radius:4px; }
+
       /* FILTERS */
       .frow {
         display: flex;
@@ -8008,7 +8055,70 @@
               Cargando tu progreso...
             </div>
           </div>
-          <div class="gs-card" id="gs-card" onclick="gp('stats')"></div>
+          <div class="dashboard-hero">
+            <div class="hero-score gs-card" id="gs-card" onclick="gp('stats')">
+              <div class="ring" aria-hidden>
+                <svg width="110" height="110" viewBox="0 0 120 120">
+                  <defs>
+                    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="var(--a)" />
+                      <stop offset="100%" stop-color="var(--a2)" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="60" cy="60" r="48" stroke="#111" stroke-width="12" fill="none" opacity="0.08"></circle>
+                  <circle cx="60" cy="60" r="48" stroke="url(#g1)" stroke-width="12" fill="none" stroke-dasharray="301" stroke-dashoffset="60"></circle>
+                </svg>
+                <div class="center">
+                  <div style="font-size:18px; color:var(--m)">Flow Score</div>
+                  <div style="font-size:28px; font-weight:900; color:var(--txt)" id="flow-score-val">87</div>
+                </div>
+              </div>
+              <div class="gs-info">
+                <div class="gs-name">Resumen</div>
+                <div class="gs-score" id="gs-score">87</div>
+                <div class="hero-stats">
+                  <div class="hero-stat"><div class="val" id="stat-hab">12</div><div class="lbl">Hábitos</div></div>
+                  <div class="hero-stat"><div class="val" id="stat-com">8</div><div class="lbl">Completados</div></div>
+                  <div class="hero-stat"><div class="val" id="stat-str">24d</div><div class="lbl">Racha</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dashboard-side">
+              <div class="side-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+                  <div style="font-weight:800">Weekly Progress</div>
+                  <div style="color:var(--m); font-size:12px">This week</div>
+                </div>
+                <div class="bar-chart">
+                  <div class="bar-w"><div class="bar" style="height:52%"></div><div class="bar-lbl">Mon</div></div>
+                  <div class="bar-w"><div class="bar" style="height:68%"></div><div class="bar-lbl">Tue</div></div>
+                  <div class="bar-w"><div class="bar" style="height:78%"></div><div class="bar-lbl">Wed</div></div>
+                  <div class="bar-w"><div class="bar" style="height:88%"></div><div class="bar-lbl">Thu</div></div>
+                  <div class="bar-w"><div class="bar" style="height:72%"></div><div class="bar-lbl">Fri</div></div>
+                  <div class="bar-w"><div class="bar" style="height:54%"></div><div class="bar-lbl">Sat</div></div>
+                  <div class="bar-w"><div class="bar" style="height:46%"></div><div class="bar-lbl">Sun</div></div>
+                </div>
+              </div>
+
+              <div class="side-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+                  <div style="font-weight:800">Habit Heatmap</div>
+                  <div style="color:var(--m); font-size:12px">This Month</div>
+                </div>
+                <div class="heatmap-mini">
+                  <!-- 28 squares as placeholder -->
+                  <div class="hm d1"></div><div class="hm d2"></div><div class="hm d3"></div><div class="hm d4"></div>
+                  <div class="hm d1"></div><div class="hm d2"></div><div class="hm d3"></div><div class="hm d4"></div>
+                  <div class="hm d1"></div><div class="hm d2"></div><div class="hm d3"></div><div class="hm d4"></div>
+                  <div class="hm d1"></div><div class="hm d2"></div><div class="hm d3"></div><div class="hm d4"></div>
+                  <div class="hm d1"></div><div class="hm d2"></div><div class="hm d3"></div><div class="hm d4"></div>
+                  <div class="hm d1"></div><div class="hm d2"></div><div class="hm d3"></div><div class="hm d4"></div>
+                  <div class="hm d1"></div><div class="hm d2"></div><div class="hm d3"></div><div class="hm d4"></div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div id="sr" class="sr-scroll"></div>
           <div class="sec-head">
             <div class="sec-title">📊 Progreso de hoy</div>
