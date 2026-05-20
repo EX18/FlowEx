@@ -196,13 +196,40 @@ const loadSession = () => {
     } catch (e) {}
     return null;
 };
-const clearSession = () => {
+const clearSession = async () => {
     localStorage.removeItem(LC_KEY);
+    localStorage.removeItem(`flowex_flowex-cache`);
+    localStorage.removeItem('flowex_ai_conversation');
     try {
-        caches.delete('flowex-v2.2');
-        idbSet('flowex-cache', null);
-        invalidateServerCache();
+        if ('sessionStorage' in window) {
+            sessionStorage.clear();
+        }
+        if ('caches' in window) {
+            const cacheNames = await caches.keys();
+            for (const name of cacheNames) {
+                if (name.startsWith('flowex')) {
+                    await caches.delete(name);
+                }
+            }
+        }
+        await idbRemove('flowex-cache');
+        await invalidateServerCache();
     } catch (e) {}
+};
+
+const idbRemove = async (key) => {
+    const db = await openIDB();
+    if (!db) {
+        localStorage.removeItem(`flowex_${key}`);
+        return;
+    }
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(IDB_STORE, 'readwrite');
+        const store = tx.objectStore(IDB_STORE);
+        const req = store.delete(key);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+    });
 };
 
 // Hard reset - eliminates ALL cache
@@ -2284,32 +2311,11 @@ window.loadAdminData = async () => {
     }
 };
 
-window.doLogout = () => {
+window.doLogout = async () => {
     if (!confirm('¿Cerrar sesión?')) return;
     if (unsubSnapshot) unsubSnapshot();
-    clearSession();
-    CUR_USER = null;
-    S = {
-        name: '',
-        theme: '',
-        xp: 0,
-        level: 1,
-        habits: [],
-        notes: [],
-        curHF: 'todos'
-    };
-    document.body.className = '';
-    loginPin = '';
-    regPin = '';
-    updatePinDisplay('login', '');
-    updatePinDisplay('reg', '');
-    document.getElementById('login-user').value = '';
-    document.getElementById('login-err').textContent = '';
-    document.getElementById('screen-app').classList.remove('active');
-    document.getElementById('screen-app').style.display = 'none';
-    document.getElementById('screen-auth').classList.add('active');
-    document.getElementById('screen-auth').style.display = 'flex';
-    switchAuthTab('login');
+    await clearSession();
+    window.location.href = './';
 };
 
 window.exportData = () => {
