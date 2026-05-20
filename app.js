@@ -192,7 +192,12 @@ const saveSession = () => {
 const loadSession = () => {
     try {
         const r = localStorage.getItem(LC_KEY);
-        if (r) return JSON.parse(r);
+        if (r) {
+            const sess = JSON.parse(r);
+            if (sess && typeof sess.user === 'string' && sess.user.trim() !== '' && sess.data && typeof sess.data === 'object') {
+                return sess;
+            }
+        }
     } catch (e) {}
     return null;
 };
@@ -6346,9 +6351,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     
     // Validate session integrity
     const isValidSession = (sess) => {
-        if (!sess || !sess.user || !sess.data) return false;
-        // Check for required fields
-        if (typeof sess.user !== 'string') return false;
+        if (!sess || !sess.user || typeof sess.user !== 'string' || !sess.user.trim()) return false;
         if (!sess.data || typeof sess.data !== 'object') return false;
         if (sess.data.level === undefined && sess.data.xp === undefined) return false;
         return true;
